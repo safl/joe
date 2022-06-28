@@ -2,6 +2,7 @@
  fio-wrapper for CIJOE
 """
 
+
 def env(cijoe):
     """Check that the environment has the required entities"""
 

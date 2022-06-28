@@ -1,5 +1,6 @@
-import joe.linux.null_blk as null_blk
 import joe.fio.wrapper as fio
+import joe.linux.null_blk as null_blk
+
 
 def test_run(cijoe):
 

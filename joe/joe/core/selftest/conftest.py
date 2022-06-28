@@ -1,5 +1,6 @@
 import pytest
 
+
 @pytest.fixture
 def nvme(cijoe, capsys):
 
@@ -9,6 +10,7 @@ def nvme(cijoe, capsys):
 
     for device in nvme.get("devices", []):
         return device
+
 
 @pytest.fixture
 def xnvme(cijoe, capsys):

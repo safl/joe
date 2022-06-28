@@ -7,6 +7,7 @@ xnvme_configs = [
     {"be": "linux", "sync": "nvme"},
 ]
 
+
 def test_cli_xnvme_list(cijoe):
 
     rcode, state = cijoe.cmd("xnvme list")
@@ -17,6 +18,7 @@ def test_cli_xnvme_enum(cijoe):
 
     rcode, state = cijoe.cmd("xnvme enum")
     assert not rcode, os.path.join(cijoe.output_path, cijoe.output_ident, "cmd.log")
+
 
 @pytest.mark.parametrize("xnvme_config", xnvme_configs)
 def test_cli_xnvme_info(cijoe, nvme, xnvme_config):

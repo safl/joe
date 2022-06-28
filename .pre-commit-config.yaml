@@ -3,14 +3,6 @@ default_language_version:
   python: python3
 
 repos:
-# Yaml: intended for the GitHUB Actions .yaml
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.1.0
-  hooks:
-  - id: check-yaml # pre-commit-hook-yamlfmt only works on valid YAML files
-    name: YAML-format-check
-    types: [file]
-    files: \.(yaml|yml|plan)$
 - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
   rev: 0.1.1
   hooks:
@@ -33,7 +25,6 @@ repos:
 - repo: https://github.com/pycqa/isort
   rev: '5.10.1'
   hooks:
-  # Available args: https://pycqa.github.io/isort/docs/configuration/options.html
   - id: isort
     name: Python-format-isort
     args:
@@ -48,7 +39,6 @@ repos:
     - '--extend-ignore=E203,E501' # ignore "whitespace before ':'"; ignore line length
     exclude: (ctypes_mapping\/api\.py)$
 
-# Shell: todo: exclude xnvme-driver.sh
 - repo: https://github.com/jumanjihouse/pre-commit-hooks
   rev: 2.1.6
   hooks:
