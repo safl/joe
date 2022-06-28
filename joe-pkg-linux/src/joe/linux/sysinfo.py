@@ -21,4 +21,4 @@ def collect(cijoe):
     ]
 
     for label, cmd in commands:
-        rcode, state = cijoe.cmd(cmd)
+        rcode, state = cijoe.run(cmd)

@@ -4,17 +4,26 @@
 
 Prototype of CIJOE implemented using:
 
-* environment definition using yaml instead of bash with variable-definitions
+* Environment definition using Yaml instead of Bash with variable-definitions
 
 * The core-module of CIJOE is re-implemented as a Python class with methods:
   - cmd, push, pull
-  - Perhaps this should be refactored to "get()/put() and execute()"?
+  - Perhaps this should be refactored to: "get()/put() and execute()"?
+    - run() / get() / put()
+    - execute() / download() / upload()
 
 * pytest instead of ``cij_runner``; testcases, testsuites, and testplans
   replaced by pytest tests
   - thus removal of "testsuites" and "testplans"
   - re-implementation of testcases as Python using the cijoe helper for
     retargeting tests and data-transfer
+
+* We might still need testplans... they will probably just be more of a
+  "planning" type of thing, e.g. tell CIJOE where to collect tests from, which
+  collection filters to apply, environment variables to setup and stuff like
+  that. E.g. a static specification of invoking pytest, with the additional
+  power of providing envionment variable definitions to the ``cijoe.run``
+  instance.
 
 * The Bash modules for ssh, qemu, fio, xnvme, spdk, etc. are re-implemented in
   Python
@@ -137,8 +146,8 @@ Related Work
 ============
 
 CIJOE in this form seems related to the Fabric project. Atleast both projects
-use Paramiko to invoke commands over SSH in a retartable fashion. It might be
-worth investigating whether the ``joe/core/transport.py`` should/could be
+use Paramiko to invoke commands over SSH in a retargettable fashion. It might
+be worth investigating whether the ``joe/core/transport.py`` should/could be
 replaced by Fabric.
 
 Self-testing
@@ -151,3 +160,15 @@ Introducing the following selftest convention:
 CIJOE and packages should provide such as PyTest to "check itself". E.g. a
 package providing a bunch of system-wrappers should have some basic
 verification of those wrappers, it is should be easy to verify that they work.
+
+Environment Definition
+======================
+
+CIJOE should support multiple environment definitions, that is, to combine
+them. E.g. one could define the transport, another NVMe devices etc.
+
+API Docs
+========
+
+By going all-in on Python, then CIJOE could provide API docs for everything,
+core and packages. That would be neat.

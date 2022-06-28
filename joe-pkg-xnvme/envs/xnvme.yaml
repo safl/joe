@@ -43,9 +43,9 @@ fio:
   repository: /root/git/xnvme
   bin: /opt/aux/fio
   external_engines:
-    - xnvme: /usr/local/lib/x86_64-linux-gnu/libxnvme-fio-engine.so
-      loadable: true
-    - spdk_nvme: /opt/aux/spdk_nvme
-      loadable: true
-    - spdk_bdev: /opt/aux/spdk_bdev
-      loadable: true
+  - xnvme: /usr/local/lib/x86_64-linux-gnu/libxnvme-fio-engine.so
+    loadable: true
+  - spdk_nvme: /opt/aux/spdk_nvme
+    loadable: true
+  - spdk_bdev: /opt/aux/spdk_bdev
+    loadable: true

@@ -2,7 +2,8 @@
 # This Makefile serves as convenient command-line auto-completion
 #
 PROJECT_NAME=joe-pkg-linux
-ENVS=envs/linux.yaml
+#ENVS=envs/linux.yaml
+ENVS=envs/linux-selftest.yaml
 
 define default-help
 # invoke: 'make uninstall', 'make install'

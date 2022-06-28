@@ -5,6 +5,7 @@ selftest_results
 build
 dist
 .cache
+.idea
 __pycache__
 *.img
 *.pyc

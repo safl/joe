@@ -11,15 +11,15 @@ from joe.core.misc import ENCODING
 
 class Transport(ABC):
     @abstractmethod
-    def cmd(self, cmd, cwd, evars, logfile):
+    def run(self, cmd, cwd, evars, logfile):
         pass
 
     @abstractmethod
-    def push(self, src, dst=None):
+    def get(self, src, dst=None):
         pass
 
     @abstractmethod
-    def pull(self, src, dst=None):
+    def put(self, src, dst=None):
         pass
 
 
@@ -31,7 +31,7 @@ class Local(Transport):
         self.output_path = output_path
         self.output_ident = "aux"
 
-    def cmd(self, cmd, cwd, evars, logfile):
+    def run(self, cmd, cwd, evars, logfile):
         """Invoke the given command"""
 
         with subprocess.Popen(
@@ -45,7 +45,7 @@ class Local(Transport):
 
             return process.returncode
 
-    def push(self, src, dst=None):
+    def put(self, src, dst=None):
         """..."""
 
         if dst is None:
@@ -65,10 +65,10 @@ class Local(Transport):
         shutil.copy(src, dst)
         return True
 
-    def pull(self, src, dst=None):
+    def get(self, src, dst=None):
         """..."""
 
-        return self.push(src, dst)
+        return self.put(src, dst)
 
 
 class SSH(Transport):
@@ -88,7 +88,7 @@ class SSH(Transport):
 
         self.scp = SCPClient(self.ssh.get_transport())
 
-    def cmd(self, cmd, cwd, evars, logfile):
+    def run(self, cmd, cwd, evars, logfile):
         """Invoke the given command"""
 
         if cwd:
@@ -101,7 +101,7 @@ class SSH(Transport):
 
         return stdout.channel.recv_exit_status()
 
-    def push(self, src, dst=None):
+    def put(self, src, dst=None):
         """Hmm... no return-value just exceptions"""
 
         if dst is None:
@@ -113,7 +113,7 @@ class SSH(Transport):
 
         return True
 
-    def pull(self, src, dst=None):
+    def get(self, src, dst=None):
         """Hmm... no return-value just exceptions"""
 
         if dst is None:

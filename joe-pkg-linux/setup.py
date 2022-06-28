@@ -18,7 +18,8 @@ setup(
     data_files=[
         ("share/joe/envs", glob.glob(os.path.join("envs", "*"))),
     ],
-    packages=find_namespace_packages(include=["joe.*"]),
+    package_dir={'': 'src'},
+    packages=find_namespace_packages(where="src", include=["joe.*"]),
     zip_safe=False,
     options={"bdist_wheel": {"universal": True}},
     classifiers=[

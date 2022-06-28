@@ -14,9 +14,9 @@ def test_push_pull(cijoe):
         test_file.write("".join([chr(65 + (i % 24)) for i in range(4096)]))
         test_file.flush()
 
-        assert cijoe.push(test_file.name, "foo"), "Failed push()"
+        assert cijoe.put(test_file.name, "foo"), "Failed push()"
 
-        assert cijoe.pull("foo", "bar"), "Failed pull()"
+        assert cijoe.get("foo", "bar"), "Failed pull()"
 
         pulled = os.path.join(cijoe.output_path, cijoe.output_ident, "bar")
 

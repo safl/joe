@@ -18,15 +18,13 @@ def insert(cijoe, env=None):
     nullblk_params = (
         " ".join([f"{k}={v}" for k, v in env.items()]) if env.get("nr_devices") else ""
     )
-    rcode, state = cijoe.cmd(f"modprobe {NULLBLK_MODULE_NAME} {nullblk_params}")
 
-    return rcode
+    return cijoe.run(f"modprobe {NULLBLK_MODULE_NAME} {nullblk_params}")
 
 
 def remove(cijoe):
     """Remove the null_blk kernel module"""
 
-    rcode, state = cijoe.cmd(f"rmdir {NULLBLK_SYSPATH}/nullb*")
-    rcode, state = cijoe.cmd(f"modprobe -r {NULLBLK_MODULE_NAME}")
+    rcode, state = cijoe.run(f"rmdir {NULLBLK_SYSPATH}/nullb*")
 
-    return rcode
+    return cijoe.run(f"modprobe -r {NULLBLK_MODULE_NAME}")

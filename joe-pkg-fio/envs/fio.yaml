@@ -16,6 +16,6 @@ fio:
   - spdk_nvme:
       path: /opt/aux/spdk_nvme
       type: external_preload
-  - spdk_bdev: /opt/aux/spdk_bdev
-      path: /usr/local/lib/x86_64-linux-gnu/libxnvme-fio-engine.so
+  - spdk_bdev:
+      path: /opt/aux/spdk_bdev
       type: external_preload

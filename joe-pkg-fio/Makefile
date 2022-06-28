@@ -2,7 +2,8 @@
 # This Makefile serves as convenient command-line auto-completion
 #
 PROJECT_NAME=joe-pkg-fio
-ENVS=envs/fio.yaml
+#ENVS=envs/fio.yaml envs/fio-selftest.yaml
+ENVS=envs/fio-selftest.yaml
 
 define default-help
 # invoke: 'make uninstall', 'make install'

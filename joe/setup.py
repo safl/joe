@@ -36,7 +36,8 @@ setup(
         "console_scripts": ["joe=joe.cli.cli:main"],
         "pytest11": ["cijoe = joe.pytest_plugin.hooks_and_fixtures"],
     },
-    packages=find_namespace_packages(include=["joe.*"]),
+    package_dir={'': 'src'},
+    packages=find_namespace_packages(where="src", include=["joe.*"]),
     zip_safe=False,
     options={"bdist_wheel": {"universal": True}},
     classifiers=[

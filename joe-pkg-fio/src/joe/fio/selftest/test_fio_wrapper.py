@@ -4,8 +4,8 @@ import joe.linux.null_blk as null_blk
 
 def test_run(cijoe):
 
-    rcode, state = null_blk.insert(cijoe)
+    rcode, _ = null_blk.insert(cijoe)
     assert not rcode
 
-    rcode, state = fio.run(cijoe, ["--filename", "/dev/nullb0"], cwd, evars)
+    rcode, _ = fio.run(cijoe, ["--filename", "/dev/nullb0"])
     assert not rcode

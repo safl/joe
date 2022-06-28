@@ -56,7 +56,7 @@ class Cijoe(object):
         self.output_ident = output_ident
         self.transport.output_ident = output_ident
 
-    def cmd(self, cmd, cwd=None, evars=None):
+    def run(self, cmd, cwd=None, evars=None):
         """
         Execute the given shell command/expression via 'env.transport'
 
@@ -67,7 +67,7 @@ class Cijoe(object):
         """
 
         cmd_output_dpath = os.path.join(self.output_path, self.output_ident)
-        cmd_output_fpath = os.path.join(cmd_output_dpath, "cmd.log")
+        cmd_output_fpath = os.path.join(cmd_output_dpath, "run.log")
         cmd_state_fpath = os.path.join(cmd_output_dpath, "cmd.state")
         os.makedirs(cmd_output_dpath, exist_ok=True)
 
@@ -76,7 +76,7 @@ class Cijoe(object):
             logfile.flush()
 
             begin = time.time()
-            rcode = self.transport.cmd(cmd, cwd, evars, logfile)
+            rcode = self.transport.run(cmd, cwd, evars, logfile)
             end = time.time()
 
             state = {
@@ -97,16 +97,16 @@ class Cijoe(object):
 
         return rcode, state
 
-    def push(self, src, dst):
+    def put(self, src, dst):
         """Transfer 'src' on 'dev_box' to 'dst' on **test_target**"""
 
         os.makedirs(os.path.join(self.output_path, self.output_ident), exist_ok=True)
 
-        return self.transport.push(src, dst)
+        return self.transport.put(src, dst)
 
-    def pull(self, src, dst):
+    def get(self, src, dst):
         """Transfer 'src' on 'test_target' to 'dst' on **dev_box**"""
 
         os.makedirs(os.path.join(self.output_path, self.output_ident), exist_ok=True)
 
-        return self.transport.pull(src, dst)
+        return self.transport.get(src, dst)

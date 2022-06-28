@@ -9,9 +9,12 @@ def env(cijoe):
     return cijoe.get_env("fio")
 
 
-def run(cijoe, args, cwd, evars):
+def run(cijoe, args=None, cwd=None, evars=None):
     """Run 'fio' via CIJOE"""
 
     fio = env(cijoe)
 
-    return cijoe.cmd(" ".join([fio["bin"]] + args), evars)
+    if args is None:
+        args = []
+
+    return cijoe.run(" ".join([fio["bin"]] + args), cwd, evars)
