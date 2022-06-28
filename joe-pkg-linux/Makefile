@@ -64,7 +64,7 @@ endef
 .PHONY: test
 test:
 	@echo "## py: make test"
-	@for env in $(ENVS); do python3 -m pytest tests --env $$env; sleep 1; done
+	@for env in $(ENVS); do python3 -m pytest --pyargs joe.linux.selftest --env $$env; sleep 1; done
 	@echo "## py: make test [DONE]"
 
 define clean-help

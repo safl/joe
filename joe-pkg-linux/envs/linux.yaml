@@ -1,7 +1,11 @@
 ---
+#
+# The keys of 'null_blk' are passed verbatim to 'modprobe null_blk', consult the Kernel docs for a
+# description of the different keys
+#
 # When the nullblk kernel module is loaded it will create 'nr_devices' nullblk instances, when
-# 'nr_devices' is 0, then none will be created and their expected to be created via cfg-path
-nullblk:
+# 'nr_devices' is 0, then they can be created via sysfs instead
+null_blk:
   nr_devices: 1
   # For setup via cfg-path
   queue_mode: 2
