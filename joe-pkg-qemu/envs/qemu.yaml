@@ -1,0 +1,17 @@
+---
+qemu:
+  repository: /root/git/qemu
+  system:
+    bin: "qemu-system-x86_64"
+
+  img:
+    bin: "qemu-img"
+
+  guests: "$HOME/guests"
+  guest:
+    name: "emujoe"
+    console: "sock"
+    ssh_port: 2222
+    mem: "6G"
+    smp: 4
+    host_share: "$HOME/git"

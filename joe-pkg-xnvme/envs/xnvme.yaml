@@ -1,0 +1,51 @@
+---
+# Declare the transport of command-execution, current local and ssh are implemented, should be a
+# breeze to add mosh as a transport as well.
+transport:
+  ssh:  # The SSH options are passed verbatim to paramiko; see https://www.paramiko.org/
+    hostname: corei5
+    port: 22
+    username: root
+
+# Declaration of NVMe devices on the test-target
+nvme:
+  devices:
+  - bdev: /dev/nvme0n1
+    cdev: /dev/ng0n1
+    pcie: 0000:01:00.0
+    nsid: 1
+    csi: 0x1
+
+# Declaration of xNVMe configurations available on the test-target
+xnvme:
+  repository: /root/git/xnvme
+  configs:
+  - {be: linux, dev: nvme, admin: nvme, sync: nvme, async: thrpool}
+  - {be: linux, dev: nvme, admin: nvme, sync: nvme, async: emu}
+  - {be: linux, dev: nvme, admin: nvme, sync: psync, async: thrpool}
+  - {be: linux, dev: nvme, admin: nvme, sync: psync, async: emu}
+  - {be: linux, dev: nvme, admin: nvme, sync: nvme, async: posix}
+  - {be: linux, dev: nvme, admin: nvme, sync: nvme, async: libaio}
+  - {be: linux, dev: nvme, admin: nvme, sync: psync, async: io_uring}
+  - {be: linux, dev: nvme, admin: nvme, sync: psync, async: io_uring_cmd}
+  - {be: spdk, dev: nvme, admin: nvme, sync: nvme, async: nvme}
+
+# Declaration of SPDK related stuff
+spdk:
+  repository: /root/git/spdk
+  configs:
+  - {json: /opt/configs/bdev_aio.json}
+  - {json: /opt/configs/bdev_nvme.json}
+  - {json: /opt/configs/bdev_uring.json}
+
+# Declaration of where fio, and external engines, are located on test-target
+fio:
+  repository: /root/git/xnvme
+  bin: /opt/aux/fio
+  external_engines:
+    - xnvme: /usr/local/lib/x86_64-linux-gnu/libxnvme-fio-engine.so
+      loadable: true
+    - spdk_nvme: /opt/aux/spdk_nvme
+      loadable: true
+    - spdk_bdev: /opt/aux/spdk_bdev
+      loadable: true

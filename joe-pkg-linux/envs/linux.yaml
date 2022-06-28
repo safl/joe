@@ -1,0 +1,24 @@
+---
+# When the nullblk kernel module is loaded it will create 'nr_devices' nullblk instances, when
+# 'nr_devices' is 0, then none will be created and their expected to be created via cfg-path
+nullblk:
+  nr_devices: 1
+  # For setup via cfg-path
+  queue_mode: 2
+  home_node: 0
+  bs: 512
+  irqmode: 2
+  gb: 14
+  completion_nsec: 10
+  submit_queue: 1
+  hw_queue_depth: 64
+  memory_backed: 1
+  # MQ
+  use_per_node_hctx: 0
+  no_sched: 0
+  blocking: 0
+  shared_tags: 0
+  # Zoned
+  zoned: 0
+  zone_size: 256
+  zone_nr_conv: 0
