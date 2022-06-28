@@ -1,7 +1,7 @@
 """
-    This is a wrapper for the Linux Null block device driver
+    null_blk module, providing helpers to load/unload null block instances
 
-    To use it, one must have permissions to modprobe,rmmod and modify the /syscfg
+    To use it, one must have permissions to modprobe, rmmod and modify the /syscfg
 
     For reference, see: https://docs.kernel.org/block/null_blk.html
 """

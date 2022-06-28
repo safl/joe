@@ -14,9 +14,9 @@ setup(
     url="https://github.com/safl/joe-pkg-xnvme/",
     install_requires=[
         "joe",
+        "joe-pkg-linux",
     ],
     data_files=[
-        ("share/joe/aux", glob.glob(os.path.join("aux", "*"))),
         ("share/joe/envs", glob.glob(os.path.join("envs", "*"))),
     ],
     packages=find_namespace_packages(include=["joe.*"]),

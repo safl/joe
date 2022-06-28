@@ -1,8 +1,8 @@
 #
 # This Makefile serves as convenient command-line auto-completion
 #
-PROJECT_NAME=joe-pkg-xnvme
-ENVS=envs/xnvme.yaml
+PROJECT_NAME=joe-pkg-fio
+ENVS=envs/fio.yaml
 
 define default-help
 # invoke: 'make uninstall', 'make install'
@@ -64,7 +64,7 @@ endef
 .PHONY: test
 test:
 	@echo "## py: make test"
-	@for env in $(ENVS); do python3 -m pytest tests --env $$env; sleep 1; done
+	@for env in $(ENVS); do python3 -m pytest --pyargs joe.fio.selftest --env $$env; sleep 1; done
 	@echo "## py: make test [DONE]"
 
 define clean-help

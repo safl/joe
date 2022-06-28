@@ -7,6 +7,7 @@
     Store the collected information as auxilary files
 """
 
+
 def collect(cijoe):
     """Collect Linux system information"""
 

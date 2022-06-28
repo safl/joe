@@ -1,0 +1,44 @@
+---
+# The fio selftest uses a null_blk instance
+null_blk:
+  nr_devices: 1
+  # For setup via cfg-path
+  queue_mode: 2
+  home_node: 0
+  bs: 512
+  irqmode: 2
+  gb: 14
+  completion_nsec: 10
+  submit_queue: 1
+  hw_queue_depth: 64
+  memory_backed: 1
+  # MQ
+  use_per_node_hctx: 0
+  no_sched: 0
+  blocking: 0
+  shared_tags: 0
+  # Zoned
+  zoned: 0
+  zone_size: 256
+  zone_nr_conv: 0
+
+# Declaration of where fio is located on the test-target and which IO-engines it has available
+fio:
+  repository: /root/git/fio
+  bin: /opt/aux/fio
+  engines:
+  - libaio:
+      type: builtin
+  - io_uring:
+      type: builtin
+  - io_uring_cmd:
+      type: builtin
+  - xnvme:
+      path: /usr/local/lib/x86_64-linux-gnu/libxnvme-fio-engine.so
+      type: external_dynamic
+  - spdk_nvme:
+      path: /opt/aux/spdk_nvme
+      type: external_preload
+  - spdk_bdev: /opt/aux/spdk_bdev
+      path: /usr/local/lib/x86_64-linux-gnu/libxnvme-fio-engine.so
+      type: external_preload
