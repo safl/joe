@@ -7,6 +7,8 @@ import setuptools
 
 ENCODING = "UTF-8"
 
+SCRIPTLET_FUNCTION_NAME = "scriptlet_entry"
+
 
 def iter_packages(namespace):
     """Yield Python packages by the given 'namespace'"""
@@ -38,3 +40,17 @@ def load_scriptlet(package_name, module):
             return function
 
     return None
+
+
+def load_scriptlets():
+    """Load all built-in script-lets"""
+
+    scriptlets = {}
+    for package_name, module_names, _ in iter_packages("joe"):
+        for module_name in module_names:
+            mod = importlib.import_module(f"{package_name}.{module_name}", package_name)
+            for function_name, function in inspect.getmembers(mod, inspect.isfunction):
+                if function_name == SCRIPTLET_FUNCTION_NAME:
+                    scriptlets[module_name] = function
+
+    return scriptlets

@@ -2,17 +2,13 @@
 import importlib
 import inspect
 
-from joe.core.misc import iter_packages, load_scriptlet
+from joe.core.misc import iter_packages, load_scriptlets
 
 
 def main():
 
-    for package_name, module_names, package in iter_packages("joe"):
-        if "wrapper" not in module_names:
-            continue
-
-        scriptlet = load_scriptlet(package_name, "wrapper")
-        help(scriptlet)
+    scriptlets = load_scriptlets()
+    print(scriptlets)
 
 
 if __name__ == "__main__":
