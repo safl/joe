@@ -27,6 +27,7 @@ setup(
         "pytest",
         "pyyaml",
         "scp",
+        "setuptools",
     ],
     data_files=[
         ("share/joe/envs", glob.glob(os.path.join("envs", "*"))),

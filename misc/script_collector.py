@@ -1,10 +1,12 @@
+#!/usr/bin/env python3
 import importlib
 import os
 import pkgutil
 
 import setuptools
 
-ENCODING = "UTF-8"
+DEFAULT_NAMESPACE = "joe"
+
 
 def iter_packages(namespace):
     """Yield Python packages by the given 'namespace'"""
@@ -26,3 +28,12 @@ def iter_packages(namespace):
 
             yield package_name, module_names, package
 
+
+def main():
+
+    for package_name, module_names, package in iter_packages(DEFAULT_NAMESPACE):
+        print(package_name, module_names)
+
+
+if __name__ == "__main__":
+    main()
