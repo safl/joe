@@ -12,6 +12,7 @@ def extract(args):
 def report(args):
     print("report()")
 
+
 def run(args):
     print("invoking pytest")
 

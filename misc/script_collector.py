@@ -2,7 +2,8 @@
 import importlib
 import inspect
 
-from joe.core.misc import iter_packages
+from joe.core.misc import iter_packages, load_scriptlet
+
 
 def main():
 
@@ -10,9 +11,9 @@ def main():
         if "wrapper" not in module_names:
             continue
 
-        mod = importlib.import_module(f"{package_name}.wrapper", package_name)
-        for jazz in inspect.getmembers(mod, inspect.isfunction):
-            print(jazz)
+        scriptlet = load_scriptlet(package_name, "wrapper")
+        help(scriptlet)
+
 
 if __name__ == "__main__":
     main()
