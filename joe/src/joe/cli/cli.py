@@ -23,7 +23,7 @@ def parse_args():
     parsers["run"].add_argument("--workflow", help="Path to a workflow.yaml")
     parsers["run"].add_argument("--output", help="Path to test-results")
 
-    for function_name, function in load_scriptlets():
+    for function_name, function in load_scriptlets().items():
         parsers[function_name] = subparsers.add_parser(
             function_name, help="Invoke the scriptlet"
         )
