@@ -2,7 +2,10 @@
  JOE
 =====
 
-* Can this be done in less than 1500 SLOC?
+The current CIJOE implementation is 3500 lines of Python (2500) and Shell
+(900), can we do this in less than 1000 SLOC? That is, make is encredibly
+simple, such that debugging it, getting to use it etc. is super simple, and in
+case things are weird the source should be easy to comprehend.
 
 Prototype of CIJOE implemented using:
 
