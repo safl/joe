@@ -1,4 +1,4 @@
 def worklet_entry(cijoe, args):
-    """Do stuff"""
+    """Invoke the test-runner"""
 
     print("Py tests")

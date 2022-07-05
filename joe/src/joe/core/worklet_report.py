@@ -1,4 +1,4 @@
 def worklet_entry(cijoe, args):
-    """Do stuff"""
+    """Produce a report of a workflow run"""
 
     print("report")
