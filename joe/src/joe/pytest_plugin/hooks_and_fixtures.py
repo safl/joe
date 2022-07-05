@@ -10,7 +10,7 @@ def pytest_addoption(parser):
         "--env",
         action="store",
         help="Path to CIJOE Environment Definition",
-        default="default.yml",
+        default=None,
     )
     parser.addoption(
         "--output",
@@ -46,7 +46,7 @@ def cijoe(request, capsys):
         return JOE
 
     JOE = Cijoe(
-        env_from_file(request.config.getoption("--env")),
+        request.config.getoption("--env"),
         request.config.getoption("--output"),
     )
     JOE.set_output_ident(request.node.nodeid)

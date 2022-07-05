@@ -29,26 +29,33 @@ def default_output_path():
 class Cijoe(object):
     """CIJOE providing retargetable command-line expressions and data-transfers"""
 
-    def __init__(self, env, output_path):
+    def __init__(self, env_fpath=None, output_path=None):
         """Create a cijoe encapsulation defined by the given env"""
 
-        env = env if env else {}
-        self.env = env
-        self.output_path = output_path
+        self.env_fpath = os.path.abspath(env_fpath) if env_fpath else None
+        self.env = env_from_file(self.env_fpath) if self.env_fpath else {}
+        if not self.env:
+            self.env = {}
+        self.output_path = output_path if output_path else default_output_path()
         self.output_ident = "aux"
 
         os.makedirs(os.path.join(self.output_path, self.output_ident), exist_ok=True)
 
-        ssh = env.get("transport", {}).get("ssh", None)
+        ssh = self.env.get("transport", {}).get("ssh", None)
         if ssh:
-            self.transport = transport.SSH(env, self.output_path)
+            self.transport = transport.SSH(self.env, self.output_path)
         else:
-            self.transport = transport.Local(env, self.output_path)
+            self.transport = transport.Local(self.env, self.output_path)
 
     def get_env(self, subject=None):
         """Return the environment definition"""
 
         return self.env.get(subject, None)
+
+    def get_env_fpath(self):
+        """Return the environment filepath, None when default is used."""
+
+        return self.env_fpath
 
     def set_output_ident(self, output_ident):
         """This is a path relative to the self.output"""

@@ -2,6 +2,7 @@ import pprint
 import re
 
 import yaml
+
 from joe.core.command import Cijoe, env_from_file
 
 
@@ -24,7 +25,7 @@ def workflow_run(args):
     with open(args.workflow) as workflow_file:
         workflow = yaml.load(workflow_file, Loader=yaml.SafeLoader)
 
-    joe = Cijoe(env_from_file(args.env), args.output)
+    joe = Cijoe(env_from_file(args.env) if args.env else {}, args.output)
 
     count = 0
     for entry in workflow.get("steps", []):
@@ -64,4 +65,3 @@ def workflow_run(args):
                 joe.run(cmd)
         elif step["type"] == "worklet":
             args.worklets[step["uses"]](joe, args, step)
-

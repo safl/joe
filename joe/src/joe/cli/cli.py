@@ -1,4 +1,5 @@
 import argparse
+import os
 
 from joe.core.collector import load_worklets_from_packages
 from joe.core.command import Cijoe, default_output_path, env_from_file
@@ -8,15 +9,12 @@ from joe.core.workflow import workflow_lint, workflow_run
 def parse_args():
     """Parse command-line interface."""
 
-    worklets = load_worklets_from_packages()
-
     parser = argparse.ArgumentParser(prog="joe")
     parser.add_argument("--version", action="store_true", help="Show version")
 
     subparsers = parser.add_subparsers(dest="func", help="sub-command help")
 
     parsers = {}
-
     parsers["workflow_run"] = subparsers.add_parser(
         "workflow_run", help="Process workflow"
     )
@@ -25,7 +23,9 @@ def parse_args():
         "--env", help="Path to the environment definition"
     )
     parsers["workflow_run"].add_argument("--workflow", help="Path to a workflow.yaml")
-    parsers["workflow_run"].add_argument("--output", help="Path to test-results")
+    parsers["workflow_run"].add_argument(
+        "--output", default=default_output_path(), help="Path to test-results"
+    )
 
     parsers["workflow_lint"] = subparsers.add_parser(
         "workflow_lint", help="Check the integrity of the given workflow"
@@ -33,6 +33,7 @@ def parse_args():
     parsers["workflow_lint"].set_defaults(func=workflow_lint)
     parsers["workflow_lint"].add_argument("--workflow", help="Path to a workflow.yaml")
 
+    worklets = load_worklets_from_packages()
     for function_name, function in worklets.items():
         parsers[function_name] = subparsers.add_parser(
             function_name, help=function.__doc__
@@ -41,7 +42,9 @@ def parse_args():
         parsers[function_name].add_argument(
             "--env", help="Path to the environment definition"
         )
-        parsers[function_name].add_argument("--output", help="Path to test-results")
+        parsers[function_name].add_argument(
+            "--output", default=default_output_path(), help="Path to test-results"
+        )
 
     args = parser.parse_args()
     args.worklets = worklets
