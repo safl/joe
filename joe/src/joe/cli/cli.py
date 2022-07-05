@@ -3,12 +3,10 @@ import yaml
 from yaml.loader import SafeLoader
 
 
-from joe.core.misc import load_scriptlets
+from joe.core.collector import load_worklets_from_packages
 
 
 def run(args):
-
-    scriptlets = load_scriptlets()
 
     with open(args.env) as env_file:
         env = yaml.load(env_file, Loader=SafeLoader)
@@ -17,14 +15,16 @@ def run(args):
         workflow = yaml.load(workflow_file, Loader=SafeLoader)
 
     for step in workflow.get("steps", []):
-        if step not in scriptlets:
+        if step not in worklets:
             return 1
 
-        scriptlets[step](None, args)
+        args.worklets[step](None, args)
 
 
 def parse_args():
     """Parse command-line interface."""
+
+    worklets = load_worklets_from_packages()
 
     parser = argparse.ArgumentParser(prog="joe")
     parser.add_argument("--version", action="store_true", help="Show version")
@@ -39,9 +39,9 @@ def parse_args():
     parsers["run"].add_argument("--workflow", help="Path to a workflow.yaml")
     parsers["run"].add_argument("--output", help="Path to test-results")
 
-    for function_name, function in load_scriptlets().items():
+    for function_name, function in worklets.items():
         parsers[function_name] = subparsers.add_parser(
-            function_name, help="Invoke the scriptlet"
+            function_name, help="Invoke the worklet"
         )
         parsers[function_name].set_defaults(func=function)
         parsers[function_name].add_argument(
@@ -49,7 +49,10 @@ def parse_args():
         )
         parsers[function_name].add_argument("--output", help="Path to test-results")
 
-    return parser.parse_args()
+    args = parser.parse_args()
+    args.worklets = worklets
+
+    return args
 
 
 def main():
@@ -57,5 +60,4 @@ def main():
 
     args = parse_args()
     if args.func:
-    #    print("what!?")
         args.func(args)

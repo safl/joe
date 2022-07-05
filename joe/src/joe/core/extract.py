@@ -1,4 +1,4 @@
-def scriptlet_entry(cijoe, args):
+def worklet_entry(cijoe, args):
     """Do stuff"""
 
     print("extractor")

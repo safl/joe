@@ -2,13 +2,13 @@
 import importlib
 import inspect
 
-from joe.core.misc import iter_packages, load_scriptlets
+from joe.core.collector import iter_packages, load_worklets_from_packages
 
 
 def main():
 
-    scriptlets = load_scriptlets()
-    print(scriptlets)
+    worklets = load_worklets_from_packages()
+    print(worklets)
 
 
 if __name__ == "__main__":

@@ -18,7 +18,8 @@
     * pkgutil.iter_modules()
 
     Currently only collecting worklets from namespace packages, however, this should
-    probably be extended to do collection from local non-installed modules
+    probably be extended to do collection from local non-installed modules. All of this
+    auto-collection might also quickly become very slow...
 """
 import importlib
 import inspect
@@ -51,7 +52,7 @@ def iter_packages(namespace):
             yield package_name, module_names, package
 
 
-def worklets_from_packages(namespace=None):
+def load_worklets_from_packages(namespace=None):
     """Load worklets namespace packages installed on the system"""
 
     if namespace is None:
