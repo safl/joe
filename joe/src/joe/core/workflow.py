@@ -7,7 +7,6 @@ from joe.core.command import Cijoe, env_from_file
 
 # TODO:
 # * Implement this
-# * Move this into the core package
 def workflow_lint(args):
     """Do integrity-check of workflow"""
 
@@ -16,8 +15,9 @@ def workflow_lint(args):
 
 # TODO:
 # * Add use of the test-linter before attempting to run the workflow
-# * Move this into the core package
 # * Add error-handling
+# * Improve the path-mangling for the cijoe-instance, especially when delegated to
+#   worklets
 def workflow_run(args):
     """Run workflow"""
 
@@ -39,24 +39,29 @@ def workflow_run(args):
         }
 
         step["name"] = entry.get("name", "") if entry.get("name") else "unnamed step"
-        step["name"] = f"{step['count']}_{step['name']}"
-        step["name_fs"] = re.sub(
-            r"[\(\)\.\s/\\?%*:|\"<>\x7F\x00-\x1F]", "_", step["name"]
-        )
-
-        joe.set_output_ident(step["name_fs"])
 
         if "uses" in entry:
             step["uses"] = entry.get("uses")
             step["with"] = entry.get("with", {})
-
-            pprint.pprint(step)
-
-            args.worklets[step["uses"]](None, args, step)
+            step["type"] = "worklet"
         elif "run" in entry:
+            step["type"] = "run"
             step["run"] = entry.get("run").strip().splitlines()
-            for cmd in step["run"]:
-                joe.run(cmd)
         else:
             print("invalid step-definition")
             return 1
+
+        foo = step["uses"] if step["uses"] else "inline"
+
+        step["name"] = f"{step['count']}_{step['type']}_{foo}_{step['name']}"
+        step["name_fs"] = re.sub(
+            r"[\(\)\.\s/\\?%*:|\"<>\x7F\x00-\x1F]", "_", step["name"]
+        ).lower()
+        joe.set_output_ident(step["name_fs"])
+
+        if step["type"] == "run":
+            for cmd in step["run"]:
+                joe.run(cmd)
+        elif step["type"] == "worklet":
+            args.worklets[step["uses"]](joe, args, step)
+

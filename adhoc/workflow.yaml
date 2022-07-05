@@ -17,7 +17,7 @@ docstring: |
   run()/get()/put(), with an output-directory matching the current step. This is it, end of story.
 
 steps:
-- name: Run commands via cijoe.run()
+- name: Invoke commands via cijoe.run()
   run: |
     cat /proc/cpuinfo
     hostname
