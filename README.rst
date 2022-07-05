@@ -2,6 +2,8 @@
  JOE
 =====
 
+* Can this be done in less than 1500 SLOC?
+
 Prototype of CIJOE implemented using:
 
 * Environment definition using Yaml instead of Bash with variable-definitions
