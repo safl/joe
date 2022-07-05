@@ -5,6 +5,6 @@ docstring: |
   joe_entry(joe, args) The joe is an cijoe.core.Cijoe instance, with a environment loaded and
   associated output-root.
   This example uses two built-in scriptlets invoking Pytest and generating a report
-scriptlets:
-- "test"
+steps:
+- "pytest"
 - "report"

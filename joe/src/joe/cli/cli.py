@@ -1,10 +1,26 @@
 import argparse
+import yaml
+from yaml.loader import SafeLoader
+
 
 from joe.core.misc import load_scriptlets
 
 
 def run(args):
-    print("invoking pytest")
+
+    scriptlets = load_scriptlets()
+
+    with open(args.env) as env_file:
+        env = yaml.load(env_file, Loader=SafeLoader)
+
+    with open(args.workflow) as workflow_file:
+        workflow = yaml.load(workflow_file, Loader=SafeLoader)
+
+    for step in workflow.get("steps", []):
+        if step not in scriptlets:
+            return 1
+
+        scriptlets[step](None, args)
 
 
 def parse_args():
@@ -41,4 +57,5 @@ def main():
 
     args = parse_args()
     if args.func:
+    #    print("what!?")
         args.func(args)
