@@ -3,8 +3,19 @@ docstring: |
   This is a example workflow file, currently workflows just execute a bunch of
   cijoe-ified-Python-scripts Such as script is a Python module with single entry-function named
   joe_entry(joe, args) The joe is an cijoe.core.Cijoe instance, with a environment loaded and
-  associated output-root.
-  This example uses two built-in scriptlets invoking Pytest and generating a report
+  associated output-root.  This example uses two built-in scriptlets invoking Pytest and generating
+  a report
+
 steps:
-- "pytest"
-- "report"
+- name: Run commands via cijoe.run()
+  run: |
+    cat /proc/cpuinfo
+    hostname
+
+- name: Invoke the test_runner worklet
+  uses: run_tests
+  with:
+    args: "--pyargs joe.core.selftest"
+
+- name: Invoke the report generator worklet
+  uses: report

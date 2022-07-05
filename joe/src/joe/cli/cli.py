@@ -1,12 +1,14 @@
 import argparse
+import pprint
 
 import yaml
 from yaml.loader import SafeLoader
 
 from joe.core.collector import load_worklets_from_packages
 
-
+# TODO: add a CIJOE instance
 def run(args):
+    """Run workflow"""
 
     with open(args.env) as env_file:
         env = yaml.load(env_file, Loader=SafeLoader)
@@ -14,11 +16,33 @@ def run(args):
     with open(args.workflow) as workflow_file:
         workflow = yaml.load(workflow_file, Loader=SafeLoader)
 
-    for step in workflow.get("steps", []):
-        if step not in worklets:
+    anon_count = 0
+    for entry in workflow.get("steps", []):
+        pprint.pprint(entry)
+
+        step = {
+            "name": step["name"] = entry.get("name", None),
+            "run": "",
+            "with": "",
+            "uses": {},
+        }
+
+        if step["name"] is None:  # Ensure that the step has a name
+            anon_count += 1
+            step["name"] = f"Unnamed step ({anon_count}"
+
+        if "uses" in entry:
+            step["uses"] = entry.get("uses")
+            step["with"] = entry.get("with", {})
+
+            args.worklets[worklet["id"]](None, args, step)
+        elif "run" in entry:
+            pass
+        else:
+            print("invalid step-definition")
             return 1
 
-        args.worklets[step](None, args)
+        # TODO: ensure a cijoe instance is available here
 
 
 def parse_args():
