@@ -8,7 +8,8 @@ from joe.core.collector import iter_packages, load_worklets_from_packages
 def main():
 
     worklets = load_worklets_from_packages()
-    print(worklets)
+    for name, func in worklets.items():
+        print(func.__doc__)
 
 
 if __name__ == "__main__":

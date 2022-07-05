@@ -33,7 +33,7 @@ def parse_args():
 
     parsers = {}
 
-    parsers["run"] = subparsers.add_parser("run", help="Invoke the test-runner")
+    parsers["run"] = subparsers.add_parser("run", help="Process workflow")
     parsers["run"].set_defaults(func=run)
     parsers["run"].add_argument("--env", help="Path to the environment definition")
     parsers["run"].add_argument("--workflow", help="Path to a workflow.yaml")
@@ -41,7 +41,7 @@ def parse_args():
 
     for function_name, function in worklets.items():
         parsers[function_name] = subparsers.add_parser(
-            function_name, help="Invoke the worklet"
+            function_name, help=function.__doc__
         )
         parsers[function_name].set_defaults(func=function)
         parsers[function_name].add_argument(
