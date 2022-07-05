@@ -19,7 +19,8 @@
 
     Currently only collecting worklets from namespace packages, however, this should
     probably be extended to do collection from local non-installed modules. All of this
-    auto-collection might also quickly become very slow...
+    auto-collection might also quickly become very slow... to avoid searching all
+    modules then worklet-modules must be named "worklet_"
 """
 import importlib
 import inspect
@@ -28,6 +29,7 @@ import pkgutil
 
 import setuptools
 
+WORKLET_MODULE_PREFIX = "worklet_"
 WORKLET_FUNCTION_NAME = "worklet_entry"
 
 
@@ -61,9 +63,13 @@ def load_worklets_from_packages(namespace=None):
     worklets = {}
     for package_name, module_names, _ in iter_packages(namespace):
         for module_name in module_names:
+            comp = module_name.split(WORKLET_MODULE_PREFIX)
+            if len(comp) != 2:
+                continue
+
             mod = importlib.import_module(f"{package_name}.{module_name}", package_name)
             for function_name, function in inspect.getmembers(mod, inspect.isfunction):
                 if function_name == WORKLET_FUNCTION_NAME:
-                    worklets[module_name] = function
+                    worklets[comp[1]] = function
 
     return worklets
