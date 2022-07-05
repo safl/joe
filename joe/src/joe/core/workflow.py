@@ -2,7 +2,7 @@ import pprint
 import re
 
 import yaml
-from cijoe.core.command import Cijoe, env_from_file
+from joe.core.command import Cijoe, env_from_file
 
 
 # TODO:

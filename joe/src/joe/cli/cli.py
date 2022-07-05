@@ -1,9 +1,4 @@
 import argparse
-import pprint
-import re
-
-import yaml
-from yaml.loader import SafeLoader
 
 from joe.core.collector import load_worklets_from_packages
 from joe.core.command import Cijoe, default_output_path, env_from_file
