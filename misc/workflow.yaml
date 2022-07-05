@@ -1,14 +1,19 @@
 ---
 docstring: |
-  This example workflow file shows how to invoke commands and worklets, the structure intentionally
-  mimics that of GitHUB actions, however, the keys you see here are all there is. This is it, end
-  of story.
+  This example workflow file shows how to run commands and use worklets, the structure
+  intentionally mimics that of GitHUB actions, however, the keys you see here are all there is.
 
-  Running commands, as you can see below, then running commands, looks just like running commands
-  on in a GitHUB Workflow, just add the 'run' key with a multi-line string
+  Running commands, as you can see below, looks just like running commands in a GitHUB Workflow
 
-  Running worklets, is similar to that of a GitHUB action, where you define the action/worklet
-  via 'uses' key, and provides arguments to the action/worklet via the 'with' key
+  * Add the 'run' key with a value of multi-line string
+
+  Using worklets, it is similar to that of a GitHUB action
+
+  * Add the 'uses' key with the name of the worklet
+  * Add the 'with' key providing arguments to the worklet
+
+  The commands and the worklets are passed an instance of cijoe which they can use to call
+  run()/get()/put(), with an output-directory matching the current step. This is it, end of story.
 
 steps:
 - name: Run commands via cijoe.run()

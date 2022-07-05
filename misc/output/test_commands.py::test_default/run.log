@@ -1,0 +1,64 @@
+# do: "ls -lh"
+total 20K
+-rw-r--r-- 1 safl safl    8 Jul  5 13:58 env.yaml
+drwxr-xr-x 4 safl safl 4.0K Jul  5 13:58 output
+-rwxr-xr-x 1 safl safl  255 Jul  5 10:26 script_collector.py
+-rw-r--r-- 1 safl safl  833 Jul  5 13:40 workflow.yaml
+drwxr-xr-x 3 safl safl 4.0K Jul  5 13:40 worklets
+# state: {'cmd': 'ls -lh', 'cwd': None, 'rcode': 0, 'begin': 1657022305.7181432, 'end': 1657022305.7226667, 'elapsed': 0.004523515701293945, 'output_fpath': 'output/test_commands.py::test_default/run.log'}
+# do: "ls -lh"
+total 20K
+-rw-r--r-- 1 safl safl    8 Jul  5 13:58 env.yaml
+drwxr-xr-x 6 safl safl 4.0K Jul  5 13:58 output
+-rwxr-xr-x 1 safl safl  255 Jul  5 10:26 script_collector.py
+-rw-r--r-- 1 safl safl  833 Jul  5 13:40 workflow.yaml
+drwxr-xr-x 3 safl safl 4.0K Jul  5 13:40 worklets
+# state: {'cmd': 'ls -lh', 'cwd': None, 'rcode': 0, 'begin': 1657022595.2458196, 'end': 1657022595.2509687, 'elapsed': 0.005149126052856445, 'output_fpath': 'output/test_commands.py::test_default/run.log'}
+# do: "ls -lh"
+total 20K
+-rw-r--r-- 1 safl safl    8 Jul  5 13:58 env.yaml
+drwxr-xr-x 6 safl safl 4.0K Jul  5 13:58 output
+-rwxr-xr-x 1 safl safl  255 Jul  5 10:26 script_collector.py
+-rw-r--r-- 1 safl safl  970 Jul  5 14:13 workflow.yaml
+drwxr-xr-x 3 safl safl 4.0K Jul  5 13:40 worklets
+# state: {'cmd': 'ls -lh', 'cwd': None, 'rcode': 0, 'begin': 1657023475.0209992, 'end': 1657023475.0251734, 'elapsed': 0.004174232482910156, 'output_fpath': 'output/test_commands.py::test_default/run.log'}
+# do: "ls -lh"
+total 20K
+-rw-r--r-- 1 safl safl    8 Jul  5 13:58 env.yaml
+drwxr-xr-x 6 safl safl 4.0K Jul  5 13:58 output
+-rwxr-xr-x 1 safl safl  255 Jul  5 10:26 script_collector.py
+-rw-r--r-- 1 safl safl  970 Jul  5 14:13 workflow.yaml
+drwxr-xr-x 3 safl safl 4.0K Jul  5 13:40 worklets
+# state: {'cmd': 'ls -lh', 'cwd': None, 'rcode': 0, 'begin': 1657023538.4509385, 'end': 1657023538.45444, 'elapsed': 0.0035016536712646484, 'output_fpath': 'output/test_commands.py::test_default/run.log'}
+# do: "ls -lh"
+total 20K
+-rw-r--r-- 1 safl safl    8 Jul  5 13:58 env.yaml
+drwxr-xr-x 6 safl safl 4.0K Jul  5 13:58 output
+-rwxr-xr-x 1 safl safl  255 Jul  5 10:26 script_collector.py
+-rw-r--r-- 1 safl safl  970 Jul  5 14:13 workflow.yaml
+drwxr-xr-x 3 safl safl 4.0K Jul  5 13:40 worklets
+# state: {'cmd': 'ls -lh', 'cwd': None, 'rcode': 0, 'begin': 1657023784.86436, 'end': 1657023784.8676288, 'elapsed': 0.003268718719482422, 'output_fpath': 'output/test_commands.py::test_default/run.log'}
+# do: "ls -lh"
+total 20K
+-rw-r--r-- 1 safl safl    8 Jul  5 13:58 env.yaml
+drwxr-xr-x 7 safl safl 4.0K Jul  5 14:25 output
+-rwxr-xr-x 1 safl safl  255 Jul  5 10:26 script_collector.py
+-rw-r--r-- 1 safl safl  970 Jul  5 14:13 workflow.yaml
+drwxr-xr-x 3 safl safl 4.0K Jul  5 13:40 worklets
+# state: {'cmd': 'ls -lh', 'cwd': None, 'rcode': 0, 'begin': 1657023920.7276428, 'end': 1657023920.7320461, 'elapsed': 0.004403352737426758, 'output_fpath': 'output/test_commands.py::test_default/run.log'}
+# do: "ls -lh"
+total 20K
+-rw-r--r-- 1 safl safl    8 Jul  5 13:58 env.yaml
+drwxr-xr-x 8 safl safl 4.0K Jul  5 14:27 output
+-rwxr-xr-x 1 safl safl  255 Jul  5 10:26 script_collector.py
+-rw-r--r-- 1 safl safl  970 Jul  5 14:13 workflow.yaml
+drwxr-xr-x 3 safl safl 4.0K Jul  5 13:40 worklets
+# state: {'cmd': 'ls -lh', 'cwd': None, 'rcode': 0, 'begin': 1657024024.3316815, 'end': 1657024024.3356624, 'elapsed': 0.003980875015258789, 'output_fpath': 'output/test_commands.py::test_default/run.log'}
+# do: "ls -lh"
+total 20K
+-rw-r--r-- 1 safl safl    8 Jul  5 13:58 env.yaml
+drwxr-xr-x 9 safl safl 4.0K Jul  5 14:27 output
+-rwxr-xr-x 1 safl safl  255 Jul  5 10:26 script_collector.py
+-rw-r--r-- 1 safl safl  970 Jul  5 14:13 workflow.yaml
+drwxr-xr-x 3 safl safl 4.0K Jul  5 13:40 worklets
+# state: {'cmd': 'ls -lh', 'cwd': None, 'rcode': 0, 'begin': 1657024053.531584, 'end': 1657024053.5396469, 'elapsed': 0.00806283950805664, 'output_fpath': 'output/test_commands.py::test_default/run.log'}
