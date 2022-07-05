@@ -1,7 +1,7 @@
 """
     This is an attempt at making providing a super-expandable system, these worklets
     auto-populate the cli-tool, can be used in the workflow steps, and lets see what
-    else they can be used for...
+    else they can be used for, I guess anywhere as they can be provided anywhere, easily
 
     Previously for the extractor a "plugin" system was used, also, everything where
     collections of bash-scripts relying on a naming-conventions. This "worklet" approach
@@ -55,7 +55,7 @@ def iter_packages(namespace):
 
 
 def load_worklets_from_packages(namespace=None):
-    """Load worklets namespace packages installed on the system"""
+    """Load worklets from installed packages"""
 
     if namespace is None:
         namespace = "joe"
