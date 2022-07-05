@@ -1,7 +1,7 @@
 import argparse
+
 import yaml
 from yaml.loader import SafeLoader
-
 
 from joe.core.collector import load_worklets_from_packages
 

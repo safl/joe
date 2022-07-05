@@ -61,15 +61,60 @@ def load_worklets_from_packages(namespace=None):
         namespace = "joe"
 
     worklets = {}
-    for package_name, module_names, _ in iter_packages(namespace):
-        for module_name in module_names:
-            comp = module_name.split(WORKLET_MODULE_PREFIX)
+    for package_name, mod_names, _ in iter_packages(namespace):
+        for mod_name in mod_names:
+            comp = mod_name.split(WORKLET_MODULE_PREFIX)
             if len(comp) != 2:
                 continue
+            worklet_name = comp[1]
 
-            mod = importlib.import_module(f"{package_name}.{module_name}", package_name)
+            mod = importlib.import_module(f"{package_name}.{mod_name}", package_name)
             for function_name, function in inspect.getmembers(mod, inspect.isfunction):
                 if function_name == WORKLET_FUNCTION_NAME:
-                    worklets[comp[1]] = function
+                    worklets[worklet_name] = function
+                    break
+
+    return worklets
+
+
+def iter_modules_in_path(path=None, max_depth=2):
+    """Yields absolute paths to Python modules, topdown starting at the given 'path'"""
+
+    if path is None:
+        path = "."
+
+    path = os.path.abspath(os.path.expandvars(os.path.expanduser(path)))
+
+    base = len(path.split(os.sep))
+    for root, dirs, files in os.walk(path, topdown=True):
+        level = len(root.split(os.sep))
+        if max_depth and level > base + max_depth:
+            break
+
+        for filename in files:
+            if not (filename.startswith(WORKLET_MODULE_PREFIX)):
+                break
+            yield os.path.join(root, filename)
+
+
+def load_worklets_from_path(path=None, depth=2):
+    """Loads workloads from modules found in the given path"""
+
+    worklets = {}
+
+    search_paths = set([os.path.dirname(p) for p in iter_modules_in_path(path, depth)])
+
+    for loader, mod_name, is_pkg in pkgutil.iter_modules(list(search_paths)):
+        comp = mod_name.split(WORKLET_MODULE_PREFIX)
+        if len(comp) != 2 or is_pkg:
+            continue
+
+        worklet_name = comp[1]
+        mod = loader.find_module(mod_name).load_module(mod_name)
+
+        for function_name, function in inspect.getmembers(mod, inspect.isfunction):
+            if function_name == WORKLET_FUNCTION_NAME:
+                worklets[worklet_name] = function
+                break
 
     return worklets
