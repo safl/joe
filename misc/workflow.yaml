@@ -1,10 +1,14 @@
 ---
 docstring: |
-  This is a example workflow file, currently workflows just execute a bunch of
-  cijoe-ified-Python-scripts Such as script is a Python module with single entry-function named
-  joe_entry(joe, args) The joe is an cijoe.core.Cijoe instance, with a environment loaded and
-  associated output-root.  This example uses two built-in scriptlets invoking Pytest and generating
-  a report
+  This example workflow file shows how to invoke commands and worklets, the structure intentionally
+  mimics that of GitHUB actions, however, the keys you see here are all there is. This is it, end
+  of story.
+
+  Running commands, as you can see below, then running commands, looks just like running commands
+  on in a GitHUB Workflow, just add the 'run' key with a multi-line string
+
+  Running worklets, is similar to that of a GitHUB action, where you define the action/worklet
+  via 'uses' key, and provides arguments to the action/worklet via the 'with' key
 
 steps:
 - name: Run commands via cijoe.run()

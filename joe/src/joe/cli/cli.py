@@ -37,6 +37,8 @@ def run(args):
 
             args.worklets[worklet["id"]](None, args, step)
         elif "run" in entry:
+            step["run"] = entry.get("run").strip().splitlines()
+            print(step["run"])
             pass
         else:
             print("invalid step-definition")
