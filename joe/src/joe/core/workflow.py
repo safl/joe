@@ -21,9 +21,6 @@ def workflow_lint(args):
 def workflow_run(args):
     """Run workflow"""
 
-    with open(args.env) as env_file:
-        env = yaml.load(env_file, Loader=yaml.SafeLoader)
-
     with open(args.workflow) as workflow_file:
         workflow = yaml.load(workflow_file, Loader=yaml.SafeLoader)
 

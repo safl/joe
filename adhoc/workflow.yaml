@@ -1,7 +1,8 @@
 ---
 docstring: |
-  This example workflow file shows how to run commands and use worklets, the structure
-  intentionally mimics that of GitHUB actions, however, the keys you see here are all there is.
+  This is a workflow file, it serves as an example on how to run commands and use worklets, the
+  structure intentionally mimics that of GitHUB actions, however, the keys you see here are all
+  there is.
 
   Running commands, as you can see below, looks just like running commands in a GitHUB Workflow
 
