@@ -5,6 +5,7 @@
 
 * joe is packaged using namespace packages, this is done to provide a minimal set of
   features of joe itself, making it infinitely expandable
+* Resources are packaged within the package for access via importlib.resources
 * zip-safe=false is used to easily get access to data-files, also, native namespace
   packages do not support it properly
 """
