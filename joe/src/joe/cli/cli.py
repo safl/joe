@@ -1,6 +1,6 @@
 import argparse
-from pathlib import Path
 import os
+from pathlib import Path
 
 import yaml
 
@@ -9,22 +9,39 @@ from joe.core.command import Cijoe, config_from_file, default_output_path
 from joe.core.workflow import workflow_lint, workflow_run
 
 
-def run_workflows(args):
-    """Run a list of workflows"""
+def is_workflow(path):
+    """Returns True when the given path is a workflow file"""
 
-    pass
+    return path.is_file and path.name.endswith(".workflow")
 
 
-def run_worklets(args):
-    """Run a list of worklets"""
+WORKFLOW_SUFFIX = "workflow"
 
-    pass
+
+def paths_to_workflow_fpaths(paths):
+    """Return list of workflow files in the given list of files and directories"""
+
+    workflow_files = []
+    for path in [Path(p).resolve() for p in paths]:
+        if path.is_dir():
+            workflow_files.extend(
+                [p for p in path.iterdir() if p.name.endswith(f"*.{WORKFLOW_SUFFIX}")]
+            )
+        elif path.is_file() and path.name.endswith(f".{WORKFLOW_SUFFIX}"):
+            workflow_files.append(path)
+
+    return workflow_files
 
 
 def run(args):
     """Run stuff"""
 
-    return workflow_run(args)
+    for p in paths_to_workflow_fpaths(args.file_or_dir):
+        print(p)
+
+    return 0
+
+    # return workflow_run(args)
 
 
 def list(args):
@@ -63,6 +80,7 @@ def parse_args():
     parsers["run"].add_argument(
         "file_or_dir",
         nargs="*",
+        type=Path,
         default=[Path.cwd()],
         help="Path to one of more workflow.yaml or worklet_NAME.py files",
     )

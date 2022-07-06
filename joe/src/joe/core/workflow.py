@@ -41,7 +41,9 @@ def workflow_run(args):
                 "uses": {},
             }
 
-            step["name"] = entry.get("name", "") if entry.get("name") else "unnamed step"
+            step["name"] = (
+                entry.get("name", "") if entry.get("name") else "unnamed step"
+            )
 
             if "uses" in entry:
                 step["uses"] = entry.get("uses")
