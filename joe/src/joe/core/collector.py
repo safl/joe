@@ -97,8 +97,6 @@ def load_worklets_from_path(path=None, depth=2):
 
     worklets = {}
 
-    search_paths = iter_modules_in_path(path, depth)
-
     search_paths = set([str(p.parent) for p in iter_modules_in_path(path, depth)])
 
     for loader, mod_name, is_pkg in pkgutil.iter_modules(list(search_paths)):
