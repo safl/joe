@@ -1,6 +1,6 @@
 import pytest
 
-from joe.core.command import Cijoe, default_output_path, env_from_file
+from joe.core.command import Cijoe, default_output_path
 
 JOE = None
 
