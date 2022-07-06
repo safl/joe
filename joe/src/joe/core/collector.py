@@ -26,6 +26,7 @@ import importlib
 import inspect
 import os
 import pkgutil
+from pathlib import Path
 
 import setuptools
 
@@ -81,32 +82,28 @@ def iter_modules_in_path(path=None, max_depth=2):
     """Yields absolute paths to Python modules, topdown starting at the given 'path'"""
 
     if path is None:
-        path = "."
+        path = Path.cwd().resolve()
 
-    path = os.path.abspath(os.path.expandvars(os.path.expanduser(path)))
-
-    base = len(path.split(os.sep))
-    for root, dirs, files in os.walk(path, topdown=True):
-        level = len(root.split(os.sep))
+    base = len(str(path).split(os.sep))
+    for search in Path(path).resolve().rglob(f"{WORKLET_MODULE_PREFIX}*.py"):
+        level = len(str(search).split(os.sep))
         if max_depth and level > base + max_depth:
-            break
+            continue
 
-        for filename in files:
-            if not (filename.startswith(WORKLET_MODULE_PREFIX)):
-                break
-            yield os.path.join(root, filename)
-
+        yield search
 
 def load_worklets_from_path(path=None, depth=2):
     """Loads workloads from modules found in the given path"""
 
     worklets = {}
 
-    search_paths = set([os.path.dirname(p) for p in iter_modules_in_path(path, depth)])
+    search_paths = iter_modules_in_path(path, depth)
+
+    search_paths = set([str(p.parent) for p in iter_modules_in_path(path, depth)])
 
     for loader, mod_name, is_pkg in pkgutil.iter_modules(list(search_paths)):
         comp = mod_name.split(WORKLET_MODULE_PREFIX)
-        if len(comp) != 2 or is_pkg:
+        if is_pkg:
             continue
 
         worklet_name = comp[1]

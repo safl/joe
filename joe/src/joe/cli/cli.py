@@ -6,42 +6,13 @@ import yaml
 
 from joe.core.collector import load_worklets_from_packages, load_worklets_from_path
 from joe.core.command import Cijoe, config_from_file, default_output_path
-from joe.core.workflow import workflow_lint, workflow_run
-
-
-def is_workflow(path):
-    """Returns True when the given path is a workflow file"""
-
-    return path.is_file and path.name.endswith(".workflow")
-
-
-WORKFLOW_SUFFIX = "workflow"
-
-
-def paths_to_workflow_fpaths(paths):
-    """Return list of workflow files in the given list of files and directories"""
-
-    workflow_files = []
-    for path in [Path(p).resolve() for p in paths]:
-        if path.is_dir():
-            workflow_files.extend(
-                [p for p in path.iterdir() if p.name.endswith(f"*.{WORKFLOW_SUFFIX}")]
-            )
-        elif path.is_file() and path.name.endswith(f".{WORKFLOW_SUFFIX}"):
-            workflow_files.append(path)
-
-    return workflow_files
+from joe.core.workflow import workflow_lint, run_workflow_files
 
 
 def run(args):
     """Run stuff"""
 
-    for p in paths_to_workflow_fpaths(args.file_or_dir):
-        print(p)
-
-    return 0
-
-    # return workflow_run(args)
+    return run_workflow_files(args)
 
 
 def list(args):
@@ -109,8 +80,8 @@ def parse_args():
     args = parser.parse_args()
 
     args.worklets = load_worklets_from_packages()
-    if os.path.exists("worklets"):
-        args.worklets.update(load_worklets_from_path("worklets"))
+    args.worklets.update(load_worklets_from_path(Path.cwd()))
+    #args.worklets.update(load_worklets_from_path(Path("worklets")))
 
     return args
 
