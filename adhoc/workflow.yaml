@@ -22,6 +22,12 @@ steps:
     cat /proc/cpuinfo
     hostname
 
+- name: Build it!
+  uses: build_jazz
+
+- name: Build it!
+  uses: deploy_jazz
+
 - name: Invoke the test_runner worklet
   uses: run_tests
   with:

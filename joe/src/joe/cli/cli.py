@@ -1,4 +1,5 @@
 import argparse
+from pathlib import Path
 import os
 
 import yaml
@@ -59,24 +60,18 @@ def parse_args():
     parsers["run"].add_argument(
         "--output", default=default_output_path(), help="Path to output directory"
     )
-
-    group = parsers["run"].add_mutually_exclusive_group()
-    group.add_argument(
-        "--workflow",
+    parsers["run"].add_argument(
+        "file_or_dir",
         nargs="*",
-        help="Path to one of more workflow files (yaml)",
-    )
-    group.add_argument(
-        "--worklets",
-        nargs="*",
-        help="Name of one or more worklets to run",
+        default=[Path.cwd()],
+        help="Path to one of more workflow.yaml or worklet_NAME.py files",
     )
 
     parsers["lint"] = subparsers.add_parser(
         "lint", help="Check the integrity of the given workflow"
     )
     parsers["lint"].set_defaults(func=lint)
-    parsers["lint"].add_argument("--workflow", help="Path to a workflow.yaml")
+    parsers["lint"].add_argument("workflow", help="Path to a workflow.yaml")
 
     parsers["list"] = subparsers.add_parser("list", help="List worklets")
     parsers["list"].set_defaults(func=list)
