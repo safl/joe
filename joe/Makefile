@@ -2,7 +2,7 @@
 # This Makefile serves as convenient command-line auto-completion
 #
 PROJECT_NAME=joe
-ENVS=envs/default.yaml
+ENVS=src/joe/core/envs/default.yaml
 
 define default-help
 # invoke: 'make uninstall', 'make install'
