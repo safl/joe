@@ -3,7 +3,7 @@ import re
 
 import yaml
 
-from joe.core.command import Cijoe, env_from_file
+from joe.core.command import Cijoe, config_from_file
 
 
 # TODO:
@@ -22,46 +22,48 @@ def workflow_lint(args):
 def workflow_run(args):
     """Run workflow"""
 
-    with open(args.workflow) as workflow_file:
-        workflow = yaml.load(workflow_file, Loader=yaml.SafeLoader)
+    joe = Cijoe(config_from_file(args.config) if args.config else {}, args.output)
 
-    joe = Cijoe(env_from_file(args.config) if args.config else {}, args.output)
+    for workflow_fpath in args.workflow:
 
-    count = 0
-    for entry in workflow.get("steps", []):
-        count += 1
-        step = {
-            "count": count,
-            "name": "",
-            "name_fs": "",
-            "run": "",
-            "with": "",
-            "uses": {},
-        }
+        with open(workflow_fpath) as workflow_file:
+            workflow = yaml.load(workflow_file, Loader=yaml.SafeLoader)
 
-        step["name"] = entry.get("name", "") if entry.get("name") else "unnamed step"
+        count = 0
+        for entry in workflow.get("steps", []):
+            count += 1
+            step = {
+                "count": count,
+                "name": "",
+                "name_fs": "",
+                "run": "",
+                "with": "",
+                "uses": {},
+            }
 
-        if "uses" in entry:
-            step["uses"] = entry.get("uses")
-            step["with"] = entry.get("with", {})
-            step["type"] = "worklet"
-        elif "run" in entry:
-            step["type"] = "run"
-            step["run"] = entry.get("run").strip().splitlines()
-        else:
-            print("invalid step-definition")
-            return 1
+            step["name"] = entry.get("name", "") if entry.get("name") else "unnamed step"
 
-        foo = step["uses"] if step["uses"] else "inline"
+            if "uses" in entry:
+                step["uses"] = entry.get("uses")
+                step["with"] = entry.get("with", {})
+                step["type"] = "worklet"
+            elif "run" in entry:
+                step["type"] = "run"
+                step["run"] = entry.get("run").strip().splitlines()
+            else:
+                print("invalid step-definition")
+                return 1
 
-        step["name"] = f"{step['count']}_{step['type']}_{foo}_{step['name']}"
-        step["name_fs"] = re.sub(
-            r"[\(\)\.\s/\\?%*:|\"<>\x7F\x00-\x1F]", "_", step["name"]
-        ).lower()
-        joe.set_output_ident(step["name_fs"])
+            foo = step["uses"] if step["uses"] else "inline"
 
-        if step["type"] == "run":
-            for cmd in step["run"]:
-                joe.run(cmd)
-        elif step["type"] == "worklet":
-            args.worklets[step["uses"]](joe, args, step)
+            step["name"] = f"{step['count']}_{step['type']}_{foo}_{step['name']}"
+            step["name_fs"] = re.sub(
+                r"[\(\)\.\s/\\?%*:|\"<>\x7F\x00-\x1F]", "_", step["name"]
+            ).lower()
+            joe.set_output_ident(step["name_fs"])
+
+            if step["type"] == "run":
+                for cmd in step["run"]:
+                    joe.run(cmd)
+            elif step["type"] == "worklet":
+                args.worklets[step["uses"]](joe, args, step)

@@ -3,7 +3,9 @@
 """
 
 
-def worklet_entry(cijoe, args):
+def worklet_entry(cijoe, args, step):
     """Build project"""
 
-    print("build project")
+    print("#")
+    print("# HELLO from the build-worklet")
+    print("#")
