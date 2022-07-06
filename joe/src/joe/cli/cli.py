@@ -2,7 +2,7 @@ import argparse
 import os
 
 from joe.core.collector import load_worklets_from_packages
-from joe.core.command import Cijoe, default_output_path, env_from_file
+from joe.core.command import Cijoe, default_output_path, config_from_file
 from joe.core.workflow import workflow_lint, workflow_run
 
 def run_workflows(args):
@@ -44,13 +44,13 @@ def parse_args():
     )
     parsers["run"].set_defaults(func=run)
     parsers["run"].add_argument(
-        "--env",
-        help="Path to the environment definition"
+        "--config",
+        help="Path to the environment configuration file"
     )
     parsers["run"].add_argument(
         "--output",
         default=default_output_path(),
-        help="Path to output"
+        help="Path to output directory"
     )
 
     group = parsers["run"].add_mutually_exclusive_group()

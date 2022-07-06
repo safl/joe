@@ -44,6 +44,13 @@ package-__main__. The former provides a neat ``cijoe`` executable, the latter,
 in case of ``$PATH`` issues can be ignored since it is invokable via ``python3
 -m cijoe.cli``.
 
+Dropping the nomenclarature ``env``
+===================================
+
+To avoid confusion with environment variables etc. then the notion of 'env'
+files are replaced with 'config'. Referred to as "environment configuration",
+"reference configs", configs.
+
 Revamping the CLI
 =================
 

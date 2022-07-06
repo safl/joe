@@ -13,7 +13,7 @@ def insert(cijoe, env=None):
     """Load the 'null_blk' kernel module using parameters defined in the env"""
 
     if env is None:
-        env = cijoe.get_env("null_blk")
+        env = cijoe.get_config("null_blk")
 
     nullblk_params = (
         " ".join([f"{k}={v}" for k, v in env.items()]) if env.get("nr_devices") else ""

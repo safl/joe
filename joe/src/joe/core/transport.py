@@ -26,8 +26,8 @@ class Transport(ABC):
 class Local(Transport):
     """Provide cmd/push/pull locally"""
 
-    def __init__(self, env, output_path):
-        self.env = env
+    def __init__(self, config, output_path):
+        self.config = config
         self.output_path = output_path
         self.output_ident = "aux"
 
@@ -74,17 +74,17 @@ class Local(Transport):
 class SSH(Transport):
     """Provide cmd/push/pull over SSH"""
 
-    def __init__(self, env, output_path):
+    def __init__(self, config, output_path):
         """Initialize the CIJOE SSH Transport"""
 
-        self.env = env
+        self.config = config
         self.output_path = output_path
 
         self.ssh = paramiko.SSHClient()
         self.ssh.set_missing_host_key_policy(paramiko.WarningPolicy())
 
         self.ssh.load_system_host_keys()
-        self.ssh.connect(**env.get("transport").get("ssh"))
+        self.ssh.connect(**config.get("transport").get("ssh"))
 
         self.scp = SCPClient(self.ssh.get_transport())
 

@@ -6,7 +6,7 @@
 def env(cijoe):
     """Check that the environment has the required entities"""
 
-    return cijoe.get_env("fio")
+    return cijoe.get_config("fio")
 
 
 def run(cijoe, args=None, cwd=None, evars=None):

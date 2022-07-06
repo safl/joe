@@ -10,11 +10,11 @@ from joe.core import transport
 from joe.core.misc import ENCODING
 
 
-def env_from_file(env_fpath):
-    """Load the environment definition from the given 'env_fpath'"""
+def config_from_file(config_fpath):
+    """Load the environment configuration from the given 'config_fpath'"""
 
-    with open(env_fpath, "r") as env_file:
-        return yaml.safe_load(env_file)
+    with open(config_fpath, "r") as config_file:
+        return yaml.safe_load(config_file)
 
 
 def default_output_path():
@@ -29,33 +29,33 @@ def default_output_path():
 class Cijoe(object):
     """CIJOE providing retargetable command-line expressions and data-transfers"""
 
-    def __init__(self, env_fpath=None, output_path=None):
-        """Create a cijoe encapsulation defined by the given env"""
+    def __init__(self, config_fpath=None, output_path=None):
+        """Create a cijoe encapsulation defined by the given config_fpath"""
 
-        self.env_fpath = os.path.abspath(env_fpath) if env_fpath else None
-        self.env = env_from_file(self.env_fpath) if self.env_fpath else {}
-        if not self.env:
-            self.env = {}
+        self.config_fpath = os.path.abspath(config_fpath) if config_fpath else None
+        self.config = config_from_file(self.config_fpath) if self.config_fpath else {}
+        if not self.config:
+            self.config = {}
         self.output_path = output_path if output_path else default_output_path()
         self.output_ident = "aux"
 
         os.makedirs(os.path.join(self.output_path, self.output_ident), exist_ok=True)
 
-        ssh = self.env.get("transport", {}).get("ssh", None)
+        ssh = self.config.get("transport", {}).get("ssh", None)
         if ssh:
-            self.transport = transport.SSH(self.env, self.output_path)
+            self.transport = transport.SSH(self.config, self.output_path)
         else:
-            self.transport = transport.Local(self.env, self.output_path)
+            self.transport = transport.Local(self.config, self.output_path)
 
-    def get_env(self, subject=None):
-        """Return the environment definition"""
+    def get_config(self, subject=None):
+        """Return the environment configuration"""
 
-        return self.env.get(subject, None)
+        return self.config.get(subject, None)
 
-    def get_env_fpath(self):
-        """Return the environment filepath, None when default is used."""
+    def get_config_fpath(self):
+        """Return the environment configuration filepath, None when default is used."""
 
-        return self.env_fpath
+        return self.config_fpath
 
     def set_output_ident(self, output_ident):
         """This is a path relative to the self.output"""
@@ -65,7 +65,7 @@ class Cijoe(object):
 
     def run(self, cmd, cwd=None, evars=None):
         """
-        Execute the given shell command/expression via 'env.transport'
+        Execute the given shell command/expression via 'config.transport'
 
         Commands executed using this will write stdout and stderr to file. The location
         of the logfile is fixed to: "output_path/output_ident/cmd.log", such that the

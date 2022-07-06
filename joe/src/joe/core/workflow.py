@@ -25,7 +25,7 @@ def workflow_run(args):
     with open(args.workflow) as workflow_file:
         workflow = yaml.load(workflow_file, Loader=yaml.SafeLoader)
 
-    joe = Cijoe(env_from_file(args.env) if args.env else {}, args.output)
+    joe = Cijoe(env_from_file(args.config) if args.config else {}, args.output)
 
     count = 0
     for entry in workflow.get("steps", []):

@@ -2,7 +2,7 @@
 # This Makefile serves as convenient command-line auto-completion
 #
 PROJECT_NAME=joe
-ENVS=src/joe/core/envs/default.yaml
+CONFIGS=src/joe/core/configs/default.yaml
 
 define default-help
 # invoke: 'make uninstall', 'make install'
@@ -64,7 +64,7 @@ endef
 .PHONY: test
 test:
 	@echo "## py: make test"
-	@for env in $(ENVS); do python3 -m pytest --pyargs joe.core.selftest --env $$env; sleep 1; done
+	@for config in $(CONFIGS); do python3 -m pytest --pyargs joe.core.selftest --config $$config; sleep 1; done
 	@echo "## py: make test [DONE]"
 
 define clean-help
