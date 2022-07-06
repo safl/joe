@@ -2,7 +2,7 @@
 # This Makefile serves as convenient command-line auto-completion
 #
 PROJECT_NAME=joe
-CONFIGS=src/joe/core/configs/default.yaml
+CONFIGS=src/joe/core/configs/default.config
 
 define default-help
 # invoke: 'make uninstall', 'make install'
