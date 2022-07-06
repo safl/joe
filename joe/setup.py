@@ -7,8 +7,6 @@
   features of joe itself, making it infinitely expandable
 * zip-safe=false is used to easily get access to data-files, also, native namespace
   packages do not support it properly
-
-
 """
 import glob
 import os
@@ -29,10 +27,10 @@ setup(
         "scp",
         "setuptools",
     ],
-    data_files=[
-        ("share/joe/envs", glob.glob(os.path.join("envs", "*"))),
-        ("share/joe/templates", glob.glob(os.path.join("templates", "*html"))),
-    ],
+#    data_files=[
+#        ("share/joe/envs", glob.glob(os.path.join("envs", "*"))),
+#        ("share/joe/templates", glob.glob(os.path.join("templates", "*html"))),
+#    ],
     entry_points={
         "console_scripts": ["joe=joe.cli.cli:main"],
         "pytest11": ["cijoe = joe.pytest_plugin.hooks_and_fixtures"],
