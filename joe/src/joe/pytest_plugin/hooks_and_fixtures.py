@@ -7,7 +7,7 @@ JOE = None
 
 def pytest_addoption(parser):
     parser.addoption(
-        "--env",
+        "--config",
         action="store",
         help="Path to CIJOE Environment Definition",
         default=None,
@@ -31,13 +31,13 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config):
 
     terminalreporter.ensure_newline()
     terminalreporter.section("CIJOE", sep="-", blue=True, bold=True)
-    terminalreporter.line("env: %r" % config.getoption("--env"))
+    terminalreporter.line("config: %r" % config.getoption("--config"))
     terminalreporter.line("output: %r" % config.getoption("--output"))
 
 
 @pytest.fixture
 def cijoe(request, capsys):
-    """Constructs a CIJOE instance using pytest-options: 'env', and 'output'"""
+    """Constructs a CIJOE instance using pytest-options: 'config', and 'output'"""
 
     global JOE
 
@@ -46,7 +46,7 @@ def cijoe(request, capsys):
         return JOE
 
     JOE = Cijoe(
-        request.config.getoption("--env"),
+        request.config.getoption("--config"),
         request.config.getoption("--output"),
     )
     JOE.set_output_ident(request.node.nodeid)
