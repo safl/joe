@@ -6,7 +6,7 @@ import yaml
 
 from joe.core.collector import load_worklets_from_packages, load_worklets_from_path
 from joe.core.command import Cijoe, config_from_file, default_output_path
-from joe.core.workflow import workflow_lint, run_workflow_files
+from joe.core.workflow import run_workflow_files, workflow_lint
 
 
 def run(args):
@@ -81,7 +81,7 @@ def parse_args():
 
     args.worklets = load_worklets_from_packages()
     args.worklets.update(load_worklets_from_path(Path.cwd()))
-    #args.worklets.update(load_worklets_from_path(Path("worklets")))
+    # args.worklets.update(load_worklets_from_path(Path("worklets")))
 
     return args
 

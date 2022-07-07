@@ -9,14 +9,11 @@
 * zip-safe=false is used to easily get access to data-files, also, native namespace
   packages do not support it properly
 """
-import glob
-import os
-
 from setuptools import find_namespace_packages, setup
 
 setup(
     name="joe",
-    version="0.0.1",
+    version="1.0.0dev1",
     author="Simon A. F. Lund",
     author_email="os@safl.dk",
     url="https://github.com/safl/joe/",
@@ -35,6 +32,10 @@ setup(
     entry_points={
         "console_scripts": ["joe=joe.cli.cli:main"],
         "pytest11": ["cijoe = joe.pytest_plugin.hooks_and_fixtures"],
+    },
+    include_package_data=True,
+    package_data={
+        "": ["*.html", "*.config", "*.preqs"],
     },
     package_dir={"": "src"},
     packages=find_namespace_packages(where="src", include=["joe.*"]),

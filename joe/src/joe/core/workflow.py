@@ -1,7 +1,7 @@
-import pprint
-from pathlib import Path
 import os
+import pprint
 import re
+from pathlib import Path
 
 import yaml
 
@@ -70,7 +70,7 @@ def workflow_from_fpath(fpath):
     for entry in yml.get("steps", []):
         count += 1
         step = {
-            "id": "",   # file-system-safe identifier
+            "id": "",  # file-system-safe identifier
             "count": count,
             "name": entry.get("name", "") if entry.get("name") else "unnamed step",
             "run": "",

@@ -30,8 +30,33 @@ from pathlib import Path
 
 import setuptools
 
+import joe.core.configs
+import joe.core.templates
+import joe.core.testfiles
+
 WORKLET_MODULE_PREFIX = "worklet_"
 WORKLET_FUNCTION_NAME = "worklet_entry"
+
+
+def iter_config_fpaths():
+    """Iterate builtin template file-paths"""
+
+    for fpath in importlib.resources.files(joe.core.configs).rglob("*.config"):
+        yield fpath
+
+
+def iter_template_fpaths():
+    """Iterate builtin template file-paths"""
+
+    for fpath in importlib.resources.files(joe.core.templates).rglob("*.html"):
+        yield fpath
+
+
+def iter_testfile_fpaths():
+    """Iterate builtin template file-paths"""
+
+    for fpath in importlib.resources.files(joe.core.testfiles).rglob("*.preqs"):
+        yield fpath
 
 
 def iter_packages(namespace):
@@ -91,6 +116,7 @@ def iter_modules_in_path(path=None, max_depth=2):
             continue
 
         yield search
+
 
 def load_worklets_from_path(path=None, depth=2):
     """Loads workloads from modules found in the given path"""
