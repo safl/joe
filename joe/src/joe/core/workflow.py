@@ -109,8 +109,6 @@ def run_workflow_files(args):
         workflow = workflow_from_fpath(workflow_fpath)
 
         for step in workflow["steps"]:
-            print(step)
-
             joe.set_output_ident(step["id"])
             os.makedirs(os.path.join(joe.output_path, step["id"]), exist_ok=True)
 

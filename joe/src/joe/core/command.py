@@ -3,6 +3,7 @@
 """
 import os
 import time
+import logging
 
 import yaml
 
@@ -37,7 +38,11 @@ class Cijoe(object):
         if not self.config:
             self.config = {}
         self.output_path = output_path if output_path else default_output_path()
-        self.output_ident = "aux"
+        self.output_ident = "artifacts"
+
+        self.logger = logging.FileHandler(os.path.join(self.output_path, "cijoe.log"))
+        self.logger.setLevel(logging.INFO)
+
 
         os.makedirs(os.path.join(self.output_path, self.output_ident), exist_ok=True)
 
