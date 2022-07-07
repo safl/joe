@@ -6,6 +6,4 @@
 def worklet_entry(cijoe, args, step):
     """Build project"""
 
-    print("#")
-    print("# HELLO from the deploy-worklet")
-    print("#")
+    cijoe.log.info("Deploying something...")
