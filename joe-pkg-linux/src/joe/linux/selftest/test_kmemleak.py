@@ -1,5 +1,7 @@
 import pytest
+
 import joe.linux.kmemleak as kmemleak
+
 
 def skip_config(cijoe):
     """Skip testing when configuration is missing or module not enabled"""
@@ -11,6 +13,7 @@ def skip_config(cijoe):
     enabled = kmemleak.get("enabled", False)
     if not enabled:
         pytest.skip("kmemleak is disabled: !config['kmemleak']['enabled']")
+
 
 def test_clear(cijoe):
 

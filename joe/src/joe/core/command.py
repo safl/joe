@@ -1,9 +1,9 @@
 """
 
 """
+import logging
 import os
 import time
-import logging
 
 import yaml
 
@@ -43,7 +43,9 @@ class Cijoe(object):
         os.makedirs(os.path.join(self.output_path, self.output_ident), exist_ok=True)
 
         # Setup a logging object for misc. errors and information
-        self.__filehandler = logging.FileHandler(os.path.join(self.output_path, "cijoe.log"))
+        self.__filehandler = logging.FileHandler(
+            os.path.join(self.output_path, "cijoe.log")
+        )
         self.__filehandler.setLevel(logging.INFO)
         self.log = logging.getLogger()
         self.log.addHandler(self.__filehandler)
@@ -53,7 +55,6 @@ class Cijoe(object):
             self.transport = transport.SSH(self.config, self.output_path)
         else:
             self.transport = transport.Local(self.config, self.output_path)
-
 
     def get_config(self, subject=None):
         """Return the environment configuration"""

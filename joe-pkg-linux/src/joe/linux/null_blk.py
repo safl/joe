@@ -16,7 +16,9 @@ def insert(cijoe, config=None):
         config = cijoe.get_config("null_blk")
 
     nullblk_params = (
-        " ".join([f"{k}={v}" for k, v in config.items()]) if config.get("nr_devices") else ""
+        " ".join([f"{k}={v}" for k, v in config.items()])
+        if config.get("nr_devices")
+        else ""
     )
 
     return cijoe.run(f"modprobe {NULLBLK_MODULE_NAME} {nullblk_params}")
