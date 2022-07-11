@@ -64,7 +64,7 @@ endef
 .PHONY: test
 test:
 	@echo "## py: make test"
-	@for config in $(CONFIGS); do python3 -m pytest --pyargs joe.core.selftest --config $$config; sleep 1; done
+	@for config in $(CONFIGS); do python3 -m pytest --pyargs joe.fio.selftest --config $$config; sleep 1; done
 	@echo "## py: make test [DONE]"
 
 define clean-help
