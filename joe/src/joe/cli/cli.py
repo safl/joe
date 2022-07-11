@@ -15,8 +15,8 @@ def run(args):
     return run_workflow_files(args)
 
 
-def list(args):
-    """List different collectable resources"""
+def worklets(args):
+    """List worklets provided with cijoe packages and in the cwd"""
 
     print(
         yaml.dump(
@@ -25,10 +25,18 @@ def list(args):
     )
 
 
+def configs(args):
+    """List the reference configuration files provided with cijoe packages"""
+
+    print("configuration-files")
+
+    return 0
+
+
 def lint(args):
     """Lint a workflow"""
 
-    pass
+    return 0
 
 
 def parse_args():
@@ -60,22 +68,20 @@ def parse_args():
         "lint", help="Check the integrity of the given workflow"
     )
     parsers["lint"].set_defaults(func=lint)
-    parsers["lint"].add_argument("workflow", help="Path to a workflow.yaml")
+    parsers["lint"].add_argument(
+        "workflow", help="Path to workflow file e.g. 'my.workflow'"
+    )
 
-    parsers["list"] = subparsers.add_parser("list", help="List worklets")
-    parsers["list"].set_defaults(func=list)
+    parsers["configs"] = subparsers.add_parser(
+        "configs", help="List reference configuration files"
+    )
+    parsers["configs"].set_defaults(func=configs)
 
-    # for function_name, function in worklets.items():
-    #    parsers[function_name] = subparsers.add_parser(
-    #        function_name, help=function.__doc__
-    #    )
-    #    parsers[function_name].set_defaults(func=function)
-    #    parsers[function_name].add_argument(
-    #        "--env", help="Path to the environment definition"
-    #    )
-    #    parsers[function_name].add_argument(
-    #        "--output", default=default_output_path(), help="Path to test-results"
-    #    )
+    parsers["worklets"] = subparsers.add_parser(
+        "worklets",
+        help="List worklets provided via packages and current-working-directory",
+    )
+    parsers["worklets"].set_defaults(func=worklets)
 
     args = parser.parse_args()
 
