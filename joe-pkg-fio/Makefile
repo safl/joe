@@ -2,8 +2,7 @@
 # This Makefile serves as convenient command-line auto-completion
 #
 PROJECT_NAME=joe-pkg-fio
-#ENVS=envs/fio.yaml envs/fio-selftest.yaml
-ENVS=envs/fio-selftest.yaml
+CONFIGS=src/joe/fio/configs/fio-selftest.config
 
 define default-help
 # invoke: 'make uninstall', 'make install'
@@ -65,7 +64,7 @@ endef
 .PHONY: test
 test:
 	@echo "## py: make test"
-	@for env in $(ENVS); do python3 -m pytest --pyargs joe.fio.selftest --env $$env; sleep 1; done
+	@for config in $(CONFIGS); do python3 -m pytest --pyargs joe.core.selftest --config $$config; sleep 1; done
 	@echo "## py: make test [DONE]"
 
 define clean-help

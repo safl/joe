@@ -16,9 +16,10 @@ setup(
         "joe",
         "joe-pkg-linux",
     ],
-    data_files=[
-        ("share/joe/envs", glob.glob(os.path.join("envs", "*"))),
-    ],
+    include_package_data=True,
+    package_data={
+        "": ["*.html", "*.config", "*.preqs"],
+    },
     package_dir={"": "src"},
     packages=find_namespace_packages(where="src", include=["joe.*"]),
     zip_safe=False,
