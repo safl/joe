@@ -9,14 +9,14 @@ NULLBLK_MODULE_NAME = "null_blk"
 NULLBLK_SYSPATH = "/sys/kernel/config/nullb"
 
 
-def insert(cijoe, env=None):
-    """Load the 'null_blk' kernel module using parameters defined in the env"""
+def insert(cijoe, config=None):
+    """Load the 'null_blk' kernel module using parameters defined in the config"""
 
-    if env is None:
-        env = cijoe.get_config("null_blk")
+    if config is None:
+        config = cijoe.get_config("null_blk")
 
     nullblk_params = (
-        " ".join([f"{k}={v}" for k, v in env.items()]) if env.get("nr_devices") else ""
+        " ".join([f"{k}={v}" for k, v in config.items()]) if config.get("nr_devices") else ""
     )
 
     return cijoe.run(f"modprobe {NULLBLK_MODULE_NAME} {nullblk_params}")
