@@ -14,7 +14,7 @@ Do a **user-local** install of ``cijoe`` and the **cijoe package** named
 
 .. code-block:: bash
 
-  pip3 install --user cijoe cijoe-pkg-example
+  python3 -m pip install --user cijoe cijoe-pkg-example
 
 The **user-local** install (``--user``) isolates the installation to the
 current user account, instead of installing it **system-wide** and potentially
@@ -44,8 +44,8 @@ It should provide a usage page that looks like this:
    :language: bash
 
 If this does not produce the usage-page of the runner, then your system is
-probably not configured to look for binaries in the location that ``pip3
-install --user`` installs them to.
+probably not configured to look for binaries in the location that
+``python3 -m pip install --user`` installs them to.
 
 For example, on Linux then the output of ``python3 -m site --user-base`` is not
 in your environment-variable ``$PATH``. You can quickly fix this by adding it

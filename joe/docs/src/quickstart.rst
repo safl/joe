@@ -9,31 +9,13 @@ Run the following commands in your shell:
 .. code-block:: bash
 
   # Install CIJOE and the CIJOE example package
-  pip3 install --user cijoe cijoe-pkg-example
+  python3 -m pip install --user cijoe cijoe-pkg-example
 
-  # Start the CIJOE shell
-  cijoe
-
-  # Use the refence environment definition as a template for your environment
-  cat $CIJ_ENVS/remote.sh > target_env.sh
-
-  # Modify it to match your *test-target* *environment*
-  editor target_env.sh
-
-  # Create directory to store test results aka the *testrun*
-  RESULTS=$(mktemp -d)
-
-  # Invoke the CIJOE runner, running a *testplan* in your *environment*
-  cij_runner \
-      --testplan $CIJ_TESTPLANS/example_01.plan \
-      --env target_env.sh \
-      --output $RESULTS
-
-  # Create a test report for the resulting testrun
-  cij_reporter --output $RESULTS
+  # Run the example workflow, locally
+  python3 -m joe.cli run example
 
   # Inspect the report
-  xdg-open $RESULTS/report.html
+  xdg-open cijoe*/report.html
 
 In case the above did not work for you, or you just want to know what went on
 above, or you want to know what else you can do with **cijoe**, or whatever
