@@ -15,17 +15,13 @@ def run(args):
     return run_workflow_files(args)
 
 
-def worklets(args):
-    """List worklets provided with cijoe packages and in the cwd"""
+def lint(args):
+    """Lint a workflow"""
 
-    print(
-        yaml.dump(
-            {"worklets": {name: func.__doc__ for name, func in args.worklets.items()}}
-        )
-    )
+    return 0
 
 
-def configs(args):
+def configs(args, resources):
     """List the reference configuration files provided with cijoe packages"""
 
     print("configuration-files")
@@ -33,11 +29,18 @@ def configs(args):
     return 0
 
 
-def lint(args):
-    """Lint a workflow"""
+def worklets(args, resources):
+    """List worklets provided with cijoe packages and in the cwd"""
 
     return 0
 
+    print(
+        yaml.dump(
+            {"worklets": {name: func.__doc__ for name, func in resources["worklets"].items()}}
+        )
+    )
+
+    return 0
 
 def parse_args():
     """Parse command-line interface."""
@@ -85,16 +88,18 @@ def parse_args():
 
     args = parser.parse_args()
 
-    args.worklets = load_worklets_from_packages()
-    args.worklets.update(load_worklets_from_path(Path.cwd()))
-    # args.worklets.update(load_worklets_from_path(Path("worklets")))
+    resources = {}
+    resources["configs"] = []
+    resources["worklets"] = []
+    resources["worklets"] = load_worklets_from_packages()
+    resources["worklets"].update(load_worklets_from_path(Path.cwd()))
 
-    return args
+    return args, resources
 
 
 def main():
     """Main entry point for the CLI"""
 
-    args = parse_args()
+    args, resources = parse_args()
     if args.func:
-        args.func(args)
+        args.func(args, resources)

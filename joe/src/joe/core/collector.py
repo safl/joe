@@ -34,7 +34,7 @@ import joe.core.configs
 import joe.core.templates
 import joe.core.testfiles
 
-WORKLET_MODULE_PREFIX = "worklet_"
+WORKLET_PACKAGE_NAME = "worklets"
 WORKLET_FUNCTION_NAME = "worklet_entry"
 
 
@@ -88,10 +88,9 @@ def load_worklets_from_packages(namespace=None):
 
     worklets = {}
     for package_name, mod_names, _ in iter_packages(namespace):
+        if package_name != WORKLET_PACKAGE_NAME:
+            continue
         for mod_name in mod_names:
-            comp = mod_name.split(WORKLET_MODULE_PREFIX)
-            if len(comp) != 2:
-                continue
             worklet_name = comp[1]
 
             mod = importlib.import_module(f"{package_name}.{mod_name}", package_name)
@@ -110,7 +109,7 @@ def iter_modules_in_path(path=None, max_depth=2):
         path = Path.cwd().resolve()
 
     base = len(str(path).split(os.sep))
-    for search in Path(path).resolve().rglob(f"{WORKLET_MODULE_PREFIX}*.py"):
+    for search in Path(path).resolve().rglob(f"*.py"):
         level = len(str(search).split(os.sep))
         if max_depth and level > base + max_depth:
             continue
@@ -125,17 +124,18 @@ def load_worklets_from_path(path=None, depth=2):
 
     search_paths = set([str(p.parent) for p in iter_modules_in_path(path, depth)])
 
-    for loader, mod_name, is_pkg in pkgutil.iter_modules(list(search_paths)):
-        comp = mod_name.split(WORKLET_MODULE_PREFIX)
-        if is_pkg:
-            continue
+    try:
+        for loader, mod_name, is_pkg in pkgutil.iter_modules(list(search_paths)):
+            if is_pkg:
+                continue
 
-        worklet_name = comp[1]
-        mod = loader.find_module(mod_name).load_module(mod_name)
-
-        for function_name, function in inspect.getmembers(mod, inspect.isfunction):
-            if function_name == WORKLET_FUNCTION_NAME:
-                worklets[worklet_name] = function
-                break
+            print(mod_name)
+            mod = loader.find_module(mod_name).load_module(mod_name)
+            for function_name, function in inspect.getmembers(mod, inspect.isfunction):
+                if function_name == WORKLET_FUNCTION_NAME:
+                    worklets[mod_name] = function
+                    break
+    except:
+        pass
 
     return worklets

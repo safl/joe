@@ -13,7 +13,7 @@ from setuptools import find_namespace_packages, setup
 
 setup(
     name="joe",
-    version="1.0.0dev1",
+    version="1.0.0.dev1",
     author="Simon A. F. Lund",
     author_email="os@safl.dk",
     url="https://github.com/safl/joe/",
