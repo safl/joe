@@ -4,7 +4,13 @@ from pathlib import Path
 
 import yaml
 
-from joe.core.collector import load_worklets_from_packages, load_worklets_from_path
+from joe.core.collector import (
+    iter_config_fpaths,
+    iter_template_fpaths,
+    iter_testfile_fpaths,
+    load_worklets_from_packages,
+    load_worklets_from_path,
+)
 from joe.core.command import Cijoe, config_from_file, default_output_path
 from joe.core.workflow import run_workflow_files, workflow_lint
 
@@ -21,10 +27,29 @@ def lint(args):
     return 0
 
 
+def testfiles(args, resources):
+    """List the reference configuration files provided with cijoe packages"""
+
+    print("# Testfiles for auxilary input to testcases")
+    print(yaml.dump(resources["testfiles"]))
+
+    return 0
+
+
+def templates(args, resources):
+    """List the reference configuration files provided with cijoe packages"""
+
+    print("# Template files for e.g. reporting")
+    print(yaml.dump(resources["templates"]))
+
+    return 0
+
+
 def configs(args, resources):
     """List the reference configuration files provided with cijoe packages"""
 
-    print("configuration-files")
+    print("# Environment Configuration Files")
+    print(yaml.dump(resources["configs"]))
 
     return 0
 
@@ -77,6 +102,17 @@ def parse_args():
     parsers["lint"].add_argument(
         "workflow", help="Path to workflow file e.g. 'my.workflow'"
     )
+
+    resources = {
+        "configs": configs,
+        "templates": templates,
+        "testfiles": testfiles,
+        "worklets": worklets,
+    }
+
+    for resource in resources:
+        parsers[resource] = subparsers.add_parser(resource, help=f"List {resource}")
+        parsers[resource].set_defaults(func=resources[resource])
 
     parsers["configs"] = subparsers.add_parser(
         "configs", help="List reference configuration files"
