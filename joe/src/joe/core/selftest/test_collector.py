@@ -1,30 +1,22 @@
 from pathlib import Path
 
 from joe.core.collector import (
-    iter_config_fpaths,
-    iter_template_fpaths,
-    iter_testfile_fpaths,
+    collect_resources,
     load_worklets_from_packages,
     load_worklets_from_path,
 )
 
 
-def test_iter_config_fpaths():
+def test_resource_collection():
     """Check that the expected amount of paths are found"""
 
-    assert len(list(iter_config_fpaths())) == 2
+    resources = collect_resources()
 
+    assert len(resources["configs"]) == 2
 
-def test_iter_template_fpaths():
-    """Check that the expected amount of paths are found"""
+    assert len(resources["templates"]) == 1
 
-    assert len(list(iter_template_fpaths())) == 1
-
-
-def test_iter_tesfile_fpaths():
-    """Check that the expected amount of paths are found"""
-
-    assert len(list(iter_testfile_fpaths())) == 1
+    assert len(resources["testfiles"]) == 1
 
 
 def test_load_worklets_from_empty_path():

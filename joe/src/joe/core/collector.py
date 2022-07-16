@@ -17,10 +17,6 @@
     * setuptools.find_namespace_packages()
     * pkgutil.iter_modules()
 
-    Currently only collecting worklets from namespace packages, however, this should
-    probably be extended to do collection from local non-installed modules. All of this
-    auto-collection might also quickly become very slow... to avoid searching all
-    modules then worklet-modules must be named "worklet_"
 """
 import importlib
 import inspect
@@ -37,26 +33,23 @@ import joe.core.testfiles
 WORKLET_PACKAGE_NAME = "worklets"
 WORKLET_FUNCTION_NAME = "worklet_entry"
 
+RESOURCES = {
+    "templates": "html",
+    "testfiles": "preqs",
+    "configs": "config",
+}
 
-def iter_config_fpaths():
-    """Iterate builtin template file-paths"""
+def collect_resources():
+    """Returns a dictionalty of paths to built-in resources"""
 
-    for fpath in importlib.resources.files(joe.core.configs).rglob("*.config"):
-        yield fpath
+    resources = {}
+    for key, val in RESOURCES.items():
+        resources[key] = [
+            str(fpath)
+            for fpath in importlib.resources.files(f"joe.core.{key}").rglob(f"*.{val}")
+        ]
 
-
-def iter_template_fpaths():
-    """Iterate builtin template file-paths"""
-
-    for fpath in importlib.resources.files(joe.core.templates).rglob("*.html"):
-        yield fpath
-
-
-def iter_testfile_fpaths():
-    """Iterate builtin template file-paths"""
-
-    for fpath in importlib.resources.files(joe.core.testfiles).rglob("*.preqs"):
-        yield fpath
+    return resources
 
 
 def iter_packages(namespace):
@@ -95,7 +88,8 @@ def load_worklets_from_packages(namespace=None):
             comp = package_name.split(".")
             assert len(comp) >= 3, "Invalid assumption of worklet package name"
 
-            ident = ".".join(comp[1:-1]+[mod_name])
+            # construct worklet-ident as: joe.core.worklets.something -> core.something
+            ident = ".".join(comp[1:-1] + [mod_name])
 
             mod = importlib.import_module(f"{package_name}.{mod_name}", package_name)
             for function_name, function in inspect.getmembers(mod, inspect.isfunction):

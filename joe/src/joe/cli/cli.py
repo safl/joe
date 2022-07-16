@@ -5,9 +5,7 @@ from pathlib import Path
 import yaml
 
 from joe.core.collector import (
-    iter_config_fpaths,
-    iter_template_fpaths,
-    iter_testfile_fpaths,
+    collect_resources,
     load_worklets_from_packages,
     load_worklets_from_path,
 )
@@ -15,55 +13,31 @@ from joe.core.command import Cijoe, config_from_file, default_output_path
 from joe.core.workflow import run_workflow_files, workflow_lint
 
 
-def run(args):
+def sub_run(args):
     """Run stuff"""
 
     return run_workflow_files(args)
 
 
-def lint(args):
+def sub_lint(args):
     """Lint a workflow"""
 
     return 0
 
 
-def testfiles(args, resources):
+def sub_resources(args, resources):
     """List the reference configuration files provided with cijoe packages"""
 
-    print("# Testfiles for auxilary input to testcases")
+    print("# Core resources")
     try:
-        print(yaml.dump({"testfile_fpaths": [str(r) for r in resources["testfiles"]]}))
+        print(yaml.dump(resources))
     except Exception as exc:
         print(exc)
 
     return 0
 
 
-def templates(args, resources):
-    """List the reference configuration files provided with cijoe packages"""
-
-    print("# Template files for e.g. reporting")
-    try:
-        print(yaml.dump({"template_fpaths": [str(r) for r in resources["templates"]]}))
-    except Exception as exc:
-        print(exc)
-
-    return 0
-
-
-def configs(args, resources):
-    """List the reference configuration files provided with cijoe packages"""
-
-    print("# Environment Configuration Files")
-    try:
-        print(yaml.dump({"config_fpaths": [str(r) for r in resources["configs"]]}))
-    except Exception as exc:
-        print(exc)
-
-    return 0
-
-
-def worklets(args, resources):
+def sub_worklets(args, resources):
     """List worklets provided with cijoe packages and in the cwd"""
 
     print("# Worklets discovered in packages and current-working-dir")
@@ -72,7 +46,8 @@ def worklets(args, resources):
             yaml.dump(
                 {
                     "worklets": {
-                        name: func.__doc__ for name, func in resources["worklets"].items()
+                        name: func.__doc__
+                        for name, func in resources["worklets"].items()
                     }
                 }
             )
@@ -92,8 +67,9 @@ def parse_args():
     subparsers = parser.add_subparsers(dest="func", help="sub-command help")
 
     parsers = {}
+
     parsers["run"] = subparsers.add_parser("run", help="Run workflows and worklets")
-    parsers["run"].set_defaults(func=run)
+    parsers["run"].set_defaults(func=sub_run)
     parsers["run"].add_argument(
         "--config", help="Path to the environment configuration file"
     )
@@ -111,27 +87,20 @@ def parse_args():
     parsers["lint"] = subparsers.add_parser(
         "lint", help="Check the integrity of the given workflow"
     )
-    parsers["lint"].set_defaults(func=lint)
+    parsers["lint"].set_defaults(func=sub_lint)
     parsers["lint"].add_argument(
         "workflow", help="Path to workflow file e.g. 'my.workflow'"
     )
 
-    resources = {
-        "configs": configs,
-        "templates": templates,
-        "testfiles": testfiles,
-        "worklets": worklets,
-    }
-    for name, func in resources.items():
-        parsers[name] = subparsers.add_parser(name, help=f"List {name}")
-        parsers[name].set_defaults(func=func)
+    parsers["resources"] = subparsers.add_parser("resources", help=f"List resources")
+    parsers["resources"].set_defaults(func=sub_resources)
+
+    parsers["worklets"] = subparsers.add_parser("worklets", help=f"List worklets")
+    parsers["worklets"].set_defaults(func=sub_worklets)
 
     args = parser.parse_args()
 
-    resources = {}
-    resources["configs"] = list(iter_config_fpaths())
-    resources["templates"] = list(iter_template_fpaths())
-    resources["testfiles"] = list(iter_testfile_fpaths())
+    resources = collect_resources()
     resources["worklets"] = load_worklets_from_packages()
     resources["worklets"].update(load_worklets_from_path(Path.cwd()))
 
