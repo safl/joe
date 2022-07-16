@@ -100,9 +100,13 @@ def parse_args():
 
     args = parser.parse_args()
 
-    resources = collect_resources()
-    resources["worklets"] = load_worklets_from_packages()
-    resources["worklets"].update(load_worklets_from_path(Path.cwd()))
+    try:
+        resources = collect_resources()
+        resources["worklets"] = load_worklets_from_packages()
+        resources["worklets"].update(load_worklets_from_path(Path.cwd()))
+    except Exception as exc:
+        print("Huha", exc)
+        resources = {}
 
     return args, resources
 

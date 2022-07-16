@@ -18,10 +18,13 @@
     * pkgutil.iter_modules()
 
 """
+import ast
 import importlib
 import inspect
 import os
 import pkgutil
+import pprint
+from importlib.machinery import SourceFileLoader
 from pathlib import Path
 
 import setuptools
@@ -38,6 +41,7 @@ RESOURCES = {
     "testfiles": "preqs",
     "configs": "config",
 }
+
 
 def collect_resources():
     """Returns a dictionalty of paths to built-in resources"""
@@ -120,16 +124,19 @@ def load_worklets_from_path(path=None, depth=2):
 
     worklets = {}
 
-    search_paths = set([str(p.parent) for p in iter_modules_in_path(path, depth)])
+    for search_path in iter_modules_in_path(path, depth):
+        with open(search_path, "r") as source:
+            tree = ast.parse(source.read())
 
-    for loader, mod_name, is_pkg in pkgutil.iter_modules(list(search_paths)):
-        if is_pkg:
-            continue
+        for node in [x for x in ast.walk(tree) if isinstance(x, ast.FunctionDef)]:
+            if node.name != WORKLET_FUNCTION_NAME:
+                continue
 
-        mod = loader.find_module(mod_name).load_module(mod_name)
-        for function_name, function in inspect.getmembers(mod, inspect.isfunction):
-            if function_name == WORKLET_FUNCTION_NAME:
-                worklets[mod_name] = function
-                break
+            mod = SourceFileLoader("", str(search_path)).load_module()
+            for function_name, function in inspect.getmembers(mod, inspect.isfunction):
+                if function_name == WORKLET_FUNCTION_NAME:
+                    mod_name = Path(search_path).stem
+                    worklets[mod_name] = function
+                    break
 
     return worklets

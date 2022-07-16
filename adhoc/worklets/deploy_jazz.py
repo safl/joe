@@ -4,6 +4,6 @@
 
 
 def worklet_entry(cijoe, args, step):
-    """Build project"""
+    """Deploy project"""
 
     cijoe.log.info("Deploying something...")
