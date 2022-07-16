@@ -31,7 +31,7 @@ def testfiles(args, resources):
     """List the reference configuration files provided with cijoe packages"""
 
     print("# Testfiles for auxilary input to testcases")
-    print(yaml.dump(resources["testfiles"]))
+    print(yaml.dump({"testfile_fpaths": [str(r) for r in resources["testfiles"]]}))
 
     return 0
 
@@ -40,7 +40,7 @@ def templates(args, resources):
     """List the reference configuration files provided with cijoe packages"""
 
     print("# Template files for e.g. reporting")
-    print(yaml.dump(resources["templates"]))
+    print(yaml.dump({"template_fpaths": [str(r) for r in resources["templates"]]}))
 
     return 0
 
@@ -49,7 +49,7 @@ def configs(args, resources):
     """List the reference configuration files provided with cijoe packages"""
 
     print("# Environment Configuration Files")
-    print(yaml.dump(resources["configs"]))
+    print(yaml.dump({"config_fpaths": [str(r) for r in resources["configs"]]}))
 
     return 0
 
@@ -109,29 +109,18 @@ def parse_args():
         "testfiles": testfiles,
         "worklets": worklets,
     }
-
-    for resource in resources:
-        parsers[resource] = subparsers.add_parser(resource, help=f"List {resource}")
-        parsers[resource].set_defaults(func=resources[resource])
-
-    parsers["configs"] = subparsers.add_parser(
-        "configs", help="List reference configuration files"
-    )
-    parsers["configs"].set_defaults(func=configs)
-
-    parsers["worklets"] = subparsers.add_parser(
-        "worklets",
-        help="List worklets provided via packages and current-working-directory",
-    )
-    parsers["worklets"].set_defaults(func=worklets)
+    for name, func in resources.items():
+        parsers[name] = subparsers.add_parser(name, help=f"List {name}")
+        parsers[name].set_defaults(func=func)
 
     args = parser.parse_args()
 
     resources = {}
-    resources["configs"] = []
-    resources["worklets"] = []
+    resources["configs"] = list(iter_config_fpaths())
+    resources["templates"] = list(iter_template_fpaths())
+    resources["testfiles"] = list(iter_testfile_fpaths())
     resources["worklets"] = load_worklets_from_packages()
-    resources["worklets"].update(load_worklets_from_path(Path.cwd()))
+    #resources["worklets"].update(load_worklets_from_path(Path.cwd()))
 
     return args, resources
 
