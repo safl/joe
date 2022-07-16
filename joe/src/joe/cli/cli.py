@@ -31,7 +31,10 @@ def testfiles(args, resources):
     """List the reference configuration files provided with cijoe packages"""
 
     print("# Testfiles for auxilary input to testcases")
-    print(yaml.dump({"testfile_fpaths": [str(r) for r in resources["testfiles"]]}))
+    try:
+        print(yaml.dump({"testfile_fpaths": [str(r) for r in resources["testfiles"]]}))
+    except Exception as exc:
+        print(exc)
 
     return 0
 
@@ -40,7 +43,10 @@ def templates(args, resources):
     """List the reference configuration files provided with cijoe packages"""
 
     print("# Template files for e.g. reporting")
-    print(yaml.dump({"template_fpaths": [str(r) for r in resources["templates"]]}))
+    try:
+        print(yaml.dump({"template_fpaths": [str(r) for r in resources["templates"]]}))
+    except Exception as exc:
+        print(exc)
 
     return 0
 
@@ -49,7 +55,10 @@ def configs(args, resources):
     """List the reference configuration files provided with cijoe packages"""
 
     print("# Environment Configuration Files")
-    print(yaml.dump({"config_fpaths": [str(r) for r in resources["configs"]]}))
+    try:
+        print(yaml.dump({"config_fpaths": [str(r) for r in resources["configs"]]}))
+    except Exception as exc:
+        print(exc)
 
     return 0
 
@@ -57,15 +66,19 @@ def configs(args, resources):
 def worklets(args, resources):
     """List worklets provided with cijoe packages and in the cwd"""
 
-    print(
-        yaml.dump(
-            {
-                "worklets": {
-                    name: func.__doc__ for name, func in resources["worklets"].items()
+    print("# Worklets discovered in packages and current-working-dir")
+    try:
+        print(
+            yaml.dump(
+                {
+                    "worklets": {
+                        name: func.__doc__ for name, func in resources["worklets"].items()
+                    }
                 }
-            }
+            )
         )
-    )
+    except Exception as exc:
+        print(exc)
 
     return 0
 
@@ -120,7 +133,7 @@ def parse_args():
     resources["templates"] = list(iter_template_fpaths())
     resources["testfiles"] = list(iter_testfile_fpaths())
     resources["worklets"] = load_worklets_from_packages()
-    #resources["worklets"].update(load_worklets_from_path(Path.cwd()))
+    resources["worklets"].update(load_worklets_from_path(Path.cwd()))
 
     return args, resources
 

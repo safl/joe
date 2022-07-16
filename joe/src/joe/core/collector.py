@@ -92,11 +92,15 @@ def load_worklets_from_packages(namespace=None):
             continue
 
         for mod_name in mod_names:
+            comp = package_name.split(".")
+            assert len(comp) >= 3, "Invalid assumption of worklet package name"
+
+            ident = ".".join(comp[1:-1]+[mod_name])
 
             mod = importlib.import_module(f"{package_name}.{mod_name}", package_name)
             for function_name, function in inspect.getmembers(mod, inspect.isfunction):
                 if function_name == WORKLET_FUNCTION_NAME:
-                    worklets[mod_name] = function
+                    worklets[ident] = function
                     break
 
     return worklets
