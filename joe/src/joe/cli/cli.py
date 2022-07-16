@@ -32,15 +32,18 @@ def configs(args, resources):
 def worklets(args, resources):
     """List worklets provided with cijoe packages and in the cwd"""
 
-    return 0
-
     print(
         yaml.dump(
-            {"worklets": {name: func.__doc__ for name, func in resources["worklets"].items()}}
+            {
+                "worklets": {
+                    name: func.__doc__ for name, func in resources["worklets"].items()
+                }
+            }
         )
     )
 
     return 0
+
 
 def parse_args():
     """Parse command-line interface."""

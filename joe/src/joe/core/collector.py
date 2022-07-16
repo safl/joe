@@ -88,15 +88,15 @@ def load_worklets_from_packages(namespace=None):
 
     worklets = {}
     for package_name, mod_names, _ in iter_packages(namespace):
-        if package_name != WORKLET_PACKAGE_NAME:
+        if not package_name.endswith(WORKLET_PACKAGE_NAME):
             continue
+
         for mod_name in mod_names:
-            worklet_name = comp[1]
 
             mod = importlib.import_module(f"{package_name}.{mod_name}", package_name)
             for function_name, function in inspect.getmembers(mod, inspect.isfunction):
                 if function_name == WORKLET_FUNCTION_NAME:
-                    worklets[worklet_name] = function
+                    worklets[mod_name] = function
                     break
 
     return worklets
@@ -124,18 +124,14 @@ def load_worklets_from_path(path=None, depth=2):
 
     search_paths = set([str(p.parent) for p in iter_modules_in_path(path, depth)])
 
-    try:
-        for loader, mod_name, is_pkg in pkgutil.iter_modules(list(search_paths)):
-            if is_pkg:
-                continue
+    for loader, mod_name, is_pkg in pkgutil.iter_modules(list(search_paths)):
+        if is_pkg:
+            continue
 
-            print(mod_name)
-            mod = loader.find_module(mod_name).load_module(mod_name)
-            for function_name, function in inspect.getmembers(mod, inspect.isfunction):
-                if function_name == WORKLET_FUNCTION_NAME:
-                    worklets[mod_name] = function
-                    break
-    except:
-        pass
+        mod = loader.find_module(mod_name).load_module(mod_name)
+        for function_name, function in inspect.getmembers(mod, inspect.isfunction):
+            if function_name == WORKLET_FUNCTION_NAME:
+                worklets[mod_name] = function
+                break
 
     return worklets
