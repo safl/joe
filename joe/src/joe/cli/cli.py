@@ -13,13 +13,13 @@ from joe.core.command import Cijoe, config_from_file, default_output_path
 from joe.core.workflow import run_workflow_files, workflow_lint
 
 
-def sub_run(args):
+def sub_run(args, resources):
     """Run stuff"""
 
-    return run_workflow_files(args)
+    return run_workflow_files(args, resources)
 
 
-def sub_lint(args):
+def sub_lint(args, resources):
     """Lint a workflow"""
 
     return 0

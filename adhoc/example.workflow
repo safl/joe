@@ -29,9 +29,9 @@ steps:
   uses: deploy_jazz
 
 - name: Invoke the test_runner worklet
-  uses: run_tests
+  uses: core.run_tests
   with:
     args: "--pyargs joe.core.selftest"
 
 - name: Invoke the report generator worklet
-  uses: report
+  uses: core.report

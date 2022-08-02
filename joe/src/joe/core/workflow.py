@@ -100,8 +100,10 @@ def workflow_from_fpath(fpath):
 # * Add error-handling
 # * Improve the path-mangling for the cijoe-instance, especially when delegated to
 #   worklets
-def run_workflow_files(args):
-    """Run workflow"""
+def run_workflow_files(args, resources):
+    """Run workflow files"""
+
+    print(resources)
 
     joe = Cijoe(config_from_file(args.config) if args.config else {}, args.output)
 
@@ -116,6 +118,11 @@ def run_workflow_files(args):
                 for cmd in step["run"]:
                     joe.run(cmd)
             elif step["type"] == "worklet":
-                args.worklets[step["uses"]](joe, args, step)
+                worklet_name = step["uses"]
+                if worklet_name not in resources["worklets"]:
+                    print(f"Unknown worklet({worklet_name})")
+                    continue
+
+                resources["worklets"][worklet_name](joe, args, step)
 
     return 0
