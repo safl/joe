@@ -103,8 +103,6 @@ def workflow_from_fpath(fpath):
 def run_workflow_files(args, resources):
     """Run workflow files"""
 
-    print(resources)
-
     joe = Cijoe(config_from_file(args.config) if args.config else {}, args.output)
 
     for workflow_fpath in paths_to_workflow_fpaths(args.file_or_dir):
