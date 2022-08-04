@@ -120,7 +120,7 @@ def iter_modules_in_path(path=None, max_depth=2):
 
 
 def load_worklets_from_path(path=None, depth=2):
-    """Loads workloads from modules found in the given path"""
+    """Loads worklets from modules found in the given path"""
 
     worklets = {}
 
