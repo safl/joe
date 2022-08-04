@@ -106,18 +106,18 @@ class Worklet(Resource):
 class Collector(object):
     """Collects resources from installed packages and the current working directory"""
 
-    RESOURCES = {
-        "configs": [".config"],
-        "perf_reqs": [".perfreq"],
-        "templates": [".html"],
-        "testfiles": [".*"],
-        "workflows": [".workflow"],
-        "worklets": [".py"],
-    }
+    RESOURCES = [
+        ("configs", [".config"]),
+        ("perf_reqs", [".perfreq", ".preqs"]),
+        ("templates", [".html"]),
+        ("workflows", [".workflow"]),
+        ("worklets", [".py"]),
+        ("testfiles", [".*"]),
+    ]
     IGNORE = ["__init__.py", "__pycache__", "setup.py"]
 
     def __init__(self):
-        self.resources = {r: {} for r in Collector.RESOURCES}
+        self.resources = {category: {} for category, _ in Collector.RESOURCES}
 
     def process_candidate(self, candidate: Path, category: str, pkg):
         """Inserts the given candidate"""
@@ -149,7 +149,7 @@ class Collector(object):
             if max_depth and level > base + max_depth:
                 continue
 
-            for category, suffixes in Collector.RESOURCES.items():
+            for category, suffixes in Collector.RESOURCES:
                 if candidate.name in Collector.IGNORE:
                     continue
                 if not candidate.suffix in suffixes:
@@ -167,7 +167,7 @@ class Collector(object):
             comp = pkg.name.split(".")[1:]  # drop the 'joe.' prefix
             if not (
                 pkg.ispkg
-                and any(resource in comp for resource in Collector.RESOURCES.keys())
+                and any(cat in comp for cat, _ in Collector.RESOURCES)
                 and len(comp) == 2
             ):  # skip non-resource packages
                 continue
