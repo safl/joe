@@ -23,9 +23,9 @@ class Resource(object):
         self.path = path
         self.content = None
 
-        prefix = ".".join(pkg.name.split(".")[1:-1]) if pkg else "adhoc"
+        prefix = ".".join(pkg.name.split(".")[1:-1]) + "." if pkg else ""
 
-        self.ident = f"{prefix}.{self.path.stem}"
+        self.ident = f"{prefix}{self.path.stem}"
 
     def __repr__(self):
 
@@ -95,7 +95,7 @@ class Collection(object):
     IGNORE = ["__init__.py", "__pycache__"]
 
     def __init__(self):
-        self.resources = {r: [] for r in Collection.RESOURCES}
+        self.resources = {r: {} for r in Collection.RESOURCES}
 
     def collect_worklets_from_path(self, path=None, max_depth=2):
         """Collects non-packaged worklets from the given 'path'"""
@@ -113,7 +113,7 @@ class Collection(object):
             worklet = Worklet(candidate)
             worklet.content_from_file()
             if worklet.content_has_worklet_func():
-                self.resources["worklets"].append(worklet)
+                self.resources["worklets"][worklet.ident] = worklet
 
     def collect_from_packages(self, path=None, prefix=None):
         """Collect resources from CIJOE packages at the given path"""
@@ -141,7 +141,7 @@ class Collection(object):
                 else:
                     res = Resource(path, pkg)
 
-                self.resources[resource].append(res)
+                self.resources[resource][res.ident] = res
 
     def collect(self):
         """Collect from all implemented resource "sources" """

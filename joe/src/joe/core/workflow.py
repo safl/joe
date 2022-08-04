@@ -116,11 +116,12 @@ def run_workflow_files(args, resources):
                 for cmd in step["run"]:
                     joe.run(cmd)
             elif step["type"] == "worklet":
-                worklet_name = step["uses"]
-                if worklet_name not in resources["worklets"]:
-                    print(f"Unknown worklet({worklet_name})")
+                worklet_ident = step["uses"]
+                if worklet_ident not in resources["worklets"]:
+                    print(f"Unknown worklet({worklet_ident})")
                     continue
 
-                resources["worklets"][worklet_name](joe, args, step)
+                resources["worklets"][worklet_ident].load()
+                resources["worklets"][worklet_ident].func(joe, args, step)
 
     return 0
