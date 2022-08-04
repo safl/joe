@@ -5,7 +5,7 @@ import pprint
 
 import yaml
 
-from joe.core.command import Cijoe, config_from_file, default_output_path
+from joe.core.command import default_output_path
 from joe.core.workflow import run_workflow_files, workflow_lint
 from joe.core.resources import Collection
 
