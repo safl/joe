@@ -23,10 +23,10 @@ steps:
     hostname
 
 - name: Build it!
-  uses: build_jazz
+  uses: adhoc_build
 
 - name: Build it!
-  uses: deploy_jazz
+  uses: adhoc_deploy
 
 - name: Invoke the test_runner worklet
   uses: core.run_tests
