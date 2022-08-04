@@ -5,9 +5,9 @@ import pprint
 
 import yaml
 
-import joe.core.resources
 from joe.core.command import Cijoe, config_from_file, default_output_path
 from joe.core.workflow import run_workflow_files, workflow_lint
+from joe.core.resources import Collection
 
 
 def sub_run(args, resources):
@@ -19,7 +19,7 @@ def sub_run(args, resources):
 def sub_lint(args, resources):
     """Lint a workflow"""
 
-    return 0
+    return workflow_lint(args, resources)
 
 
 def sub_resources(args, resources):
@@ -88,7 +88,7 @@ def parse_args():
 
     args = parser.parse_args()
 
-    collection = joe.core.resources.Collection()
+    collection = Collection()
     collection.collect()
 
     return args, collection
