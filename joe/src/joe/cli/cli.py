@@ -7,17 +7,21 @@ import yaml
 
 from joe.core.command import default_output_path
 from joe.core.workflow import run_workflow_files, workflow_lint
-from joe.core.resources import Collection
+from joe.core.resources import Collector
 
 
 def sub_run(args, resources):
     """Run stuff"""
+
+    print("# Runner ...")
 
     return run_workflow_files(args, resources)
 
 
 def sub_lint(args, resources):
     """Lint a workflow"""
+
+    print("# Linting ...")
 
     return workflow_lint(args, resources)
 
@@ -88,15 +92,15 @@ def parse_args():
 
     args = parser.parse_args()
 
-    collection = Collection()
-    collection.collect()
+    collector = Collector()
+    collector.collect()
 
-    return args, collection
+    return args, collector
 
 
 def main():
     """Main entry point for the CLI"""
 
-    args, collection = parse_args()
+    args, collector = parse_args()
     if args.func:
-        args.func(args, collection.resources)
+        args.func(args, collector.resources)

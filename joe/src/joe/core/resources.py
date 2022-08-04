@@ -1,4 +1,19 @@
 #!/usr/bin/env python3
+"""
+    CIJOE Resources
+
+    Besides the core library, then everything else is implemented as a dynamically
+    collectable and loadable resources. Whether those are worklets, auxilary testfiles,
+    configuration-files, workflow-definitions etc.
+    Resources are "collectable" from Python namespace-packages, as well as directly for
+    the current work directory. When loading directly, then certain files are assumed to
+    be of a certain type depending of their file-type:
+
+    * .config -- CIJOE environment configurations
+    * .preqs -- CIJOE performance requirements
+    * .py -- CIJOE worklets
+    * .workflow -- CIJOE workflow
+"""
 import ast
 import importlib
 import inspect
@@ -88,35 +103,62 @@ class Worklet(Resource):
         return False
 
 
-class Collection(object):
+class Collector(object):
     """Collects resources from installed packages and the current working directory"""
 
-    RESOURCES = ["worklets", "configs", "templates", "testfiles"]
-    IGNORE = ["__init__.py", "__pycache__"]
+    RESOURCES = {
+        "configs": [".config"],
+        "perf_reqs": [".perfreq"],
+        "templates": [".html"],
+        "testfiles": [".*"],
+        "workflows": [".workflow"],
+        "worklets": [".py"],
+    }
+    IGNORE = ["__init__.py", "__pycache__", "setup.py"]
 
     def __init__(self):
-        self.resources = {r: {} for r in Collection.RESOURCES}
+        self.resources = {r: {} for r in Collector.RESOURCES}
 
-    def collect_worklets_from_path(self, path=None, max_depth=2):
+    def process_candidate(self, candidate: Path, category: str, pkg):
+        """Inserts the given candidate"""
+
+        if category == "worklets":
+            resource = Worklet(candidate, pkg)
+            resource.load()
+
+            resource = Worklet(candidate, pkg)
+            resource.content_from_file()
+
+            if not resource.content_has_worklet_func():
+                category = "testfiles"
+        else:
+            resource = Resource(candidate, pkg)
+
+        self.resources[category][resource.ident] = resource
+
+
+    def collect_from_path(self, path=None, max_depth=2):
         """Collects non-packaged worklets from the given 'path'"""
 
         if path is None:
             path = Path.cwd().resolve()
 
         base = len(str(path).split(os.sep))
-
-        for candidate in Path(path).resolve().rglob(f"*.py"):
+        for candidate in Path(path).resolve().rglob(f"*"):
             level = len(str(candidate).split(os.sep))
             if max_depth and level > base + max_depth:
                 continue
 
-            worklet = Worklet(candidate)
-            worklet.content_from_file()
-            if worklet.content_has_worklet_func():
-                self.resources["worklets"][worklet.ident] = worklet
+            for category, suffixes in Collector.RESOURCES.items():
+                if candidate.name in Collector.IGNORE:
+                    continue
+                if not candidate.suffix in suffixes:
+                    continue
+
+                self.process_candidate(candidate, category, None)
 
     def collect_from_packages(self, path=None, prefix=None):
-        """Collect resources from CIJOE packages at the given path"""
+        """Collect resources from CIJOE packages at the given 'path'"""
 
         if prefix is None:
             prefix = ""
@@ -125,26 +167,20 @@ class Collection(object):
             comp = pkg.name.split(".")[1:]  # drop the 'joe.' prefix
             if not (
                 pkg.ispkg
-                and any(resource in comp for resource in Collection.RESOURCES)
+                and any(resource in comp for resource in Collector.RESOURCES.keys())
                 and len(comp) == 2
             ):  # skip non-resource packages
                 continue
 
-            namespace, resource = comp
-            for path in importlib.resources.files(f"{pkg.name}").iterdir():
-                if path.name in Collection.IGNORE:
+            _, category = comp
+            for candidate in importlib.resources.files(f"{pkg.name}").iterdir():
+                if candidate.name in Collector.IGNORE:
                     continue
 
-                if resource == "worklets":
-                    res = Worklet(path, pkg)
-                    res.load()
-                else:
-                    res = Resource(path, pkg)
-
-                self.resources[resource][res.ident] = res
+                self.process_candidate(candidate, category, pkg)
 
     def collect(self):
         """Collect from all implemented resource "sources" """
 
         self.collect_from_packages(joe.__path__, "joe.")
-        self.collect_worklets_from_path()
+        self.collect_from_path()
