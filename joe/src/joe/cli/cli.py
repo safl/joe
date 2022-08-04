@@ -1,14 +1,11 @@
 import argparse
 import os
 from pathlib import Path
+import pprint
 
 import yaml
 
-from joe.core.collector import (
-    collect_resources,
-    load_worklets_from_packages,
-    load_worklets_from_path,
-)
+import joe.core.resources
 from joe.core.command import Cijoe, config_from_file, default_output_path
 from joe.core.workflow import run_workflow_files, workflow_lint
 
@@ -30,7 +27,7 @@ def sub_resources(args, resources):
 
     print("# Core resources")
     try:
-        print(yaml.dump(resources))
+        pprint.pprint(resources)
     except Exception as exc:
         print(exc)
 
@@ -42,16 +39,7 @@ def sub_worklets(args, resources):
 
     print("# Worklets discovered in packages and current-working-dir")
     try:
-        print(
-            yaml.dump(
-                {
-                    "worklets": {
-                        name: func.__doc__
-                        for name, func in resources["worklets"].items()
-                    }
-                }
-            )
-        )
+        pprint.pprint(resources["worklets"])
     except Exception as exc:
         print(exc)
 
@@ -100,20 +88,15 @@ def parse_args():
 
     args = parser.parse_args()
 
-    try:
-        resources = collect_resources()
-        resources["worklets"] = load_worklets_from_packages()
-        resources["worklets"].update(load_worklets_from_path(Path.cwd()))
-    except Exception as exc:
-        print("Huha", exc)
-        resources = {}
+    collection = joe.core.resources.Collection()
+    collection.collect()
 
-    return args, resources
+    return args, collection
 
 
 def main():
     """Main entry point for the CLI"""
 
-    args, resources = parse_args()
+    args, collection = parse_args()
     if args.func:
-        args.func(args, resources)
+        args.func(args, collection.resources)
