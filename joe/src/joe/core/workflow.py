@@ -4,11 +4,27 @@ import re
 from pathlib import Path
 
 import yaml
-
+from joe.core.resources import Resource, Collector
 from joe.core.command import Cijoe, config_from_file
 
 WORKFLOW_SUFFIX = "workflow"
 
+def Workflow(Resource):
+
+    def __init__(self, path: Path, pkg=None):
+        super().__init__(path, pkg)
+
+        self.yml = None
+
+    def lint(self, collector):
+        """Perform an integrity check against available resources"""
+
+        pass
+
+    def load(self):
+        """..."""
+
+        pass
 
 # TODO:
 # * Implement this

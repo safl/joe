@@ -2,7 +2,7 @@
 """
     CIJOE Resources
 
-    Besides the core library, then everything else is implemented as a dynamically
+    Except for the core library, then everything else is implemented as a dynamically
     collectable and loadable resources. Whether those are worklets, auxilary testfiles,
     configuration-files, workflow-definitions etc.
     Resources are "collectable" from Python namespace-packages, as well as directly for
@@ -64,7 +64,6 @@ class Worklet(Resource):
         self.func = None
         self.mod = None
         self.mod_name = None
-        self.id = None
 
     def content_has_worklet_func(self):
         """Checks whether the resource-content has the worklet entry-function"""
