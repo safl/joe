@@ -25,39 +25,73 @@ class Workflow(Resource):
         with self.path.open() as yml_file:
             self.yml = yaml.load(yml_file, Loader=yaml.SafeLoader)
 
+    def lint(self, resources = None):
+        """Returns a list of errors"""
 
-    def load(self):
-        """..."""
+        errors = []
+
+        if not self.yml:
+            try:
+                self.load_yaml()
+            except:
+                errors.append("Failed parsing Workflow-YAML")
+                return errors
+
+        if "docstring" not in self.yml:
+            errors.append("Missing key: 'docstring'; workflow must have a description")
+            return False
+        if "steps" not in self.yml:
+            errors.append("Missing key: 'steps'; workflow must have steps to perform")
+
+        valid_keys = set(["name", "run", "uses", "with"])
+
+        for count, step in enumerate(self.yml["steps"]):
+            keys = set(step.keys()) - set(["name"])  # ignore the optional name-key
+
+            if len(keys - valid_keys):
+                errors.append(f"Invalid step({count}); has unsupported keys({keys})")
+                continue
+
+            if len(keys & set(["run", "uses"])) == 2:
+                errors.append(f"Invalid step({count}); has both 'run' and 'uses'")
+                continue
+            if len(keys & set(["run", "uses"])) == 0:
+                errors.append(f"Invalid step({count}); has neither 'run' nor 'uses'")
+                continue
+
+            if "with" in keys and not "uses" in keys:
+                errors.append(f"Invalid step({count}); has 'with' missing 'uses'")
+                continue
+            if "with" in keys and not "args" in step["with"]:
+                errors.append(f"Invalid step({count}); has 'with' missing 'with:args'")
+                continue
+
+            if resources is None:
+                continue
+            if "uses" in keys and step["uses"] not in resources["worklets"]:
+                errors.append(
+                    f"(Invalid step({count}); unknown resource: worklet({step['uses']})"
+                )
+                continue
+
+        return errors
+
+    def load(self, resources):
+        """Load raw yaml, lint it, then construct the object properties"""
 
         if not self.yml:
             self.load_yaml()
 
+        errors = self.lint()
+        for error in errors:
+            print(error)
 
+        if errors:
+            return False
 
-
-    def lint(self, collector):
-        """Perform an integrity check against available resources"""
+        # TODO: construct object properties from yml and collector
 
         return True
-
-# TODO:
-# * Implement this
-def workflow_lint(yml):
-    """Do integrity-check of workflow"""
-
-    if "steps" not in yml:
-        print("missing 'steps' in workflow file")
-        return False
-    for step in yml["steps"]:
-        if "run" in step:
-            continue
-        if "uses" in step:
-            continue
-
-        print("step has neither 'run' nor 'uses'")
-        return False
-
-    return True
 
 
 def paths_to_workflow_fpaths(paths):
@@ -151,7 +185,7 @@ def run_workflow_files(args, resources):
                     print(f"Unknown worklet({worklet_ident})")
                     continue
 
-                resources["worklets"][worklet_ident].load()
+                resources["worklets"][worklet_ident].load(resources)
                 resources["worklets"][worklet_ident].func(joe, args, step)
 
     return 0

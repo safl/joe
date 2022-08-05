@@ -8,7 +8,10 @@
 def worklet_entry(cijoe, args, step):
     """Build qemu"""
 
-    conf = cijoe.config["qemu"]
+    conf = cijoe.config.get("qemu", None)
+    if not conf:
+        return False
+
     build_dir = os.path.join(conf["repository"], "build")
 
     configure_args = [
@@ -36,3 +39,5 @@ def worklet_entry(cijoe, args, step):
     cijoe.run(f"mkdir -p {build_dir}")
     cijoe.run(f"./configure " + " ".join(configure_args), cwd=build_dir)
     cijoe.run("make -j $(nproc)", cwd=build_dir)
+
+    return True

@@ -10,7 +10,7 @@ def test_workflow_load():
     workflow = Workflow(res.path, res.pkg)
     assert workflow
 
-    workflow.load()
+    workflow.load(col.resources)
     assert workflow.yml
 
-    assert workflow.lint(col), "Linting failed on 'core.example' workflow"
+    assert workflow.lint(col.resources), "Linting failed on 'core.example' workflow"

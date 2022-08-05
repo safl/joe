@@ -39,7 +39,7 @@ class Resource(object):
 
     def __repr__(self):
 
-        return f"{self.ident}({str(self.path)})"
+        return str(self.path)
 
     def content_from_file(self):
         """Load resource-content from 'self.path'"""
