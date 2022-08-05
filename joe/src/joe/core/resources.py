@@ -44,8 +44,8 @@ class Resource(object):
     def content_from_file(self):
         """Load resource-content from 'self.path'"""
 
-        with open(self.path, "r") as resource:
-            self.content = resource.read()
+        with self.path.open("r") as resource_file:
+            self.content = resource_file.read()
 
 
 class Worklet(Resource):
