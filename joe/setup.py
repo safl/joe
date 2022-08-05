@@ -31,7 +31,7 @@ setup(
     },
     include_package_data=True,
     package_data={
-        "": ["*.html", "*.config", "*.preqs", "*.workflow"],
+        "": ["*.html", "*.config", "*.perfreq", "*.workflow"],
     },
     package_dir={"": "src"},
     packages=find_namespace_packages(where="src", include=["joe.*"]),

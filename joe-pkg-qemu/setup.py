@@ -1,24 +1,21 @@
 """
 This is a package collecting testcases and auxilary utils for testing xNVMe using joe
 """
-import glob
-import os
-
 from setuptools import find_namespace_packages, setup
 
 setup(
     name="joe-pkg-qemu",
-    version="0.0.1",
+    version="0.0.1.dev1",
     author="Simon A. F. Lund",
     author_email="os@safl.dk",
     url="https://github.com/safl/joe-pkg-qemu/",
     install_requires=[
         "joe",
     ],
-    data_files=[
-        ("share/joe/aux", glob.glob(os.path.join("aux", "*"))),
-        ("share/joe/envs", glob.glob(os.path.join("envs", "*"))),
-    ],
+    include_package_data=True,
+    package_data={
+        "": ["*.html", "*.config", "*.perfreq", "*.workflow"],
+    },
     package_dir={"": "src"},
     packages=find_namespace_packages(where="src", include=["joe.*"]),
     zip_safe=False,
@@ -30,9 +27,9 @@ setup(
         "Intended Audience :: System Administrators",
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python",
+        "Topic :: Software Development :: Testing",
+        "Topic :: Software Development",
         "Topic :: Text Processing",
         "Topic :: Utilities",
-        "Topic :: Software Development",
-        "Topic :: Software Development :: Testing",
     ],
 )

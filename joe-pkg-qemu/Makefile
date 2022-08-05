@@ -1,8 +1,8 @@
 #
 # This Makefile serves as convenient command-line auto-completion
 #
-PROJECT_NAME=joe-pkg-xnvme
-ENVS=envs/xnvme.yaml
+PROJECT_NAME=joe-pkg-qemu
+CONFIGS=src/joe/qemu/configs/qemu.config
 
 define default-help
 # invoke: 'make uninstall', 'make install'
@@ -64,7 +64,7 @@ endef
 .PHONY: test
 test:
 	@echo "## py: make test"
-	@for env in $(ENVS); do python3 -m pytest tests --env $$env; sleep 1; done
+	@for config in $(CONFIGS); do python3 -m pytest --pyargs joe.qemu.selftest --config $$config; sleep 1; done
 	@echo "## py: make test [DONE]"
 
 define clean-help
