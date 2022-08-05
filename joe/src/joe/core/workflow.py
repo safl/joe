@@ -4,27 +4,41 @@ import re
 from pathlib import Path
 
 import yaml
-from joe.core.resources import Resource, Collector
+from joe.core.resources import Resource
 from joe.core.command import Cijoe, config_from_file
 
-WORKFLOW_SUFFIX = "workflow"
 
-def Workflow(Resource):
+class Workflow(Resource):
 
-    def __init__(self, path: Path, pkg=None):
+    SUFFIX = ".workflow"
+
+    def __init__(self, path, pkg=None):
         super().__init__(path, pkg)
 
         self.yml = None
+        self.steps = []
+        self.docstring = ""
 
-    def lint(self, collector):
-        """Perform an integrity check against available resources"""
+    def load_yaml(self):
+        """Load yaml from file"""
 
-        pass
+        with self.path.open() as yml_file:
+            self.yml = yaml.load(yml_file, Loader=yaml.SafeLoader)
+
 
     def load(self):
         """..."""
 
-        pass
+        if not self.yml:
+            self.load_yaml()
+
+
+
+
+    def lint(self, collector):
+        """Perform an integrity check against available resources"""
+
+        return True
 
 # TODO:
 # * Implement this
@@ -53,9 +67,9 @@ def paths_to_workflow_fpaths(paths):
     for path in [Path(p).resolve() for p in paths]:
         if path.is_dir():
             workflow_files.extend(
-                [p for p in path.iterdir() if p.name.endswith(f".{WORKFLOW_SUFFIX}")]
+                [p for p in path.iterdir() if p.name.endswith(f"{Workflow.SUFFIX}")]
             )
-        elif path.is_file() and path.name.endswith(f".{WORKFLOW_SUFFIX}"):
+        elif path.is_file() and path.name.endswith(f"{Workflow.SUFFIX}"):
             workflow_files.append(path)
 
     return workflow_files

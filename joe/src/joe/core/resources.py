@@ -3,16 +3,11 @@
     CIJOE Resources
 
     Except for the core library, then everything else is implemented as a dynamically
-    collectable and loadable resources. Whether those are worklets, auxilary testfiles,
-    configuration-files, workflow-definitions etc.
-    Resources are "collectable" from Python namespace-packages, as well as directly for
-    the current work directory. When loading directly, then certain files are assumed to
-    be of a certain type depending of their file-type:
+    collectable and loadable resources. That is, configuration-files, worklets,
+    workflows, and auxilary testfiles.
 
-    * .config -- CIJOE environment configurations
-    * .preqs -- CIJOE performance requirements
-    * .py -- CIJOE worklets
-    * .workflow -- CIJOE workflow
+    Resources are "collectable" from Python namespace-packages, as well as directly for
+    the current work directory, and recursively down one sub-directory.
 """
 import ast
 import importlib
@@ -28,7 +23,7 @@ import setuptools
 
 
 class Resource(object):
-    """CIJOE resource"""
+    """Base representation of a Resource"""
 
     def __init__(self, path: Path, pkg=None):
 
@@ -54,7 +49,7 @@ class Resource(object):
 
 
 class Worklet(Resource):
-    """A CIJOE worklet"""
+    """Worklet representation and encapsulation"""
 
     NAMING_CONVENTION = "worklet_entry"
 
