@@ -1,3 +1,4 @@
+# filetype=yaml
 ---
 doc: |
   This is a workflow file, it serves as an example on how to run commands and worklets, the
