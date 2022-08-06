@@ -1,5 +1,6 @@
 import os
-
+import pprint
+import jinja2
 import yaml
 
 from joe.core.command import Cijoe, config_from_file
@@ -116,12 +117,31 @@ class Workflow(Resource):
 
         return True
 
+    def substitue(self, config):
+        """Substitute workflow place-holders"""
+
+        # Substitute values in workflow with config entities
+        jinja_env = jinja2.Environment()
+        for index, step in enumerate(self.steps):
+            if "run" in step:
+                template = jinja_env.from_string(step["run"])
+                step["run"] = template.render(*config)
+
+            # TODO: substitute in "uses"
+
     def run(self, args):
-        """Run the workflow using the given configuration"""
+        """Run the workflow using the given configuration(args.config)"""
 
-        cijoe = Cijoe(config_from_file(args.config) if args.config else {}, args.output)
         resources = self.collector.resources
+        config = config_from_file(args.config) if args.config else {}
+        cijoe = Cijoe(config, args.output)
 
+        # Substitute the workflow with config-entries
+        self.substitute(config)
+
+        pprint.pprint(self.steps)
+
+        # Process the workflow
         for step in self.steps:
             cijoe.set_output_ident(step["id"])
             os.makedirs(os.path.join(cijoe.output_path, step["id"]), exist_ok=True)

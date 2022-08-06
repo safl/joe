@@ -30,7 +30,9 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config):
     """Provide a CIJOE section for pytest terminal report"""
 
     terminalreporter.ensure_newline()
-    terminalreporter.section("CIJOE", sep="-", blue=True, bold=True)
+    terminalreporter.section(
+        "-={[ CIJOE pytest-plugin ]}=-", sep="-", blue=True, bold=True
+    )
     terminalreporter.line("config: %r" % config.getoption("--config"))
     terminalreporter.line("output: %r" % config.getoption("--output"))
 
