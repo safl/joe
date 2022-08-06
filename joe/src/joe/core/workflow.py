@@ -1,5 +1,6 @@
 import os
 import pprint
+
 import jinja2
 import yaml
 
@@ -14,10 +15,17 @@ class Workflow(Resource):
     def __init__(self, path, pkg=None):
         super().__init__(path, pkg)
 
+        self.collector = None
         self.yml = None
+
         self.doc = ""
         self.steps = []
-        self.collector = None
+
+        self.stats = {
+            "success": 0,
+            "failed": 0,
+            "wallclk": 0.0,
+        }
 
     def load_yaml(self):
         """Load yaml from file"""
@@ -131,17 +139,22 @@ class Workflow(Resource):
         config = config_from_file(args.config) if args.config else {}
         cijoe = Cijoe(config, args.output)
 
-        # Substitute the workflow with config-entries
         self.substitute(config)
+        for count, step in enumerate(self.steps, 1):
+            print(f"# workflow step {count}/{len(self.steps)} -- BEGIN")
 
-        # Process the workflow
-        for step in self.steps:
             cijoe.set_output_ident(step["id"])
             os.makedirs(os.path.join(cijoe.output_path, step["id"]), exist_ok=True)
 
             if "run" in step:
-                for cmd in step["run"]:
-                    cijoe.run(cmd)
+                for cmd_count, cmd in enumerate(step["run"], 1):
+                    rcode, state = cijoe.run(cmd)
+                    if rcode:
+                        self.stats["failed"] += 1
+                        print("# Workflow: step failed;")
+                        print(f"# step({step['id']}), cmd({cmd}), rcode({rcode}")
+                        return err
+
             else:
                 worklet_ident = step["uses"]
                 if worklet_ident not in resources["worklets"]:
@@ -149,6 +162,13 @@ class Workflow(Resource):
                     continue
 
                 resources["worklets"][worklet_ident].load()
-                resources["worklets"][worklet_ident].func(cijoe, args, step)
+                err = resources["worklets"][worklet_ident].func(cijoe, args, step)
+                if err:
+                    self.stats["failed"] += 1
+                    print(f"# workflow step({step['id']}) {count}/{len(self.steps)} -- END: FAILED")
+                    return err
 
-        return True
+            self.stats["success"] += 1
+            print(f"# workflow step {count}/{len(self.steps)} -- END: SUCCESS")
+
+        return 0

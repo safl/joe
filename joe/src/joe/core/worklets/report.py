@@ -13,3 +13,5 @@ def worklet_entry(cijoe, args, step):
             print(os.path.join(root, filename))
 
     print("# HEYOO")
+
+    return 0

@@ -7,6 +7,7 @@ from joe.core.resources import Collector
 from joe.core.workflow import Workflow
 
 
+# TODO: add stats on workflow / progress
 def sub_run(args, collector):
     """Run stuff"""
 
@@ -19,10 +20,23 @@ def sub_run(args, collector):
         elif path.is_file() and path.name.endswith(f"{Workflow.SUFFIX}"):
             workflow_files.append(path)
 
-    for workflow_fpath in workflow_files:
+    nworkflows = len(workflow_files)
+
+    print("#")
+    print(f"# CIJOE config({args.config}), nworkflows({nworkflows})")
+    print("#")
+
+    for count, workflow_fpath in enumerate(workflow_files, 1):
+        print(f"# workflow {count}/{nworkflows} -- BEGIN")
+
         workflow = Workflow(workflow_fpath)
         workflow.load(collector)
-        workflow.run(args)
+        err = workflow.run(args)
+        if err:
+            print(f"# workflow {count}/{nworkflows} -- FAILED")
+            return err
+
+        print(f"# workflow {count}/{nworkflows} -- SUCCESS")
 
     return 0
 
