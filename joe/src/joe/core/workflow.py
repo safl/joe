@@ -94,20 +94,15 @@ class Workflow(Resource):
                 "id": "",  # file-system-safe identifier
                 "count": count,
                 "name": entry.get("name", "") if entry.get("name") else "unnamed step",
-                "run": "",
-                "uses": "",
-                "with": {},
             }
 
             if "uses" in entry:
                 step["uses"] = entry.get("uses")
                 step["with"] = entry.get("with", {})
-                step["type"] = "worklet"
-                step["id"] = f"{step['count']}_{step['type']}_{step['uses']}"
+                step["id"] = f"{step['count']}_worklet_{step['uses']}"
             elif "run" in entry:
-                step["type"] = "run"
                 step["run"] = entry.get("run").strip().splitlines()
-                step["id"] = f"{step['count']}_{step['type']}"
+                step["id"] = f"{step['count']}_inline_commands"
             else:
                 return False
 
@@ -117,15 +112,15 @@ class Workflow(Resource):
 
         return True
 
-    def substitue(self, config):
+    def substitute(self, config):
         """Substitute workflow place-holders"""
 
         # Substitute values in workflow with config entities
         jinja_env = jinja2.Environment()
         for index, step in enumerate(self.steps):
             if "run" in step:
-                template = jinja_env.from_string(step["run"])
-                step["run"] = template.render(*config)
+                template = jinja_env.from_string("\n".join(step["run"]))
+                step["run"] = template.render(*config).split("\n")
 
             # TODO: substitute in "uses"
 
@@ -139,17 +134,15 @@ class Workflow(Resource):
         # Substitute the workflow with config-entries
         self.substitute(config)
 
-        pprint.pprint(self.steps)
-
         # Process the workflow
         for step in self.steps:
             cijoe.set_output_ident(step["id"])
             os.makedirs(os.path.join(cijoe.output_path, step["id"]), exist_ok=True)
 
-            if step["type"] == "run":
+            if "run" in step:
                 for cmd in step["run"]:
                     cijoe.run(cmd)
-            elif step["type"] == "worklet":
+            else:
                 worklet_ident = step["uses"]
                 if worklet_ident not in resources["worklets"]:
                     print(f"Unknown worklet({worklet_ident})")
