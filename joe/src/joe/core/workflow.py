@@ -1,4 +1,5 @@
 import os
+import re
 import pprint
 
 import jinja2
@@ -6,7 +7,7 @@ import yaml
 
 from joe.core.command import Cijoe, config_from_file
 from joe.core.resources import Resource
-
+from joe.core.misc import h1, h2, h3
 
 class Workflow(Resource):
 
@@ -54,7 +55,14 @@ class Workflow(Resource):
         valid_keys = set(["name", "run", "uses", "with"])
 
         for count, step in enumerate(self.yml["steps"]):
-            keys = set(step.keys()) - set(["name"])  # ignore the optional name-key
+            keys = set(step.keys())
+
+            if "name" not in keys:
+                errors.append(f"Invalid step({count}); missing key 'name'")
+                continue
+            if not re.match("[a-zA-Z][a-zA-Z0-9\.\-_]*", step["name"]):
+                errors.append(f"Invalid step({count}); invalid chars in 'name'")
+                continue
 
             if len(keys - valid_keys):
                 errors.append(f"Invalid step({count}); has unsupported keys({keys})")
@@ -123,6 +131,8 @@ class Workflow(Resource):
     def substitute(self, config):
         """Substitute workflow place-holders"""
 
+        config = config if config else {}
+
         # Substitute values in workflow with config entities
         jinja_env = jinja2.Environment()
         for index, step in enumerate(self.steps):
@@ -140,8 +150,14 @@ class Workflow(Resource):
         cijoe = Cijoe(config, args.output)
 
         self.substitute(config)
+
+        nsteps = len(self.steps)
+
         for count, step in enumerate(self.steps, 1):
-            print(f"# workflow step {count}/{len(self.steps)} -- BEGIN")
+            h2(f"Step({count}/{len(self.steps)}); '{step['name']}'")
+
+            if args.step and step["name"] not in args.step:
+                continue
 
             cijoe.set_output_ident(step["id"])
             os.makedirs(os.path.join(cijoe.output_path, step["id"]), exist_ok=True)
@@ -151,24 +167,23 @@ class Workflow(Resource):
                     rcode, state = cijoe.run(cmd)
                     if rcode:
                         self.stats["failed"] += 1
-                        print("# Workflow: step failed;")
-                        print(f"# step({step['id']}), cmd({cmd}), rcode({rcode}")
+                        h3(f"Step({count}/{nsteps}): '{step['name']}'; Failed")
+                        print(f"cmd: {cmd}")
+                        print(f"rcode: {rcode}")
+                        h3()
                         return err
 
             else:
                 worklet_ident = step["uses"]
-                if worklet_ident not in resources["worklets"]:
-                    print(f"Unknown worklet({worklet_ident})")
-                    continue
 
                 resources["worklets"][worklet_ident].load()
                 err = resources["worklets"][worklet_ident].func(cijoe, args, step)
                 if err:
                     self.stats["failed"] += 1
-                    print(f"# workflow step({step['id']}) {count}/{len(self.steps)} -- END: FAILED")
+                    h3(f"Step({count}/{nsteps}): '{step['name']}'; Failed")
                     return err
 
             self.stats["success"] += 1
-            print(f"# workflow step {count}/{len(self.steps)} -- END: SUCCESS")
+            h3(f"Step({count}/{nsteps}): '{step['name']}'; Success")
 
         return 0

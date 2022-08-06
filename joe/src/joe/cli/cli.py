@@ -2,49 +2,23 @@ import argparse
 import pprint
 from pathlib import Path
 
+import joe.core
 from joe.core.command import default_output_path
 from joe.core.resources import Collector
 from joe.core.workflow import Workflow
+from joe.core.misc import h1, h2, h3
 
 
-# TODO: add stats on workflow / progress
-def sub_run(args, collector):
-    """Run stuff"""
-
-    workflow_files = []
-    for path in [Path(p).resolve() for p in args.file_or_dir]:
-        if path.is_dir():
-            workflow_files.extend(
-                [p for p in path.iterdir() if p.name.endswith(f"{Workflow.SUFFIX}")]
-            )
-        elif path.is_file() and path.name.endswith(f"{Workflow.SUFFIX}"):
-            workflow_files.append(path)
-
-    nworkflows = len(workflow_files)
-
-    print("#")
-    print(f"# CIJOE config({args.config}), nworkflows({nworkflows})")
-    print("#")
-
-    for count, workflow_fpath in enumerate(workflow_files, 1):
-        print(f"# workflow {count}/{nworkflows} -- BEGIN")
-
-        workflow = Workflow(workflow_fpath)
-        workflow.load(collector)
-        err = workflow.run(args)
-        if err:
-            print(f"# workflow {count}/{nworkflows} -- FAILED")
-            return err
-
-        print(f"# workflow {count}/{nworkflows} -- SUCCESS")
-
-    return 0
-
-
-def sub_lint(args, collector):
+def cli_lint(args, collector):
     """Lint a workflow"""
 
-    print("# Linting ...")
+    h2("Lint")
+    print(f"workflow: '{args.workflow}'")
+
+    if args.workflow is None:
+        h3("Lint: Failed(Missing workflow)")
+        return 1
+    h3()
 
     workflow = Workflow(Path(args.workflow))
 
@@ -53,15 +27,18 @@ def sub_lint(args, collector):
         print(error)
 
     if errors:
+        h3("Lint; Failed")
         return 1
+
+    h3("Lint; Success")
 
     return 0
 
 
-def sub_resources(args, collector):
+def cli_resources(args, collector):
     """List the reference configuration files provided with cijoe packages"""
 
-    print("# Resources")
+    h2("Resources")
     for category, resources in sorted(collector.resources.items()):
         print(f"{category}:" + ("" if resources.items() else " ~"))
 
@@ -72,54 +49,110 @@ def sub_resources(args, collector):
     return 0
 
 
+def cli_version(args, collector):
+    """Print version and exit"""
+
+    print(f"joe {joe.core.__version__}")
+
+    return 0
+
+
+# TODO: add stats on workflow / progress
+def cli_run(args, collector):
+    """Run stuff"""
+
+    h2("Run")
+
+    if args.workflow is None:
+        h3("Run: Failed(Missing workflow)")
+        return 1
+
+    print(f"workflow: {args.workflow}")
+    print(f"config: {args.config}")
+    h3()
+
+    workflow = Workflow(args.workflow)
+    workflow.load(collector)
+
+    err = workflow.run(args)
+    if err:
+        h3("Run; Failed")
+        return err
+
+    h3("Run; Success")
+
+    return 0
+
+
 def parse_args():
     """Parse command-line interface."""
 
+    cfiles = sorted([p.resolve() for p in Path().rglob(f"*.config")])
+    wfiles = sorted([p.resolve() for p in Path().rglob(f"*{Workflow.SUFFIX}")])
+
     parser = argparse.ArgumentParser(prog="joe")
-    parser.add_argument("--version", action="store_true", help="Show version")
 
-    subparsers = parser.add_subparsers(dest="func", help="sub-command help")
+    parser.add_argument("step", nargs="*", help="One or more workflow steps to run.")
 
-    parsers = {}
-
-    parsers["run"] = subparsers.add_parser("run", help="Run workflows and worklets")
-    parsers["run"].set_defaults(func=sub_run)
-    parsers["run"].add_argument(
-        "--config", help="Path to the environment configuration file"
+    parser.add_argument(
+        "-w",
+        "--workflow",
+        default=wfiles[0] if wfiles else None,
+        help="Path to Workflow file.",
     )
-    parsers["run"].add_argument(
-        "--output", default=default_output_path(), help="Path to output directory"
+    parser.add_argument(
+        "-c",
+        "--config",
+        default=cfiles[0] if cfiles else None,
+        help="Path to the Configuration file.",
     )
-    parsers["run"].add_argument(
-        "file_or_dir",
-        nargs="*",
-        type=Path,
-        default=[Path.cwd()],
-        help="Path to one of more workflow.yaml or worklet_NAME.py files",
-    )
-
-    parsers["lint"] = subparsers.add_parser(
-        "lint", help="Check the integrity of the given workflow"
-    )
-    parsers["lint"].set_defaults(func=sub_lint)
-    parsers["lint"].add_argument(
-        "workflow", help="Path to workflow file e.g. 'my.workflow'"
+    parser.add_argument(
+        "-o",
+        "--output",
+        default=default_output_path(),
+        help="Path to output directory.",
     )
 
-    parsers["resources"] = subparsers.add_parser("resources", help="List resources")
-    parsers["resources"].set_defaults(func=sub_resources)
+    parser.add_argument(
+        "-l",
+        "--lint",
+        action="store_true",
+        help="Check integrity of workflow and exit.",
+    )
+    parser.add_argument(
+        "-r",
+        "--resources",
+        action="store_true",
+        help="List collected resources and exit.",
+    )
+    parser.add_argument(
+        "-v",
+        "--version",
+        action="store_true",
+        help="Print the version number of 'joe' and exit.",
+    )
 
-    args = parser.parse_args()
-
-    collector = Collector()
-    collector.collect()
-
-    return args, collector
+    return parser.parse_args()
 
 
 def main():
     """Main entry point for the CLI"""
 
-    args, collector = parse_args()
-    if args.func:
-        args.func(args, collector)
+    args = parse_args()
+
+    collector = Collector()
+    collector.collect()
+
+    if args.lint:
+        cli_lint(args, collector)
+        return 0
+
+    if args.resources:
+        cli_resources(args, collector)
+        return 0
+
+    if args.version:
+        cli_version(args, collector)
+        return 0
+
+    return cli_run(args, collector)
