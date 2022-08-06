@@ -1,5 +1,5 @@
 ---
-docstring: |
+doc: |
   This is a workflow file, it serves as an example on how to run commands and worklets, the
   structure intentionally mimics that of GitHUB actions, however, the keys you see here are all
   there is.

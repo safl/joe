@@ -21,8 +21,8 @@ def sub_run(args, collector):
 
     for workflow_fpath in workflow_files:
         workflow = Workflow(workflow_fpath)
-        workflow.load()
-        workflow.run(args.config, args.output)
+        workflow.load(collector)
+        workflow.run(args)
 
     return 0
 

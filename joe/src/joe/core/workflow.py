@@ -14,7 +14,7 @@ class Workflow(Resource):
         super().__init__(path, pkg)
 
         self.yml = None
-        self.docstring = ""
+        self.doc = ""
         self.steps = []
         self.collector = None
 
@@ -36,8 +36,8 @@ class Workflow(Resource):
                 errors.append(f"Invalid Workflow-YAML; exception({exc})")
                 return errors
 
-        if "docstring" not in self.yml:
-            errors.append("Missing key: 'docstring'; workflow must have a description")
+        if "doc" not in self.yml:
+            errors.append("Missing key: 'doc'; workflow must have a description")
             return False
         if "steps" not in self.yml:
             errors.append("Missing key: 'steps'; workflow must have steps to perform")
@@ -135,7 +135,7 @@ class Workflow(Resource):
                     print(f"Unknown worklet({worklet_ident})")
                     continue
 
-                resources["worklets"][worklet_ident].load(self.collector)
+                resources["worklets"][worklet_ident].load()
                 resources["worklets"][worklet_ident].func(cijoe, args, step)
 
         return True
