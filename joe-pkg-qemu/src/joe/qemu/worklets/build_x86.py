@@ -3,6 +3,7 @@
     Builds qemu system(x86_64-softmmu), disabling most graphics related features, and
     enabling virtfs and debugging.
 """
+import os
 
 
 def worklet_entry(cijoe, args, step):
@@ -37,7 +38,7 @@ def worklet_entry(cijoe, args, step):
     ]
 
     cijoe.run(f"mkdir -p {build_dir}")
-    cijoe.run(f"./configure " + " ".join(configure_args), cwd=build_dir)
+    cijoe.run("./configure " + " ".join(configure_args), cwd=build_dir)
     cijoe.run("make -j $(nproc)", cwd=build_dir)
 
     return True

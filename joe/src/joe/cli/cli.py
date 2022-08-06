@@ -1,51 +1,55 @@
 import argparse
-import os
-from pathlib import Path
 import pprint
-
-import yaml
+from pathlib import Path
 
 from joe.core.command import default_output_path
-from joe.core.workflow import run_workflow_files, workflow_lint
 from joe.core.resources import Collector
+from joe.core.workflow import Workflow
 
 
-def sub_run(args, resources):
+def sub_run(args, collector):
     """Run stuff"""
 
-    print("# Runner ...")
+    workflow_files = []
+    for path in [Path(p).resolve() for p in args.file_or_dir]:
+        if path.is_dir():
+            workflow_files.extend(
+                [p for p in path.iterdir() if p.name.endswith(f"{Workflow.SUFFIX}")]
+            )
+        elif path.is_file() and path.name.endswith(f"{Workflow.SUFFIX}"):
+            workflow_files.append(path)
 
-    return run_workflow_files(args, resources)
-
-
-def sub_lint(args, resources):
-    """Lint a workflow"""
-
-    print("# Linting ...")
-
-
-
-    return workflow_lint(args, resources)
-
-
-def sub_resources(args, resources):
-    """List the reference configuration files provided with cijoe packages"""
-
-    print("# Core resources")
-    try:
-        pprint.pprint(resources)
-    except Exception as exc:
-        print(exc)
+    for workflow_fpath in workflow_files:
+        workflow = Workflow(workflow_fpath)
+        workflow.load()
+        workflow.run(args.config, args.output)
 
     return 0
 
 
-def sub_worklets(args, resources):
-    """List worklets provided with cijoe packages and in the cwd"""
+def sub_lint(args, collector):
+    """Lint a workflow"""
 
-    print("# Worklets discovered in packages and current-working-dir")
+    print("# Linting ...")
+
+    workflow = Workflow(Path(args.workflow))
+
+    errors = workflow.lint(collector)
+    for error in errors:
+        print(errors)
+
+    if errors:
+        return 1
+
+    return 0
+
+
+def sub_resources(args, collector):
+    """List the reference configuration files provided with cijoe packages"""
+
+    print("# Core resources")
     try:
-        pprint.pprint(resources["worklets"])
+        pprint.pprint(collector.resources)
     except Exception as exc:
         print(exc)
 
@@ -89,9 +93,6 @@ def parse_args():
     parsers["resources"] = subparsers.add_parser("resources", help=f"List resources")
     parsers["resources"].set_defaults(func=sub_resources)
 
-    parsers["worklets"] = subparsers.add_parser("worklets", help=f"List worklets")
-    parsers["worklets"].set_defaults(func=sub_worklets)
-
     args = parser.parse_args()
 
     collector = Collector()
@@ -105,4 +106,4 @@ def main():
 
     args, collector = parse_args()
     if args.func:
-        args.func(args, collector.resources)
+        args.func(args, collector)

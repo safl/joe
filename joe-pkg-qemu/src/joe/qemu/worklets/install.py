@@ -3,6 +3,7 @@
     Builds qemu system(x86_64-softmmu), disabling most graphics related features, and
     enabling virtfs and debugging.
 """
+import os
 
 
 def worklet_entry(cijoe, args, step):

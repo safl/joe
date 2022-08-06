@@ -14,12 +14,12 @@ import importlib
 import inspect
 import os
 import pkgutil
-import pprint
 from importlib.machinery import SourceFileLoader
 from pathlib import Path
 
-import joe
 import setuptools
+
+import joe
 
 
 class Resource(object):
@@ -130,7 +130,6 @@ class Collector(object):
 
         self.resources[category][resource.ident] = resource
 
-
     def collect_from_path(self, path=None, max_depth=2):
         """Collects non-packaged worklets from the given 'path'"""
 
@@ -138,7 +137,7 @@ class Collector(object):
             path = Path.cwd().resolve()
 
         base = len(str(path).split(os.sep))
-        for candidate in Path(path).resolve().rglob(f"*"):
+        for candidate in Path(path).resolve().rglob("*"):
             level = len(str(candidate).split(os.sep))
             if max_depth and level > base + max_depth:
                 continue
@@ -146,7 +145,7 @@ class Collector(object):
             for category, suffixes in Collector.RESOURCES:
                 if candidate.name in Collector.IGNORE:
                     continue
-                if not candidate.suffix in suffixes:
+                if candidate.suffix not in suffixes:
                     continue
 
                 self.process_candidate(candidate, category, None)

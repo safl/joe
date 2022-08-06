@@ -1,9 +1,6 @@
 """
 This is a package collecting testcases and auxilary utils for testing xNVMe using joe
 """
-import glob
-import os
-
 from setuptools import find_namespace_packages, setup
 
 setup(
