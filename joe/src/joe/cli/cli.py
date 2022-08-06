@@ -47,11 +47,13 @@ def sub_lint(args, collector):
 def sub_resources(args, collector):
     """List the reference configuration files provided with cijoe packages"""
 
-    print("# Core resources")
-    try:
-        pprint.pprint(collector.resources)
-    except Exception as exc:
-        print(exc)
+    print("# Resources")
+    for category, resources in sorted(collector.resources.items()):
+        print(f"{category}:" + ("" if resources.items() else " ~"))
+
+        for ident, path in sorted(resources.items()):
+            print(f"  - ident: {ident}")
+            print(f"    path: {path}")
 
     return 0
 
