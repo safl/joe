@@ -36,7 +36,7 @@ def sub_lint(args, collector):
 
     errors = workflow.lint(collector)
     for error in errors:
-        print(errors)
+        print(error)
 
     if errors:
         return 1
@@ -90,7 +90,7 @@ def parse_args():
         "workflow", help="Path to workflow file e.g. 'my.workflow'"
     )
 
-    parsers["resources"] = subparsers.add_parser("resources", help=f"List resources")
+    parsers["resources"] = subparsers.add_parser("resources", help="List resources")
     parsers["resources"].set_defaults(func=sub_resources)
 
     args = parser.parse_args()

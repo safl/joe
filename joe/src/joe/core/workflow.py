@@ -69,7 +69,7 @@ class Workflow(Resource):
                 continue
             if "uses" in keys and step["uses"] not in collector.resources["worklets"]:
                 errors.append(
-                    f"(Invalid step({count}); unknown resource: worklet({step['uses']})"
+                    f"Invalid step({count}); unknown resource: worklet({step['uses']})"
                 )
                 continue
 
