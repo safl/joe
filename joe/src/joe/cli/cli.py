@@ -17,7 +17,7 @@ def cli_lint(args, collector):
     print(f"workflow: '{args.workflow}'")
 
     if args.workflow is None:
-        h3("Lint: 'missing workflow'; Failed")
+        h2("Lint: 'missing workflow'; Failed")
         return 1
     h3()
 

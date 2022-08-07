@@ -153,10 +153,19 @@ class Workflow(Resource):
 
         nsteps = len(self.steps)
 
+        step_names = [step["name"] for step in self.steps]
+        for step in args.step:
+            if step in step_names:
+                continue
+
+            print(f"step: '{step}' not in workflow; Failed")
+            return 1
+
         for count, step in enumerate(self.steps, 1):
             h2(f"Step({count}/{len(self.steps)}); '{step['name']}'")
 
             if args.step and step["name"] not in args.step:
+                h3(f"Step({count}/{nsteps}): '{step['name']}'; Skipped")
                 continue
 
             cijoe.set_output_ident(step["id"])
