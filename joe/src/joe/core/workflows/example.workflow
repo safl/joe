@@ -19,15 +19,15 @@ doc: |
   run()/get()/put(), with an output-directory matching the current step. This is it, end of story.
 
 steps:
-- name: Invoke commands via cijoe.run()
+- name: info
   run: |
     cat /proc/cpuinfo
     hostname
 
-- name: Invoke the test_runner worklet
+- name: test
   uses: core.run_tests
   with:
     args: "--pyargs joe.core.selftest"
 
-- name: Invoke the report generator worklet
+- name: report
   uses: core.report
