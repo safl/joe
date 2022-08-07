@@ -1,6 +1,7 @@
 import argparse
 import pprint
 from pathlib import Path
+import shutil
 
 import joe.core
 from joe.core.command import default_output_path
@@ -16,7 +17,7 @@ def cli_lint(args, collector):
     print(f"workflow: '{args.workflow}'")
 
     if args.workflow is None:
-        h3("Lint: Failed(Missing workflow)")
+        h3("Lint: 'missing workflow'; Failed")
         return 1
     h3()
 
@@ -27,10 +28,10 @@ def cli_lint(args, collector):
         print(error)
 
     if errors:
-        h3("Lint; Failed")
+        h2("Lint: 'see errors above'; Failed")
         return 1
 
-    h3("Lint; Success")
+    h2("Lint: 'no errors'; Success")
 
     return 0
 
@@ -45,6 +46,35 @@ def cli_resources(args, collector):
         for ident, path in sorted(resources.items()):
             print(f"  - ident: {ident}")
             print(f"    path: {path}")
+
+    return 0
+
+
+def cli_skeleton(args, collector):
+    """Create skeleton .config and .workflow"""
+
+    src_config = collector.resources["configs"]["core.default"].path
+    src_workflow = collector.resources["workflows"]["core.example"].path
+
+    dst_config = Path.cwd().joinpath(src_config.name)
+    dst_workflow = Path.cwd().joinpath(src_workflow.name)
+
+    h2("Skeleton")
+    print(f"config: {dst_config}")
+    print(f"workflow: {dst_workflow}")
+    h3("")
+
+    if dst_config.exists():
+        print(f"skipping config({dst_config}); already exists")
+    else:
+        shutil.copyfile(src_config, dst_config)
+
+    if dst_workflow.exists():
+        print(f"skipping workflow({dst_workflow}); already exists")
+    else:
+        shutil.copyfile(src_workflow, dst_workflow)
+
+    h2("Skeleton; Done")
 
     return 0
 
@@ -64,7 +94,7 @@ def cli_run(args, collector):
     h2("Run")
 
     if args.workflow is None:
-        h3("Run: Failed(Missing workflow)")
+        h2("Run: 'missing workflow'; Failed")
         return 1
 
     print(f"workflow: {args.workflow}")
@@ -72,14 +102,16 @@ def cli_run(args, collector):
     h3()
 
     workflow = Workflow(args.workflow)
-    workflow.load(collector)
+    if not workflow.load(collector):
+        h2("Run: 'workflow.load()'; Failed");
+        return 1
 
     err = workflow.run(args)
     if err:
-        h3("Run; Failed")
+        h2("Run: 'workflow.run()'; Failed")
         return err
 
-    h3("Run; Success")
+    h2("Run: 'no errors detected'; Success")
 
     return 0
 
@@ -87,8 +119,8 @@ def cli_run(args, collector):
 def parse_args():
     """Parse command-line interface."""
 
-    cfiles = sorted([p.resolve() for p in Path().rglob(f"*.config")])
-    wfiles = sorted([p.resolve() for p in Path().rglob(f"*{Workflow.SUFFIX}")])
+    cfiles = sorted([p.resolve() for p in Path.cwd().iterdir() if p.suffix == ".config"])
+    wfiles = sorted([p.resolve() for p in Path.cwd().iterdir() if p.suffix == ".workflow"])
 
     parser = argparse.ArgumentParser(prog="joe")
 
@@ -126,6 +158,12 @@ def parse_args():
         help="List collected resources and exit.",
     )
     parser.add_argument(
+        "-s",
+        "--skeleton",
+        action="store_true",
+        help="Create a default '.config' and '.workflow' in `pwd` then exit.",
+    )
+    parser.add_argument(
         "-v",
         "--version",
         action="store_true",
@@ -144,15 +182,15 @@ def main():
     collector.collect()
 
     if args.lint:
-        cli_lint(args, collector)
-        return 0
+        return cli_lint(args, collector)
 
     if args.resources:
-        cli_resources(args, collector)
-        return 0
+        return cli_resources(args, collector)
+
+    if args.skeleton:
+        return cli_skeleton(args, collector)
 
     if args.version:
-        cli_version(args, collector)
-        return 0
+        return cli_version(args, collector)
 
     return cli_run(args, collector)

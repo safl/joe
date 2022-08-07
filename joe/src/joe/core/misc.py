@@ -20,7 +20,7 @@ def line(title=None, marker=None):
     if width < HEADER_MIN:
         width = HEADER_MIN
 
-    print(" ".join([marker * 2, title, marker.ljust(width - 4 - len(title), marker)]))
+    print((marker if not title else " ").join([marker * 2, title, marker.ljust(width - 4 - len(title), marker)]))
 
 def h1(title = ""):
     line(title, "#")

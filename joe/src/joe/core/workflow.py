@@ -60,7 +60,7 @@ class Workflow(Resource):
             if "name" not in keys:
                 errors.append(f"Invalid step({count}); missing key 'name'")
                 continue
-            if not re.match("[a-zA-Z][a-zA-Z0-9\.\-_]*", step["name"]):
+            if not re.match("^([a-zA-Z][a-zA-Z0-9\.\-_]*)", step["name"]):
                 errors.append(f"Invalid step({count}); invalid chars in 'name'")
                 continue
 
