@@ -16,7 +16,7 @@ def line(title=None, marker=None):
 
     try:
         width, _ = os.get_terminal_size()
-    except Exception as exc:
+    except Exception:
         width = HEADER_MIN
 
     if width < HEADER_MIN:

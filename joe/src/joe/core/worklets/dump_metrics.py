@@ -1,4 +1,4 @@
-def worklet_entry(cijoe, args, step):
+def worklet_entry(args, collector, cijoe, step):
     """Dump extracted metrics from workflow output"""
 
     print("Dump metrics")

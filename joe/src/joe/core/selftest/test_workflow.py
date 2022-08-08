@@ -11,4 +11,4 @@ def test_workflow_load():
     workflow = Workflow(res.path, res.pkg)
     assert workflow
 
-    #assert workflow.load(collector, {})
+    # assert workflow.load(collector, {})

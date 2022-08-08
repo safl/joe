@@ -5,8 +5,6 @@ import logging
 import os
 import time
 
-import yaml
-
 from joe.core import transport
 from joe.core.misc import ENCODING, dict_from_yaml
 

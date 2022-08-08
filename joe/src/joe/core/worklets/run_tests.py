@@ -1,12 +1,8 @@
-import os
-
 import pytest
 
 
-def worklet_entry(cijoe, args, step):
+def worklet_entry(args, collector, cijoe, step):
     """Invoke the test-runner"""
-
-    print("# OUTPUT from the test_runner-worklet")
 
     pytest_args = ["--output", str(args.output / cijoe.output_ident)]
 

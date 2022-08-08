@@ -7,12 +7,8 @@ from joe.core.misc import h2, h3
 from joe.core.resources import Collector
 
 
-def worklet_entry(cijoe, args, step):
+def worklet_entry(args, collector, cijoe, step):
     """Produce a HTML report of the 'workflow.state' file in 'args.output'"""
-
-    # NOTE: cijoe should already have a collector-instance to use...
-    collector = Collector()
-    collector.collect()
 
     template_path = collector.resources["templates"]["report"]
 

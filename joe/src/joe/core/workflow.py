@@ -1,5 +1,4 @@
 import os
-import pprint
 import re
 import time
 
@@ -7,7 +6,7 @@ import jinja2
 import yaml
 
 from joe.core.command import Cijoe
-from joe.core.misc import dict_from_yaml, h1, h2, h3
+from joe.core.misc import dict_from_yaml, h3
 from joe.core.resources import Resource
 
 
@@ -162,7 +161,7 @@ class Workflow(Resource):
             if step_name in step_names:
                 continue
 
-            print(f"step: '{step}' not in workflow; Failed")
+            print(f"step: '{step_name}' not in workflow; Failed")
             return 1
 
         self.state_dump(args.output / Workflow.STATE_FILENAME)
@@ -171,7 +170,7 @@ class Workflow(Resource):
             cijoe.set_output_ident(step["id"])
             os.makedirs(os.path.join(cijoe.output_path, step["id"]), exist_ok=True)
 
-            print(f"step({step['name']})")
+            h3(f"step({step['name']})")
 
             if args.step and step["name"] not in args.step:
                 step["skipped"] = 1
@@ -183,20 +182,22 @@ class Workflow(Resource):
 
                     if rcode:
                         step["status"]["failed"] = 1
-                        h3(f"Step({count}/{nsteps}): '{step['name']}'; Failed")
-                        print(f"cmd: {cmd}")
-                        print(f"rcode: {rcode}")
             else:
                 worklet_ident = step["uses"]
 
                 resources["worklets"][worklet_ident].load()
-                err = resources["worklets"][worklet_ident].func(cijoe, args, step)
+                err = resources["worklets"][worklet_ident].func(
+                    args, self.collector, cijoe, step
+                )
                 step["failure" if err else "success"] = 1
 
             for key in ["skipped", "failure", "success"]:
                 self.state["status"][key] = +step["status"][key]
 
-            # self.state_dump(args.output / Workflow.STATE_FILENAME)
+            if step["status"]["failure"]:
+                break
+
+            self.state_dump(args.output / Workflow.STATE_FILENAME)
 
         time.sleep(1)
 
