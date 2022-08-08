@@ -133,11 +133,11 @@ class Collector(object):
     def collect_from_path(self, path=None, max_depth=2):
         """Collects non-packaged worklets from the given 'path'"""
 
-        if path is None:
-            path = Path.cwd().resolve()
+        path = Path(path).resolve() if path else Path.cwd().resolve()
 
         base = len(str(path).split(os.sep))
-        for candidate in Path(path).resolve().rglob("*"):
+
+        for candidate in list(path.glob("*")) + list(path.glob("*/*")):
             level = len(str(candidate).split(os.sep))
             if max_depth and level > base + max_depth:
                 continue
