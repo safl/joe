@@ -1,12 +1,13 @@
 import os
 import pprint
 import re
+import time
 
 import jinja2
 import yaml
 
 from joe.core.command import Cijoe
-from joe.core.misc import h1, h2, h3, dict_from_yaml
+from joe.core.misc import dict_from_yaml, h1, h2, h3
 from joe.core.resources import Resource
 
 
@@ -24,7 +25,7 @@ class Workflow(Resource):
     def __init__(self, path, pkg=None):
         super().__init__(path, pkg)
 
-        self.state = Workflow.STATE
+        self.state = None
         self.collector = None
         self.config = None
 
@@ -33,13 +34,6 @@ class Workflow(Resource):
 
         with path.open("w+") as state_file:
             yaml.dump(self.state, state_file)
-
-    @staticmethod
-    def yaml_load(path):
-        """Return dict of yaml-content, for an empty document return {}"""
-
-        with path.open() as yml_file:
-            return yaml.safe_load(yml_file) or {}
 
     @staticmethod
     def yaml_lint(yml, collector=None):
@@ -123,7 +117,12 @@ class Workflow(Resource):
     def load(self, collector, config):
         """Load raw yaml, lint it, then construct the object properties"""
 
-        yml = Workflow.yaml_load(self.path)
+        if self.state:
+            return True
+
+        self.collector = collector
+
+        yml = dict_from_yaml(self.path)
 
         errors = Workflow.yaml_lint(yml, collector)
         if errors:
@@ -133,16 +132,17 @@ class Workflow(Resource):
         if errors:
             return False
 
-        self.state = Workflow.STATE
-
+        state = Workflow.STATE.copy()
+        state["doc"] = yml.get("doc")
+        state["config"] = yml.get("config", {})
         for count, step in enumerate(yml["steps"], 1):
             step["count"] = count
             step["status"] = {"skipped": 0, "success": 0, "failure": 0, "elapsed": 0.0}
             step["id"] = f"{count}_{step['name']}"
 
-            self.state["steps"].append(step)
+            state["steps"].append(step)
 
-        self.collector = collector
+        self.state = state
 
         return True
 
@@ -158,8 +158,8 @@ class Workflow(Resource):
         nsteps = len(self.state["steps"])
 
         step_names = [step["name"] for step in self.state["steps"]]
-        for step in args.step:
-            if step in step_names:
+        for step_name in args.step:
+            if step_name in step_names:
                 continue
 
             print(f"step: '{step}' not in workflow; Failed")
@@ -170,6 +170,8 @@ class Workflow(Resource):
         for step in self.state["steps"]:
             cijoe.set_output_ident(step["id"])
             os.makedirs(os.path.join(cijoe.output_path, step["id"]), exist_ok=True)
+
+            print(f"step({step['name']})")
 
             if args.step and step["name"] not in args.step:
                 step["skipped"] = 1
@@ -192,8 +194,10 @@ class Workflow(Resource):
                 step["failure" if err else "success"] = 1
 
             for key in ["skipped", "failure", "success"]:
-                self.state["status"][key] =+ step["status"][key]
+                self.state["status"][key] = +step["status"][key]
 
-            self.state_dump(args.output / Workflow.STATE_FILENAME)
+            # self.state_dump(args.output / Workflow.STATE_FILENAME)
+
+        time.sleep(1)
 
         return 0

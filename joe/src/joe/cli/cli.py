@@ -5,7 +5,7 @@ from pathlib import Path
 
 import joe.core
 from joe.core.command import default_output_path
-from joe.core.misc import h1, h2, h3
+from joe.core.misc import h1, h2, h3, dict_from_yaml
 from joe.core.resources import Collector
 from joe.core.workflow import Workflow
 
@@ -117,7 +117,7 @@ def cli_run(args, collector):
     print(f"output: {args.output}")
     h3()
 
-    config = Workflow.yaml_load(args.config.resolve())
+    config = dict_from_yaml(args.config.resolve())
 
     workflow = Workflow(args.workflow)
     if not workflow.load(collector, config):

@@ -118,9 +118,6 @@ class Collector(object):
 
         if category == "worklets":
             resource = Worklet(candidate, pkg)
-            resource.load()
-
-            resource = Worklet(candidate, pkg)
             resource.content_from_file()
 
             if not resource.content_has_worklet_func():

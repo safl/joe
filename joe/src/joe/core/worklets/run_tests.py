@@ -6,18 +6,14 @@ import pytest
 def worklet_entry(cijoe, args, step):
     """Invoke the test-runner"""
 
-    print("#")
     print("# OUTPUT from the test_runner-worklet")
-    print("#")
 
-    env_fpath = cijoe.get_config_fpath()
-    output = os.path.join(args.output, cijoe.output_ident)
+    pytest_args = ["--output", str(args.output / cijoe.output_ident)]
 
-    pytest_args = ["--output", f"{output}"]
-
-    if env_fpath:
+    config_path = cijoe.get_config_fpath()
+    if config_path:
         pytest_args.append("--env")
-        pytest_args.append(f"{env_fpath}")
+        pytest_args.append(str(config_path))
 
     pytest_args += step.get("with").get("args", "").split(" ")
 
