@@ -173,15 +173,14 @@ class Workflow(Resource):
             h3(f"step({step['name']})")
 
             if args.step and step["name"] not in args.step:
-                step["skipped"] = 1
+                step["status"]["skipped"] = 1
             elif "run" in step:
                 for cmd_count, cmd in enumerate(step["run"], 1):
                     rcode, state = cijoe.run(cmd)
 
-                    step["failure" if rcode else "success"] = 1
-
+                    step["status"]["failure" if rcode else "success"] = 1
                     if rcode:
-                        step["status"]["failed"] = 1
+                        break
             else:
                 worklet_ident = step["uses"]
 
@@ -189,7 +188,7 @@ class Workflow(Resource):
                 err = resources["worklets"][worklet_ident].func(
                     args, self.collector, cijoe, step
                 )
-                step["failure" if err else "success"] = 1
+                step["status"]["failure" if err else "success"] = 1
 
             for key in ["skipped", "failure", "success"]:
                 self.state["status"][key] = +step["status"][key]
