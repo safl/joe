@@ -8,14 +8,7 @@ import time
 import yaml
 
 from joe.core import transport
-from joe.core.misc import ENCODING
-
-
-def config_from_file(config_fpath):
-    """Load the environment configuration from the given 'config_fpath'"""
-
-    with open(config_fpath, "r") as config_file:
-        return yaml.safe_load(config_file)
+from joe.core.misc import ENCODING, dict_from_yaml
 
 
 def default_output_path():
@@ -34,7 +27,7 @@ class Cijoe(object):
         """Create a cijoe encapsulation defined by the given config_fpath"""
 
         self.config_fpath = os.path.abspath(config_fpath) if config_fpath else None
-        self.config = config_from_file(self.config_fpath) if self.config_fpath else {}
+        self.config = dict_from_yaml(self.config_fpath) if self.config_fpath else {}
         if not self.config:
             self.config = {}
         self.output_path = output_path if output_path else default_output_path()

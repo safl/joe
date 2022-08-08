@@ -5,8 +5,8 @@ import re
 import jinja2
 import yaml
 
-from joe.core.command import Cijoe, config_from_file
-from joe.core.misc import h1, h2, h3
+from joe.core.command import Cijoe
+from joe.core.misc import h1, h2, h3, dict_from_yaml
 from joe.core.resources import Resource
 
 
@@ -18,7 +18,7 @@ class Workflow(Resource):
         "doc": "",
         "config": {},
         "steps": [],
-        "status": {"failure": 0, "success": 0, "elapsed": 0.0},
+        "status": {"skipped": 0, "failure": 0, "success": 0, "elapsed": 0.0},
     }
 
     def __init__(self, path, pkg=None):
@@ -31,7 +31,7 @@ class Workflow(Resource):
     def state_dump(self, path):
         """Dump the current workflow-state to yaml-file"""
 
-        with path.open("w") as state_file:
+        with path.open("w+") as state_file:
             yaml.dump(self.state, state_file)
 
     @staticmethod
@@ -39,7 +39,7 @@ class Workflow(Resource):
         """Return dict of yaml-content, for an empty document return {}"""
 
         with path.open() as yml_file:
-            return yaml.load(yml_file, Loader=yaml.SafeLoader) or {}
+            return yaml.safe_load(yml_file) or {}
 
     @staticmethod
     def yaml_lint(yml, collector=None):
@@ -106,7 +106,7 @@ class Workflow(Resource):
 
         # Substitute values in workflow-yaml with config entities
         jinja_env = jinja2.Environment(undefined=jinja2.StrictUndefined)
-        for _, step in enumerate(yml["steps"]):
+        for step in yml["steps"]:
             if "run" in step:
                 try:
                     step["run"] = [
@@ -136,14 +136,9 @@ class Workflow(Resource):
         self.state = Workflow.STATE
 
         for count, step in enumerate(yml["steps"], 1):
-            # add fields: ['id', 'count', 'status']
             step["count"] = count
-            step["status"] = {"success": 0, "failure": 0, "elapsed": 0.0}
-
-            if "uses" in step:
-                step["id"] = f"{step['count']}_worklet_{step['uses']}"
-            elif "run" in step:
-                step["id"] = f"{step['count']}_inline_commands"
+            step["status"] = {"skipped": 0, "success": 0, "failure": 0, "elapsed": 0.0}
+            step["id"] = f"{count}_{step['name']}"
 
             self.state["steps"].append(step)
 
@@ -155,10 +150,10 @@ class Workflow(Resource):
         """Run the workflow using the given configuration(args.config)"""
 
         resources = self.collector.resources
-        config = config_from_file(args.config) if args.config else {}
+        config = dict_from_yaml(args.config) if args.config else {}
         cijoe = Cijoe(config, args.output)
 
-        self.load(collector, config)
+        self.load(self.collector, config)
 
         nsteps = len(self.state["steps"])
 
@@ -170,48 +165,35 @@ class Workflow(Resource):
             print(f"step: '{step}' not in workflow; Failed")
             return 1
 
-        self.dump_state(args.output / Workflow.STATE_FILENAME)
+        self.state_dump(args.output / Workflow.STATE_FILENAME)
 
-        for count, step in enumerate(self.state["steps"], 1):
-            h2(f"Step({count}/{len(self.state['steps'])}); '{step['name']}'")
-
-            if args.step and step["name"] not in args.step:
-                h3(f"Step({count}/{nsteps}): '{step['name']}'; Skipped")
-                continue
-
+        for step in self.state["steps"]:
             cijoe.set_output_ident(step["id"])
             os.makedirs(os.path.join(cijoe.output_path, step["id"]), exist_ok=True)
 
-            if "run" in step:
+            if args.step and step["name"] not in args.step:
+                step["skipped"] = 1
+            elif "run" in step:
                 for cmd_count, cmd in enumerate(step["run"], 1):
                     rcode, state = cijoe.run(cmd)
+
+                    step["failure" if rcode else "success"] = 1
+
                     if rcode:
-                        self.state["status"]["failure"] += 1
+                        step["status"]["failed"] = 1
                         h3(f"Step({count}/{nsteps}): '{step['name']}'; Failed")
                         print(f"cmd: {cmd}")
                         print(f"rcode: {rcode}")
-                        h3()
-
-                        self.dump_state(args.output / Workflow.STATE_FILENAME)
-                        return err
-
             else:
                 worklet_ident = step["uses"]
 
                 resources["worklets"][worklet_ident].load()
                 err = resources["worklets"][worklet_ident].func(cijoe, args, step)
-                if err:
-                    self.state["status"]["failure"] += 1
-                    h3(f"Step({count}/{nsteps}): '{step['name']}'; Failed")
+                step["failure" if err else "success"] = 1
 
-                    self.dump_state(args.output / Workflow.STATE_FILENAME)
-                    return err
+            for key in ["skipped", "failure", "success"]:
+                self.state["status"][key] =+ step["status"][key]
 
-            self.state["status"]["success"] += 1
-            h3(f"Step({count}/{nsteps}): '{step['name']}'; Success")
-
-            self.dump_state(args.output / Workflow.STATE_FILENAME)
-
-        self.dump_state(args.output / Workflow.STATE_FILENAME)
+            self.state_dump(args.output / Workflow.STATE_FILENAME)
 
         return 0

@@ -1,4 +1,5 @@
 import os
+import yaml
 
 ENCODING = "UTF-8"
 HEADER_MIN = 60
@@ -37,3 +38,10 @@ def h2(title=""):
 
 def h3(title=""):
     line(title, "-")
+
+
+def dict_from_yaml(yaml_path):
+    """Load the yaml-file, return {} on empty document."""
+
+    with open(yaml_path, "r") as yaml_file:
+        return yaml.safe_load(yaml_file) or {}

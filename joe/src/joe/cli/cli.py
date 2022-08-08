@@ -117,6 +117,8 @@ def cli_run(args, collector):
     print(f"output: {args.output}")
     h3()
 
+    config = Workflow.yaml_load(args.config.resolve())
+
     workflow = Workflow(args.workflow)
     if not workflow.load(collector, config):
         h2("Run: 'workflow.load()'; Failed")
