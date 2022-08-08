@@ -1,13 +1,13 @@
 import argparse
 import pprint
-from pathlib import Path
 import shutil
+from pathlib import Path
 
 import joe.core
 from joe.core.command import default_output_path
+from joe.core.misc import h1, h2, h3
 from joe.core.resources import Collector
 from joe.core.workflow import Workflow
-from joe.core.misc import h1, h2, h3
 
 
 def cli_lint(args, collector):
@@ -99,11 +99,12 @@ def cli_run(args, collector):
 
     print(f"workflow: {args.workflow}")
     print(f"config: {args.config}")
+    print(f"output: {args.output}")
     h3()
 
     workflow = Workflow(args.workflow)
     if not workflow.load(collector):
-        h2("Run: 'workflow.load()'; Failed");
+        h2("Run: 'workflow.load()'; Failed")
         return 1
 
     err = workflow.run(args)
@@ -119,8 +120,12 @@ def cli_run(args, collector):
 def parse_args():
     """Parse command-line interface."""
 
-    cfiles = sorted([p.resolve() for p in Path.cwd().iterdir() if p.suffix == ".config"])
-    wfiles = sorted([p.resolve() for p in Path.cwd().iterdir() if p.suffix == ".workflow"])
+    cfiles = sorted(
+        [p.resolve() for p in Path.cwd().iterdir() if p.suffix == ".config"]
+    )
+    wfiles = sorted(
+        [p.resolve() for p in Path.cwd().iterdir() if p.suffix == ".workflow"]
+    )
 
     parser = argparse.ArgumentParser(prog="joe")
 
@@ -129,18 +134,21 @@ def parse_args():
     parser.add_argument(
         "-w",
         "--workflow",
+        type=Path,
         default=wfiles[0] if wfiles else None,
         help="Path to Workflow file.",
     )
     parser.add_argument(
         "-c",
         "--config",
+        type=Path,
         default=cfiles[0] if cfiles else None,
         help="Path to the Configuration file.",
     )
     parser.add_argument(
         "-o",
         "--output",
+        type=Path,
         default=default_output_path(),
         help="Path to output directory.",
     )

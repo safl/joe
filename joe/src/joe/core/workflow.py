@@ -1,17 +1,19 @@
 import os
-import re
 import pprint
+import re
 
 import jinja2
 import yaml
 
 from joe.core.command import Cijoe, config_from_file
-from joe.core.resources import Resource
 from joe.core.misc import h1, h2, h3
+from joe.core.resources import Resource
+
 
 class Workflow(Resource):
 
     SUFFIX = ".workflow"
+    STATE_FILENAME = "workflow.state"
 
     def __init__(self, path, pkg=None):
         super().__init__(path, pkg)
@@ -19,14 +21,18 @@ class Workflow(Resource):
         self.collector = None
         self.yml = None
 
-        self.doc = ""
-        self.steps = []
-
-        self.stats = {
-            "success": 0,
-            "failed": 0,
-            "wallclk": 0.0,
+        self.state = {
+            "doc": "",
+            "config": {},
+            "steps": [],
+            "status": {"failure": 0, "success": 0, "elapsed": 0.0},
         }
+
+    def dump_state(self, path):
+        """Dump the current representation of the workflow to yaml-file"""
+
+        with path.open("w") as state_file:
+            yaml.dump(self.state, state_file)
 
     def load_yaml(self):
         """Load yaml from file"""
@@ -46,11 +52,13 @@ class Workflow(Resource):
                 errors.append(f"Invalid Workflow-YAML; exception({exc})")
                 return errors
 
-        if "doc" not in self.yml:
-            errors.append("Missing key: 'doc'; workflow must have a description")
+        for top in set(self.yml.keys()) - set(["doc", "config", "state"]):
+            errors.append(f"Unsupported top-level key: '{top}'")
             return False
-        if "steps" not in self.yml:
-            errors.append("Missing key: 'steps'; workflow must have steps to perform")
+        for top in ["doc", "state"]:
+            if top not in self.yml:
+                errors.append(f"Missing required top-level key: '{top}'")
+                return False
 
         valid_keys = set(["name", "run", "uses", "with"])
 
@@ -110,6 +118,7 @@ class Workflow(Resource):
                 "id": "",  # file-system-safe identifier
                 "count": count,
                 "name": entry.get("name", "") if entry.get("name") else "unnamed step",
+                "status": {"success": 0, "failure": 0, "elapsed": 0.0},
             }
 
             if "uses" in entry:
@@ -122,7 +131,9 @@ class Workflow(Resource):
             else:
                 return False
 
-            self.steps.append(step)
+            self.state["steps"].append(step)
+
+        self.state["doc"] = self.yml["doc"]
 
         self.collector = collector
 
@@ -135,7 +146,7 @@ class Workflow(Resource):
 
         # Substitute values in workflow with config entities
         jinja_env = jinja2.Environment()
-        for index, step in enumerate(self.steps):
+        for index, step in enumerate(self.state["steps"]):
             if "run" in step:
                 template = jinja_env.from_string("\n".join(step["run"]))
                 step["run"] = template.render(*config).split("\n")
@@ -151,9 +162,9 @@ class Workflow(Resource):
 
         self.substitute(config)
 
-        nsteps = len(self.steps)
+        nsteps = len(self.state["steps"])
 
-        step_names = [step["name"] for step in self.steps]
+        step_names = [step["name"] for step in self.state["steps"]]
         for step in args.step:
             if step in step_names:
                 continue
@@ -161,8 +172,10 @@ class Workflow(Resource):
             print(f"step: '{step}' not in workflow; Failed")
             return 1
 
-        for count, step in enumerate(self.steps, 1):
-            h2(f"Step({count}/{len(self.steps)}); '{step['name']}'")
+        self.dump_state(args.output / Workflow.STATE_FILENAME)
+
+        for count, step in enumerate(self.state["steps"], 1):
+            h2(f"Step({count}/{len(self.state['steps'])}); '{step['name']}'")
 
             if args.step and step["name"] not in args.step:
                 h3(f"Step({count}/{nsteps}): '{step['name']}'; Skipped")
@@ -175,11 +188,13 @@ class Workflow(Resource):
                 for cmd_count, cmd in enumerate(step["run"], 1):
                     rcode, state = cijoe.run(cmd)
                     if rcode:
-                        self.stats["failed"] += 1
+                        self.state["status"]["failure"] += 1
                         h3(f"Step({count}/{nsteps}): '{step['name']}'; Failed")
                         print(f"cmd: {cmd}")
                         print(f"rcode: {rcode}")
                         h3()
+
+                        self.dump_state(args.output / Workflow.STATE_FILENAME)
                         return err
 
             else:
@@ -188,11 +203,15 @@ class Workflow(Resource):
                 resources["worklets"][worklet_ident].load()
                 err = resources["worklets"][worklet_ident].func(cijoe, args, step)
                 if err:
-                    self.stats["failed"] += 1
+                    self.state["status"]["failure"] += 1
                     h3(f"Step({count}/{nsteps}): '{step['name']}'; Failed")
+
+                    self.dump_state(args.output / Workflow.STATE_FILENAME)
                     return err
 
-            self.stats["success"] += 1
+            self.state["status"]["success"] += 1
             h3(f"Step({count}/{nsteps}): '{step['name']}'; Success")
+
+        self.dump_state(args.output / Workflow.STATE_FILENAME)
 
         return 0
