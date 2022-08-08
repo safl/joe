@@ -15,21 +15,33 @@ def cli_lint(args, collector):
 
     h2("Lint")
     print(f"workflow: '{args.workflow}'")
+    print(f"config: '{args.config}'")
 
     if args.workflow is None:
         h2("Lint: 'missing workflow'; Failed")
         return 1
     h3()
 
-    workflow = Workflow(Path(args.workflow))
+    yml = Workflow.yaml_load(args.workflow)
 
-    errors = workflow.lint(collector)
+    # Check for and print errors in the yaml-file
+    errors = Workflow.yaml_lint(yml, collector)
     for error in errors:
         print(error)
-
     if errors:
         h2("Lint: 'see errors above'; Failed")
         return 1
+
+    # Check for and print substition errors
+    if args.config:
+        config = Workflow.yaml_load(args.config.resolve())
+        errors = Workflow.yaml_substitute(yml, config)
+        for error in errors:
+            print(error)
+
+        if errors:
+            h2("Lint: 'see errors above'; Failed")
+            return 1
 
     h2("Lint: 'no errors'; Success")
 
@@ -96,6 +108,9 @@ def cli_run(args, collector):
     if args.workflow is None:
         h2("Run: 'missing workflow'; Failed")
         return 1
+    if args.config is None:
+        h2("Run: 'missing config'; Failed")
+        return 1
 
     print(f"workflow: {args.workflow}")
     print(f"config: {args.config}")
@@ -103,7 +118,7 @@ def cli_run(args, collector):
     h3()
 
     workflow = Workflow(args.workflow)
-    if not workflow.load(collector):
+    if not workflow.load(collector, config):
         h2("Run: 'workflow.load()'; Failed")
         return 1
 

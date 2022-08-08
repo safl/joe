@@ -11,7 +11,4 @@ def test_workflow_load():
     workflow = Workflow(res.path, res.pkg)
     assert workflow
 
-    workflow.load(collector)
-    assert workflow.yml
-
-    assert not workflow.lint(collector), "Linting failed on 'core.example' workflow"
+    assert workflow.load(collector, {})

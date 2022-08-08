@@ -14,55 +14,50 @@ class Workflow(Resource):
 
     SUFFIX = ".workflow"
     STATE_FILENAME = "workflow.state"
+    STATE = {
+        "doc": "",
+        "config": {},
+        "steps": [],
+        "status": {"failure": 0, "success": 0, "elapsed": 0.0},
+    }
 
     def __init__(self, path, pkg=None):
         super().__init__(path, pkg)
 
+        self.state = Workflow.STATE
         self.collector = None
-        self.yml = None
+        self.config = None
 
-        self.state = {
-            "doc": "",
-            "config": {},
-            "steps": [],
-            "status": {"failure": 0, "success": 0, "elapsed": 0.0},
-        }
-
-    def dump_state(self, path):
-        """Dump the current representation of the workflow to yaml-file"""
+    def state_dump(self, path):
+        """Dump the current workflow-state to yaml-file"""
 
         with path.open("w") as state_file:
             yaml.dump(self.state, state_file)
 
-    def load_yaml(self):
-        """Load yaml from file"""
+    @staticmethod
+    def yaml_load(path):
+        """Return dict of yaml-content, for an empty document return {}"""
 
-        with self.path.open() as yml_file:
-            self.yml = yaml.load(yml_file, Loader=yaml.SafeLoader)
+        with path.open() as yml_file:
+            return yaml.load(yml_file, Loader=yaml.SafeLoader) or {}
 
-    def lint(self, collector=None):
-        """Returns a list of errors"""
+    @staticmethod
+    def yaml_lint(yml, collector=None):
+        """Returns a list of integrity-errors for the given yml-file"""
 
         errors = []
 
-        if not self.yml:
-            try:
-                self.load_yaml()
-            except yaml.YAMLError as exc:
-                errors.append(f"Invalid Workflow-YAML; exception({exc})")
-                return errors
-
-        for top in set(self.yml.keys()) - set(["doc", "config", "state"]):
+        for top in set(yml.keys()) - set(["doc", "config", "steps"]):
             errors.append(f"Unsupported top-level key: '{top}'")
             return False
-        for top in ["doc", "state"]:
-            if top not in self.yml:
+        for top in ["doc", "steps"]:
+            if top not in yml:
                 errors.append(f"Missing required top-level key: '{top}'")
                 return False
 
         valid_keys = set(["name", "run", "uses", "with"])
 
-        for count, step in enumerate(self.yml["steps"]):
+        for count, step in enumerate(yml["steps"]):
             keys = set(step.keys())
 
             if "name" not in keys:
@@ -100,58 +95,61 @@ class Workflow(Resource):
 
         return errors
 
-    def load(self, collector):
+    @staticmethod
+    def yaml_substitute(yml, config):
+        """Substitute workflow place-holders, returns a list of substitution errors"""
+
+        errors = []
+
+        cfg = yml.get("config", {})
+        cfg.update(config)
+
+        # Substitute values in workflow-yaml with config entities
+        jinja_env = jinja2.Environment(undefined=jinja2.StrictUndefined)
+        for _, step in enumerate(yml["steps"]):
+            if "run" in step:
+                try:
+                    step["run"] = [
+                        jinja_env.from_string(ln).render(cfg)
+                        for ln in step["run"].splitlines()
+                    ]
+                except jinja2.exceptions.UndefinedError as exc:
+                    errors.append(f"Substitution-error: {exc}")
+
+            # TODO: substitute in "uses"
+
+        return errors
+
+    def load(self, collector, config):
         """Load raw yaml, lint it, then construct the object properties"""
 
-        if not self.yml:
-            try:
-                self.load_yaml()
-            except yaml.YAMLError:
-                return False
+        yml = Workflow.yaml_load(self.path)
 
-        errors = self.lint(collector)
+        errors = Workflow.yaml_lint(yml, collector)
         if errors:
             return False
 
-        for count, entry in enumerate(self.yml["steps"], 1):
-            step = {
-                "id": "",  # file-system-safe identifier
-                "count": count,
-                "name": entry.get("name", "") if entry.get("name") else "unnamed step",
-                "status": {"success": 0, "failure": 0, "elapsed": 0.0},
-            }
+        errors = Workflow.yaml_substitute(yml, config)
+        if errors:
+            return False
 
-            if "uses" in entry:
-                step["uses"] = entry.get("uses")
-                step["with"] = entry.get("with", {})
+        self.state = Workflow.STATE
+
+        for count, step in enumerate(yml["steps"], 1):
+            # add fields: ['id', 'count', 'status']
+            step["count"] = count
+            step["status"] = {"success": 0, "failure": 0, "elapsed": 0.0}
+
+            if "uses" in step:
                 step["id"] = f"{step['count']}_worklet_{step['uses']}"
-            elif "run" in entry:
-                step["run"] = entry.get("run").strip().splitlines()
+            elif "run" in step:
                 step["id"] = f"{step['count']}_inline_commands"
-            else:
-                return False
 
             self.state["steps"].append(step)
-
-        self.state["doc"] = self.yml["doc"]
 
         self.collector = collector
 
         return True
-
-    def substitute(self, config):
-        """Substitute workflow place-holders"""
-
-        config = config if config else {}
-
-        # Substitute values in workflow with config entities
-        jinja_env = jinja2.Environment()
-        for index, step in enumerate(self.state["steps"]):
-            if "run" in step:
-                template = jinja_env.from_string("\n".join(step["run"]))
-                step["run"] = template.render(*config).split("\n")
-
-            # TODO: substitute in "uses"
 
     def run(self, args):
         """Run the workflow using the given configuration(args.config)"""
@@ -160,7 +158,7 @@ class Workflow(Resource):
         config = config_from_file(args.config) if args.config else {}
         cijoe = Cijoe(config, args.output)
 
-        self.substitute(config)
+        self.load(collector, config)
 
         nsteps = len(self.state["steps"])
 
@@ -211,6 +209,8 @@ class Workflow(Resource):
 
             self.state["status"]["success"] += 1
             h3(f"Step({count}/{nsteps}): '{step['name']}'; Success")
+
+            self.dump_state(args.output / Workflow.STATE_FILENAME)
 
         self.dump_state(args.output / Workflow.STATE_FILENAME)
 
