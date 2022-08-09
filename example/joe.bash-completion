@@ -1,18 +1,20 @@
 _show_complete()
 {
     local cur prev opts node_names
-    COMPREPLY=()
+
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="jazz gazz bazz"
-    node_names=`python3 foo.py`
+    opts="--lint --resources --skeleton --version --config= --output= --workflow="
+    node_names="info build install" # populate these from workflow-file
+
+    COMPREPLY=()
 
     if [[ ${cur} == -* ]] ; then
         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
         return 0
     fi
 
-    COMPREPLY=( $(compgen -W "${node_names}" -- ${cur}) )
+    COMPREPLY+=( $(compgen -W "${node_names}" -- ${cur}) )
 }
 
 complete -F _show_complete joe
