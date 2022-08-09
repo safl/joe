@@ -191,7 +191,7 @@ class Workflow(Resource):
                 step["status"]["failure" if err else "success"] = 1
 
             for key in ["skipped", "failure", "success"]:
-                self.state["status"][key] = +step["status"][key]
+                self.state["status"][key] += step["status"][key]
 
             if step["status"]["failure"]:
                 break
