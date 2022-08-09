@@ -35,3 +35,6 @@ steps:
 
 - name: report
   uses: report
+
+- name: inspect
+  uses: report_open
