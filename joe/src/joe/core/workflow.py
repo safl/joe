@@ -184,8 +184,8 @@ class Workflow(Resource):
             else:
                 worklet_ident = step["uses"]
 
-                resources["worklets"][worklet_ident].load()
-                err = resources["worklets"][worklet_ident].func(
+                self.collector.resources["worklets"][worklet_ident].load()
+                err = self.collector.resources["worklets"][worklet_ident].func(
                     args, self.collector, cijoe, step
                 )
                 step["status"]["failure" if err else "success"] = 1
