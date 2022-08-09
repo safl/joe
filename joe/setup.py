@@ -21,6 +21,7 @@ setup(
         "jinja2",
         "paramiko",
         "pytest",
+        "pytest-reportlog",
         "pyyaml",
         "scp",
         "setuptools",
