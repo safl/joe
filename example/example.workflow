@@ -1,4 +1,3 @@
-# filetype=yaml
 ---
 doc: |
   This is a workflow file, it serves as an example on how to run commands and worklets, the
@@ -19,17 +18,15 @@ doc: |
   The commands and the worklets are passed an instance of cijoe which they can use to call
   run()/get()/put(), with an output-directory matching the current step. This is it, end of story.
 
+config:
+  git: "/home/safl/git"
+
 steps:
 - name: info
   run: |
     cat /proc/cpuinfo
     hostname
-
-- name: build
-  uses: adhoc_build
-
-- name: deploy
-  uses: adhoc_deploy
+    echo "{{ git }}"
 
 - name: test
   uses: core.run_tests
@@ -37,4 +34,4 @@ steps:
     args: "--pyargs joe.core.selftest"
 
 - name: report
-  uses: core.report
+  uses: report
