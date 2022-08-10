@@ -238,16 +238,16 @@ div.image {
           {% if "pytest.log" in step['logs'] %}
           <div class="collapse" id="log_pytest_{{ step['id'] }}" data-bs-parent="#CONTENT_{{ step['id'] }}">
             <div class="card-body">
-              {% for testcase in step["logs"]["pytest.log"]["tests"] %}
+              {% for nodeid, testcase in step["logs"]["pytest.log"]["tests"].items() %}
               <ul>
-              <li>
-                {{ testcase["nodeid"] }}/{{ testcase["when"] }}
-              </li>
-              <li>
-                <button type="button" class="btn btn-info" {% if not testcase["run.log"] %}disabled{% endif %}>
-                  <a href="{{ testcase["run.log"] }}">run.log</a>
-                </button>
-              </li>
+                <li>
+                  {{ nodeid }} -- {{ testcase['outcome'] }} -- {{ testcase['duration'] }}
+                </li>
+                <li>
+                  <button type="button" class="btn btn-info" {% if not testcase["run.log"] %}disabled{% endif %}>
+                    <a href="{{ testcase["run.log"] }}">run.log</a>
+                  </button>
+                </li>
               </ul>
               {% endfor %}
             </div>

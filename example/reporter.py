@@ -20,18 +20,30 @@ def populate_logs(args, collector, cijoe, step, workflow_state):
 
         with path.open() as logfile:
             if filename == "pytest.log":
-                step["logs"][filename]["tests"] = []
+                results = {}
 
-                for line in logfile.readlines():
+                for count, line in enumerate(logfile.readlines()):
                     result = json.loads(line)
                     if result["$report_type"] != "TestReport":
                         continue
 
+                    nodeid = result["nodeid"]
+                    if nodeid not in results:
+                        results[nodeid] = {
+                            "count": count,
+                            "nodeid": nodeid,
+                            "duration": 0.0,
+                            "outcome": [],
+                            "run.log": "",
+                        }
+                    results[nodeid]["duration"] += result["duration"]
+                    results[nodeid]["outcome"] += [result["outcome"]]
+
                     runlog_path = args.output / step["id"] / result["nodeid"] / "run.log"
                     if runlog_path.exists():
-                        result["run.log"] = runlog_path
+                        results[nodeid]["run.log"] = runlog_path
 
-                    step["logs"][filename]["tests"].append(result)
+                step["logs"][filename]["tests"] = results
             else:
                 step["logs"][filename]["content"] = logfile.read()
 
