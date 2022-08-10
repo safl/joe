@@ -34,7 +34,7 @@ steps:
     args: "--pyargs joe.core.selftest"
 
 - name: report
-  uses: report
+  uses: reporter
 
 - name: inspect
   uses: report_open
