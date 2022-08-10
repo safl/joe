@@ -14,22 +14,22 @@
     produce an overview of testcases and link them with the cijoe-captured output and
     auxilary files
 """
-import pytest
-
 
 def worklet_entry(args, collector, cijoe, step):
     """Invoke test-runner"""
 
-    pytest_args = ["--output", str(args.output / cijoe.output_ident)]
-    pytest_args += [
+    pytest_cmd = ["python3", "-m", "pytest"]
+    pytest_cmd += ["--output", str(args.output / cijoe.output_ident)]
+    pytest_cmd += [
         "--report-log",
         str(args.output / cijoe.output_ident / "pytest.log"),
     ]
 
     if args.config:
-        pytest_args.append("--config")
-        pytest_args.append(str(args.config))
+        pytest_cmd.append("--config")
+        pytest_cmd.append(str(args.config))
 
-    pytest_args += step.get("with").get("args", "").split(" ")
+    pytest_cmd += step.get("with").get("args", "").split(" ")
+    rcode, state = cijoe.run(" ".join(pytest_cmd))
 
-    return pytest.main(pytest_args)
+    return rcode

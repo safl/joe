@@ -29,8 +29,8 @@ steps:
     echo "{{ git }}"
 
 - name: test
-#  uses: core.testrunner
-  uses: testrunner
+  uses: core.testrunner
+#  uses: testrunner
   with:
     args: "--pyargs joe.core.selftest"
 
@@ -38,4 +38,4 @@ steps:
   uses: reporter
 
 - name: inspect
-  uses: report_open
+  uses: browser_open
