@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CIJOE: Workflow Report</title>
+<title>CIJOE: Workflow State Report</title>
 <!-- TODO: once done, then inline this such that it works "offline" -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
 
@@ -43,7 +43,7 @@ div.image {
 
 .ansi2html-content { display: inline; white-space: pre-wrap; word-wrap: break-word; }
 
-.list-testcases .list-group-item {
+.list-steps .list-group-item {
   padding: 0.1rem;
 }
 
@@ -61,6 +61,12 @@ div.image {
   background-color: white;
   background-opacity: 0.5;
 }
+.workflow-documentation {
+  padding: 1rem;
+}
+.workflow-configuration {
+  padding: 1rem;
+}
 </style>
 </head>
 <body>
@@ -74,6 +80,11 @@ div.image {
       <div class="card-header">
         <img class="card-img-top" src="https://cijoe.readthedocs.io/en/latest/_images/logo.png" alt="Overview" style="width: 18rem;">
       </div>
+
+      <h3 class="card-header {{ step_style }}">
+        Workflow Report
+      </h3>
+
       <div class="card-body">
 
         <p>This is a HTML-ification of Workflow state (<a href="workflow.state">workflow.state</a>) and
@@ -124,61 +135,130 @@ div.image {
           </div>
 
           <div class="tab-pane" id="config-tab-pane" role="tabpanel" aria-labelledby="config-tab" tabindex="0">
-            {{ config }}
+            <pre class="workflow-configuration">{{ config | pprint }}</pre>
           </div>
 
           <div class="tab-pane" id="doc-tab-pane" role="tabpanel" aria-labelledby="doc-tab" tabindex="0">
-            <pre>{{ doc }}</pre>
+            <pre class="workflow-documentation">{{ doc }}</pre>
           </div>
         </div>
       </div>
 
-      {% for step in steps%}
-      {% if step["status"]["failure"] %}
-        {% set step_state = "Failed" %}
-        {% set step_style = "danger" %}
-      {% elif step["status"]["success"] %}
-        {% set step_state = "Ok" %}
-        {% set step_style = "success" %}
-      {% elif step["status"]["skipped"] %}
-        {% set step_state = "Skipped" %}
-        {% set step_style = "light" %}
-      {% else %}
-        {% set step_state = "Unprocessed" %}
-        {% set step_style = "light" %}
-      {% endif %}
-      <div class="card-header bg-{{ step_style }}">
-        <b>{{ step['name'] }}</b>
-        <button type="button" class="btn btn-info" {% if not step["run.log"] %}disabled{% endif %}>
-          <a href="{{ step["run.log"] }}">run.log</a>
-        </button>
-        <button type="button" class="btn btn-info">
-        elapsed: {{ step["status"]["elapsed"] }}
-        </button>
-      </div>
-      <div class="card-body">
-        <!-- general step-rendering -->
+      <!-- workflow-steps BEGIN -->
+      <div id="steps">
+        <h3 class="card-header {{ step_style }}">
+          Steps
+        </h3>
 
-        {% if 'run' in step %}
-        Commands:
-        <pre>{{ "\n".join(step['run']) }}</pre>
+        <!-- workflow-step BEGIN -->
+        {% for step in steps%}
+        {% if step["status"]["failure"] %}
+          {% set step_state = "Failed" %}
+          {% set step_style = "danger" %}
+        {% elif step["status"]["success"] %}
+          {% set step_state = "Ok" %}
+          {% set step_style = "success" %}
+        {% elif step["status"]["skipped"] %}
+          {% set step_state = "Skipped" %}
+          {% set step_style = "light" %}
         {% else %}
+          {% set step_state = "Unprocessed" %}
+          {% set step_style = "light" %}
         {% endif %}
-        <!-- pytest-specific-rendering -->
-        {% for testcase in step["pytest"] %}
-        <ul>
-        <li>
-          {{ testcase["nodeid"] }}/{{ testcase["when"] }}
-        </li>
-        <li>
-          <button type="button" class="btn btn-info" {% if not testcase["run.log"] %}disabled{% endif %}>
-            <a href="{{ testcase["run.log"] }}">run.log</a>
-          </button>
-        </li>
+
+        <!-- workflow-step-buttons BEGIN -->
+        <ul class="list-group list-steps">
+          <li class="list-group-item list-group-item-{{ step_style }}">
+
+            <!-- workflow-step-buttons-left BEGIN -->
+            <button class="btn btn-success" type="button" disabled="disabled">
+              <span style="font-family: monospace; font-weight: bold;">
+                step({{ step["name"] }}):
+                {% if "run" in step %}
+                'inline comands'
+                {% else %}
+                '{{ step["uses"] }}'
+                {% endif %}
+              </span>
+            </button>
+            <!-- workflow-step-buttons-left END -->
+
+            <!-- workflow-step-buttons-right BEGIN -->
+            <div class="btn-group float-end" role="group">
+              <button class="btn btn-info" type="button" disabled="disabled">
+                <span style="font-family: monospace;"
+                      title="Elapsed Wall-Clock time in seconds"
+                      data-bs-original-title="Tooltip on right">
+                  0.0 sec
+                </span>
+              </button>
+
+              <button class="btn btn-primary" type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#YAML_{{ step['id'] }}"
+                      aria-controls="YAML_{{ step['id'] }}"
+                      aria-expanded="false">yaml</button>
+
+              <button class="btn btn-primary" type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#RUNLOG_{{ step['id'] }}"
+                      aria-controls="RUNLOG_{{ step['id'] }}"
+                      aria-expanded="false"
+                      {% if not step["run.log"] %}disabled{% endif %}>run.log</button>
+            </div>
+            <!-- workflow-step-buttons-right END -->
+
+          </li>
         </ul>
+        <!-- workflow-step-buttons END -->
+
+        <!-- workflow-step-content BEGIN -->
+        <div id="CONTENT_{{ step['id'] }}">
+
+          <!-- workflow-step-content-yaml BEGIN -->
+          <div class="collapse" id="YAML_{{ step['id'] }}" data-bs-parent="#CONTENT_{{ step['id'] }}">
+            <div class="card-body">
+              <pre>{{ step | pprint }}</pre>
+            </div>
+          </div>
+          <!-- workflow-step-content-yaml END -->
+
+          <!-- workflow-step-content-runlog BEGIN -->
+          <div class="collapse" id="RUNLOG_{{ step['id'] }}"
+                data-bs-parent="#CONTENT_{{ step['id'] }}">
+            <div class="card-body">
+              <p>See: <a href="{{ step['run.log'] }}">run.log</a></a>
+              <p>TODO: add support for embedding the 'run.log'</p>
+            </div>
+          </div>
+          <!-- workflow-step-content-runlog END -->
+
+          <!-- workflow-step-content-pytest BEGIN -->
+          <div class="collapse" id="PYTEST_{{ step['id'] }}" data-bs-parent="#CONTENT_{{ step['id'] }}">
+            <div class="card-body">
+              {% for testcase in step["pytest"] %}
+              <ul>
+              <li>
+                {{ testcase["nodeid"] }}/{{ testcase["when"] }}
+              </li>
+              <li>
+                <button type="button" class="btn btn-info" {% if not testcase["run.log"] %}disabled{% endif %}>
+                  <a href="{{ testcase["run.log"] }}">run.log</a>
+                </button>
+              </li>
+              </ul>
+              {% endfor %}
+            </div>
+          </div>
+          <!-- workflow-step-content-pytest END -->
+
+        </div>
+        <!-- workflow-step-content END -->
+
         {% endfor %}
+        <!-- workflow-step END -->
       </div>
-      {% endfor %}
+      <!-- workflow-steps END -->
 
       <div class="card-footer text-muted">
         EOL: In the presence of failure, recall, this too shall pass.
