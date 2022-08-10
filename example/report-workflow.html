@@ -143,10 +143,10 @@ div.image {
       </div>
 
       <!-- workflow-steps BEGIN -->
-      <div id="steps">
-        <h3 class="card-header {{ step_style }}">
-          Steps
-        </h3>
+      <h3 class="card-header {{ step_style }}">
+        Steps
+      </h3>
+      <div class="card-body" id="steps">
 
         <!-- workflow-step BEGIN -->
         {% for step in steps%}
@@ -161,7 +161,7 @@ div.image {
           {% set step_style = "light" %}
         {% else %}
           {% set step_state = "Unprocessed" %}
-          {% set step_style = "light" %}
+          {% set step_style = "secondary" %}
         {% endif %}
 
         <!-- workflow-step-buttons BEGIN -->
@@ -169,7 +169,7 @@ div.image {
           <li class="list-group-item list-group-item-{{ step_style }}">
 
             <!-- workflow-step-buttons-left BEGIN -->
-            <button class="btn btn-success" type="button" disabled="disabled">
+            <button class="btn btn-light" type="button" disabled="disabled">
               <span style="font-family: monospace; font-weight: bold;">
                 step({{ step["name"] }}):
                 {% if "run" in step %}
@@ -191,7 +191,7 @@ div.image {
                 </span>
               </button>
 
-              {% for fn, log in step["logs"].items() %}
+              {% for fn, log in step["logs"].items() | sort %}
               <button class="btn btn-primary" type="button"
                       data-bs-toggle="collapse"
                       data-bs-target="#log_{{ log['path'].stem }}_{{ step['id'] }}"
