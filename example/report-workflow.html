@@ -81,9 +81,7 @@ div.image {
         <img class="card-img-top" src="https://cijoe.readthedocs.io/en/latest/_images/logo.png" alt="Overview" style="width: 18rem;">
       </div>
 
-      <h3 class="card-header {{ step_style }}">
-        Workflow Report
-      </h3>
+      <h3 class="card-header {{ step_style }}">Workflow Report</h3>
 
       <div class="card-body">
 
@@ -193,18 +191,19 @@ div.image {
                 </span>
               </button>
 
+              {% for fn, log in step["logs"].items() %}
+              <button class="btn btn-primary" type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#log_{{ log['path'].stem }}_{{ step['id'] }}"
+                      aria-controls="log_{{ log['path'].stem }}_{{ step['id'] }}"
+                      aria-expanded="false">{{ fn }}</button>
+              {% endfor %}
+
               <button class="btn btn-primary" type="button"
                       data-bs-toggle="collapse"
                       data-bs-target="#YAML_{{ step['id'] }}"
                       aria-controls="YAML_{{ step['id'] }}"
                       aria-expanded="false">yaml</button>
-
-              <button class="btn btn-primary" type="button"
-                      data-bs-toggle="collapse"
-                      data-bs-target="#RUNLOG_{{ step['id'] }}"
-                      aria-controls="RUNLOG_{{ step['id'] }}"
-                      aria-expanded="false"
-                      {% if not step["run.log"] %}disabled{% endif %}>run.log</button>
             </div>
             <!-- workflow-step-buttons-right END -->
 
@@ -224,19 +223,22 @@ div.image {
           <!-- workflow-step-content-yaml END -->
 
           <!-- workflow-step-content-runlog BEGIN -->
-          <div class="collapse" id="RUNLOG_{{ step['id'] }}"
+          {% if "run.log" in step['logs'] %}
+          <div class="collapse" id="log_run_{{ step['id'] }}"
                 data-bs-parent="#CONTENT_{{ step['id'] }}">
             <div class="card-body">
-              <p>See: <a href="{{ step['run.log'] }}">run.log</a></a>
-              <p>TODO: add support for embedding the 'run.log'</p>
+              <p>The content of <a href="{{ step['logs']['run.log']['path'] }}">run.log</a> is provided below.</p>
+              <pre>{{ step['logs']['run.log']['content'] }}</pre>
             </div>
           </div>
+          {% endif %}
           <!-- workflow-step-content-runlog END -->
 
           <!-- workflow-step-content-pytest BEGIN -->
-          <div class="collapse" id="PYTEST_{{ step['id'] }}" data-bs-parent="#CONTENT_{{ step['id'] }}">
+          {% if "pytest.log" in step['logs'] %}
+          <div class="collapse" id="log_pytest_{{ step['id'] }}" data-bs-parent="#CONTENT_{{ step['id'] }}">
             <div class="card-body">
-              {% for testcase in step["pytest"] %}
+              {% for testcase in step["logs"]["pytest.log"]["tests"] %}
               <ul>
               <li>
                 {{ testcase["nodeid"] }}/{{ testcase["when"] }}
@@ -250,6 +252,7 @@ div.image {
               {% endfor %}
             </div>
           </div>
+          {% endif %}
           <!-- workflow-step-content-pytest END -->
 
         </div>
