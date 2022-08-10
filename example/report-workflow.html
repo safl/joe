@@ -99,13 +99,13 @@ div.image {
         <div class="tab-content border border-top-0 rounded-bottom" id="tab-content">
           <div class="tab-pane show active" id="status-tab-pane" role="tabpanel" aria-labelledby="status-tab" tabindex="0">
 
+            <div class="container">
+              <p>
+              errors, skipped, failure, success
+              </p>
+            </div>
+
             <table class="table">
-              <thead>
-                <tr>
-                  <th>Workflow Status</th>
-                  <th>Count</th>
-                </tr>
-              </thead>
               <tbody>
                 <tr class="table-success">
                   <td>Success</td>
@@ -134,24 +134,49 @@ div.image {
       </div>
 
       {% for step in steps%}
-      <div class="card-header bg-light">
-        Step: <b>{{ step['name'] }}</b>
-        {% if step["run.log"] %}
-        <button type="button" class="btn btn-info"><a href="{{ step["run.log"] }}">run.log</a></button>
-        {% endif %}
+      {% if step["status"]["failure"] %}
+        {% set step_state = "Failed" %}
+        {% set step_style = "danger" %}
+      {% elif step["status"]["success"] %}
+        {% set step_state = "Ok" %}
+        {% set step_style = "success" %}
+      {% elif step["status"]["skipped"] %}
+        {% set step_state = "Skipped" %}
+        {% set step_style = "light" %}
+      {% else %}
+        {% set step_state = "Unprocessed" %}
+        {% set step_style = "light" %}
+      {% endif %}
+      <div class="card-header bg-{{ step_style }}">
+        <b>{{ step['name'] }}</b>
+        <button type="button" class="btn btn-info" {% if not step["run.log"] %}disabled{% endif %}>
+          <a href="{{ step["run.log"] }}">run.log</a>
+        </button>
+        <button type="button" class="btn btn-info">
+        elapsed: {{ step["status"]["elapsed"] }}
+        </button>
       </div>
       <div class="card-body">
-        <ul>
+        <!-- general step-rendering -->
+
+        {% if 'run' in step %}
+        Commands:
+        <pre>{{ "\n".join(step['run']) }}</pre>
+        {% else %}
+        {% endif %}
+        <!-- pytest-specific-rendering -->
         {% for testcase in step["pytest"] %}
+        <ul>
         <li>
           {{ testcase["nodeid"] }}/{{ testcase["when"] }}
-          {% if testcase["run.log"] %}
-          <button type="button" class="btn btn-info"><a href="{{ testcase["run.log"] }}">run.log</a></button>
-          {% endif %}
         </li>
-        {% endfor %}
+        <li>
+          <button type="button" class="btn btn-info" {% if not testcase["run.log"] %}disabled{% endif %}>
+            <a href="{{ testcase["run.log"] }}">run.log</a>
+          </button>
+        </li>
         </ul>
-        step content
+        {% endfor %}
       </div>
       {% endfor %}
 
