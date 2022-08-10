@@ -102,11 +102,11 @@ class Collector(object):
 
     RESOURCES = [
         ("configs", [".config"]),
-        ("perf_reqs", [".perfreq", ".preqs"]),
+        ("perf_reqs", [".perfreq"]),
         ("templates", [".html"]),
         ("workflows", [".workflow"]),
         ("worklets", [".py"]),
-        ("testfiles", [".*"]),
+        ("auxilary", [".*"]),
     ]
     IGNORE = ["__init__.py", "__pycache__", "setup.py"]
 

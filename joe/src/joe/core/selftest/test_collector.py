@@ -6,7 +6,7 @@ from joe.core.resources import Collector
 CORE_RESOURCE_COUNTS = {
     "configs": 2,
     "templates": 1,
-    "testfiles": 1,
+    "auxilary": 1,
     "worklets": 4,
 }
 
