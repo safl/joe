@@ -169,13 +169,13 @@ div.image {
           <li class="list-group-item list-group-item-{{ step_style }}">
 
             <!-- workflow-step-buttons-left BEGIN -->
-            <button class="btn btn-light" type="button" disabled="disabled">
-              <span style="font-family: monospace; font-weight: bold;">
-                step({{ step["name"] }}):
+            <button class="btn btn-{{ step_style }}" type="button">
+              <span style="font-family: monospace;">
+                <b>{{ step["name"] }}</b>
                 {% if "run" in step %}
-                'inline comands'
+                (inline commands)
                 {% else %}
-                '{{ step["uses"] }}'
+                ({{ step["uses"] }})
                 {% endif %}
               </span>
             </button>
