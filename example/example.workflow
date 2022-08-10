@@ -29,7 +29,7 @@ steps:
     echo "{{ git }}"
 
 - name: test
-  uses: core.run_tests
+  uses: core.testrunner
   with:
     args: "--pyargs joe.core.selftest"
 
