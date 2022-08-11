@@ -122,7 +122,7 @@ class Cijoe(object):
         convention and call set_output_ident("../..")
         """
 
-        return self._run(cmd, cwd, evars, self.local_transport)
+        return self._run(cmd, cwd, evars, self.transport_local)
 
     def put(self, src, dst):
         """Transfer 'src' on 'dev_box' to 'dst' on **test_target**"""
