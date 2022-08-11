@@ -156,6 +156,8 @@ class Workflow(Resource):
 
         nsteps = len(self.state["steps"])
 
+        fail_fast = False
+
         step_names = [step["name"] for step in self.state["steps"]]
         for step_name in args.step:
             if step_name in step_names:
@@ -182,6 +184,8 @@ class Workflow(Resource):
 
                     step["status"]["failed" if rcode else "passed"] = 1
                     if rcode:
+                        h3(f"step({step['name']}) : failed with rcode({rcode})")
+                    if rcode and fail_fast:
                         break
             else:
                 worklet_ident = step["uses"]
@@ -191,14 +195,18 @@ class Workflow(Resource):
                     args, self.collector, cijoe, step
                 )
                 step["status"]["failed" if err else "passed"] = 1
+                if step["status"]["failed"]:
+                    h3(f"step({step['name']}) : failed worklet: {worklet_ident}")
 
             for key in ["skipped", "failed", "passed"]:
                 self.state["status"][key] += step["status"][key]
 
             step["status"]["elapsed"] = time.time() - begin
             if step["status"]["failed"]:
+                h3(f"step({step['name']}) : got error, exiting early")
+            if step["status"]["failed"] and fail_fast:
                 break
 
             self.state_dump(args.output / Workflow.STATE_FILENAME)
 
-        return 0
+        return 1 if self.state["status"]["failed"] else 0
