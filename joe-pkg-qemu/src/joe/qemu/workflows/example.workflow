@@ -1,8 +1,15 @@
 # filetype=yaml
 ---
 doc: |
-  This workflow builds and installs qemu with system-x86, provisions a guest and boots it
-  it.
+  This workflow demonstrates how to use qemu via cijoe, specifically by:
+
+  * building qemu
+  * installing qemu
+  * provisioning a guest
+  * starting a guest
+  * stoppping a guest
+
+  This is done via worklets, which in turn are utilizing a qemu-wrapper
 
 steps:
 - name: info
@@ -18,6 +25,3 @@ steps:
 
 - name: report
   uses: core.reporter
-
-- name: inspect
-  uses: core.browser_open
