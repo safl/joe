@@ -44,6 +44,25 @@ package-__main__. The former provides a neat ``cijoe`` executable, the latter,
 in case of ``$PATH`` issues can be ignored since it is invokable via ``python3
 -m cijoe.cli``.
 
+Package Conventions
+===================
+
+Convention:
+
+* A package must provide a default configuration named "default.config"
+* A package must provide an example workflow named "example.workflow"
+
+Why:
+
+These files are used by ``joe -s`` to provide a quick starting point. When no
+arguments are given, then a config and workflow from the 'core' package is
+provided. When ``joe -s <pkg-namespace>`` is given, then the configuration and
+workflow is taken from the package. E.g. to get started with qemu, then use:
+
+``joe -s qemu``
+
+This makes it quite easy to grab and get going fast.
+
 Dropping the nomenclarature ``env``
 ===================================
 
