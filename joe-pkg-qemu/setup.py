@@ -1,6 +1,3 @@
-"""
-This is a package collecting testcases and auxilary utils for testing xNVMe using joe
-"""
 from setuptools import find_namespace_packages, setup
 
 setup(
@@ -23,6 +20,7 @@ setup(
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Console",
+        "Framework :: Pytest",
         "Intended Audience :: Developers",
         "Intended Audience :: System Administrators",
         "License :: OSI Approved :: Apache Software License",
