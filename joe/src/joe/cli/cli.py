@@ -65,8 +65,18 @@ def cli_resources(args, collector):
 def cli_skeleton(args, collector):
     """Create skeleton .config and .workflow"""
 
-    src_config = collector.resources["configs"]["core.default"].path
-    src_workflow = collector.resources["workflows"]["core.example"].path
+    resource = collector.resources["configs"].get(f"{args.skeleton}.default", None)
+    if resource is None:
+        print(f"'default.config' from '{args.skeleton}' is not available")
+        return 1
+    src_config = resource.path
+
+    resource = collector.resources["workflows"].get(f"{args.skeleton}.example", None)
+    if resource is None:
+        print(f"'example.workflow' from '{args.skeleton}' is not available")
+        return 1
+
+    src_workflow = resource.path
 
     dst_config = Path.cwd().joinpath(src_config.name)
     dst_workflow = Path.cwd().joinpath(src_workflow.name)
@@ -75,6 +85,13 @@ def cli_skeleton(args, collector):
     print(f"config: {dst_config}")
     print(f"workflow: {dst_workflow}")
     h3("")
+
+    if not src_config.exists():
+        print(f"'default.config' from '{args.skeleton}' is not available")
+        return 1
+    if not src_workflow.exists():
+        print(f"example.workflow' from '{args.skeleton}' is not available")
+        return 1
 
     if dst_config.exists():
         print(f"skipping config({dst_config}); already exists")
