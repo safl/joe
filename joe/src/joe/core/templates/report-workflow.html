@@ -117,21 +117,11 @@ div.image {
 
             <table class="table">
               <tbody>
-                <tr class="table-success">
-                  <td><button class="btn btn-success">Passed</button></td>
-                  <td>{{ status.passed }}</td>
-                </tr>
-                <tr class="table-danger">
-                  <td><button class="btn btn-danger">Failed</button></td>
-                  <td>{{ status.failed }}</td>
-                </tr>
-                <tr class="table-secondary">
-                  <td><button class="btn btn-secondary">Skipped</button></td>
-                  <td>{{ status.skipped }}</td>
-                </tr>
-                <tr class="table-info">
-                  <td><button class="btn btn-info">Elapsed</button></td>
-                  <td>{{ status.elapsed | round(2) }}</td>
+                <tr>
+                  <td class="table-success"><button class="btn btn-success">Passed: {{ status.passed }}</button></td>
+                  <td class="table-danger"><button class="btn btn-danger">Failed {{ status.failed }}</button></td>
+                  <td class="table-secondary"><button class="btn btn-secondary">Skipped {{ status.skipped }}</button></td>
+                  <td class="table-info"><button class="btn btn-info">Elapsed {{ status.elapsed | round(2) }}</button></td>
                 </tr>
               </tbody>
             </table>
