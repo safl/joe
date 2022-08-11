@@ -43,6 +43,16 @@ def populate_logs(args, collector, cijoe, step, workflow_state):
                     if runlog_path.exists():
                         results[nodeid]["run.log"] = runlog_path
 
+                for nodeid, result in results.items():
+                    if "failed" in result["outcome"]:
+                        result["status"] = "failed"
+                    elif "skipped" in result["outcome"]:
+                        result["status"] = "skipped"
+                    elif "passed" in result["outcome"]:
+                        result["status"] = "passed"
+                    else:
+                        result["status"] = "unknown"
+
                 step["logs"][filename]["tests"] = results
             else:
                 step["logs"][filename]["content"] = logfile.read()

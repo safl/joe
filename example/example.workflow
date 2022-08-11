@@ -30,7 +30,6 @@ steps:
 
 - name: test
   uses: core.testrunner
-#  uses: testrunner
   with:
     args: "--pyargs joe.core.selftest"
 
