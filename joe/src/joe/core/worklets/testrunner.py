@@ -30,6 +30,6 @@ def worklet_entry(args, collector, cijoe, step):
         pytest_cmd.append(str(args.config))
 
     pytest_cmd += step.get("with").get("args", "").split(" ")
-    rcode, state = cijoe.run(" ".join(pytest_cmd))
+    rcode, state = cijoe.run_local(" ".join(pytest_cmd))
 
     return rcode

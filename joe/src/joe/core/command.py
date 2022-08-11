@@ -41,11 +41,14 @@ class Cijoe(object):
         self.log = logging.getLogger()
         self.log.addHandler(self.__filehandler)
 
+        self.transport_local = transport.Local(self.config, self.output_path)
+
         ssh = self.config.get("transport", {}).get("ssh", None)
         if ssh:
             self.transport = transport.SSH(self.config, self.output_path)
         else:
-            self.transport = transport.Local(self.config, self.output_path)
+            self.transport = self.transport_local
+
 
     def get_config(self, subject=None):
         """Return the environment configuration"""
@@ -63,15 +66,7 @@ class Cijoe(object):
         self.output_ident = output_ident
         self.transport.output_ident = output_ident
 
-    def run(self, cmd, cwd=None, evars=None):
-        """
-        Execute the given shell command/expression via 'config.transport'
-
-        Commands executed using this will write stdout and stderr to file. The location
-        of the logfile is fixed to: "output_path/output_ident/cmd.log", such that the
-        location is a subfolder of the output_path. Unless somebody wants to break the
-        convention and call set_output_ident("../..")
-        """
+    def _run(self, cmd, cwd=None, evars=None, transport=None):
 
         cmd_output_dpath = os.path.join(self.output_path, self.output_ident)
         cmd_output_fpath = os.path.join(cmd_output_dpath, "run.log")
@@ -83,7 +78,7 @@ class Cijoe(object):
             logfile.flush()
 
             begin = time.time()
-            rcode = self.transport.run(cmd, cwd, evars, logfile)
+            rcode = transport.run(cmd, cwd, evars, logfile)
             end = time.time()
 
             state = {
@@ -103,6 +98,31 @@ class Cijoe(object):
                 state_file.write(str(state))
 
         return rcode, state
+
+    def run(self, cmd, cwd=None, evars=None):
+        """
+        Execute the given shell command/expression via 'config.transport'
+
+        Commands executed using this will write stdout and stderr to file. The location
+        of the logfile is fixed to: "output_path/output_ident/cmd.log", such that the
+        location is a subfolder of the output_path. Unless somebody wants to break the
+        convention and call set_output_ident("../..")
+        """
+
+        return self._run(cmd, cwd, evars, self.transport)
+
+
+    def run_local(self, cmd, cwd=None, evars=None):
+        """
+        Execute the given shell command/expression via local transport
+
+        Commands executed using this will write stdout and stderr to file. The location
+        of the logfile is fixed to: "output_path/output_ident/cmd.log", such that the
+        location is a subfolder of the output_path. Unless somebody wants to break the
+        convention and call set_output_ident("../..")
+        """
+
+        return self._run(cmd, cwd, evars, self.local_transport)
 
     def put(self, src, dst):
         """Transfer 'src' on 'dev_box' to 'dst' on **test_target**"""
