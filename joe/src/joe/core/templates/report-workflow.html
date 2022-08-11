@@ -239,9 +239,9 @@ div.image {
           {% endif %}
           <!-- workflow-step-content-runlog END -->
 
-          <!-- workflow-step-content-pytest BEGIN -->
-          {% if "pytest.log" in step['logs'] %}
-          <div class="collapse" id="log_pytest_{{ step['id'] }}" data-bs-parent="#CONTENT_{{ step['id'] }}">
+          <!-- workflow-step-content-testrunner BEGIN -->
+          {% if "testrunner.log" in step['logs'] %}
+          <div class="collapse" id="log_testrunner_{{ step['id'] }}" data-bs-parent="#CONTENT_{{ step['id'] }}">
             <div class="card-body">
               <table class="table">
                 <thead>
@@ -253,7 +253,7 @@ div.image {
                   </tr>
                 </thead>
                 <tbody>
-                  {% for nodeid, testcase in step["logs"]["pytest.log"]["tests"].items() %}
+                  {% for nodeid, testcase in step["logs"]["testrunner.log"]["tests"].items() %}
                   {% if testcase["status"] == "failed" %}
                     {% set tcase_style = "danger" %}
                   {% elif testcase["status"] == "skipped" %}
@@ -281,7 +281,7 @@ div.image {
             </div>
           </div>
           {% endif %}
-          <!-- workflow-step-content-pytest END -->
+          <!-- workflow-step-content-testrunner END -->
 
         </div>
         <!-- workflow-step-content END -->

@@ -22,7 +22,7 @@ def worklet_entry(args, collector, cijoe, step):
     pytest_cmd += ["--output", str(args.output / cijoe.output_ident)]
     pytest_cmd += [
         "--report-log",
-        str(args.output / cijoe.output_ident / "pytest.log"),
+        str(args.output / cijoe.output_ident / "testrunner.log"),
     ]
 
     if args.config:

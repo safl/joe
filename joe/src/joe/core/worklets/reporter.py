@@ -6,7 +6,7 @@ from joe.core.misc import h2, h3, dict_from_yaml
 
 def populate_logs(args, collector, cijoe, step, workflow_state):
 
-    logfiles = ["run.log", "pytest.log"]
+    logfiles = ["run.log", "testrunner.log"]
 
     for step, filename in [(step, filename) for step in workflow_state["steps"] for filename in logfiles]:
         if "logs" not in step:
@@ -19,7 +19,7 @@ def populate_logs(args, collector, cijoe, step, workflow_state):
         step["logs"][filename] = {"path": path, "content": ""}
 
         with path.open() as logfile:
-            if filename == "pytest.log":
+            if filename == "testrunner.log":
                 results = {}
 
                 for count, line in enumerate(logfile.readlines()):
@@ -61,7 +61,7 @@ def populate_logs(args, collector, cijoe, step, workflow_state):
 def worklet_entry(args, collector, cijoe, step):
     """Produce a HTML report of the 'workflow.state' file in 'args.output'"""
 
-    template_path = collector.resources["templates"]["report-workflow"].path
+    template_path = collector.resources["templates"]["core.report-workflow"].path
     report_path = args.output / "report.html"
 
     print(f"template: {template_path}")
