@@ -110,23 +110,28 @@ div.image {
 
             <div class="container">
               <p>
-              errors, skipped, failure, success
+              Below is a status summary for steps, the color-coding is re-used below on the steps
+              themselves, as well as in test-reports from e.g. pytest.
               </p>
             </div>
 
             <table class="table">
               <tbody>
                 <tr class="table-success">
-                  <td>Success</td>
-                  <td>{{ status.success }}</td>
+                  <td><button class="btn btn-success">Passed</button></td>
+                  <td>{{ status.passed }}</td>
                 </tr>
                 <tr class="table-danger">
-                  <td>Failure</td>
-                  <td>{{ status.failure }}</td>
+                  <td><button class="btn btn-danger">Failed</button></td>
+                  <td>{{ status.failed }}</td>
                 </tr>
                 <tr class="table-secondary">
-                  <td>Elapsed</td>
-                  <td>{{ status.elapsed }}</td>
+                  <td><button class="btn btn-secondary">Skipped</button></td>
+                  <td>{{ status.skipped }}</td>
+                </tr>
+                <tr class="table-info">
+                  <td><button class="btn btn-info">Elapsed</button></td>
+                  <td>{{ status.elapsed | round(2) }}</td>
                 </tr>
               </tbody>
             </table>
@@ -150,10 +155,10 @@ div.image {
 
         <!-- workflow-step BEGIN -->
         {% for step in steps%}
-        {% if step["status"]["failure"] %}
+        {% if step["status"]["failed"] %}
           {% set step_state = "Failed" %}
           {% set step_style = "danger" %}
-        {% elif step["status"]["success"] %}
+        {% elif step["status"]["passed"] %}
           {% set step_state = "Ok" %}
           {% set step_style = "success" %}
         {% elif step["status"]["skipped"] %}
@@ -187,7 +192,7 @@ div.image {
                 <span style="font-family: monospace;"
                       title="Elapsed Wall-Clock time in seconds"
                       data-bs-original-title="Tooltip on right">
-                  0.0 sec
+                  {{ step["status"]["elapsed"] | round(2) }} sec
                 </span>
               </button>
 

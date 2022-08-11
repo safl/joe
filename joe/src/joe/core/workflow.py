@@ -18,7 +18,7 @@ class Workflow(Resource):
         "doc": "",
         "config": {},
         "steps": [],
-        "status": {"skipped": 0, "failure": 0, "success": 0, "elapsed": 0.0},
+        "status": {"skipped": 0, "failed": 0, "passed": 0, "elapsed": 0.0},
     }
 
     def __init__(self, path, pkg=None):
@@ -136,7 +136,7 @@ class Workflow(Resource):
         state["config"] = yml.get("config", {})
         for count, step in enumerate(yml["steps"], 1):
             step["count"] = count
-            step["status"] = {"skipped": 0, "success": 0, "failure": 0, "elapsed": 0.0}
+            step["status"] = {"skipped": 0, "passed": 0, "failed": 0, "elapsed": 0.0}
             step["id"] = f"{count}_{step['name']}"
 
             state["steps"].append(step)
@@ -167,6 +167,8 @@ class Workflow(Resource):
         self.state_dump(args.output / Workflow.STATE_FILENAME)
 
         for step in self.state["steps"]:
+            begin = time.time()
+
             cijoe.set_output_ident(step["id"])
             os.makedirs(os.path.join(cijoe.output_path, step["id"]), exist_ok=True)
 
@@ -178,7 +180,7 @@ class Workflow(Resource):
                 for cmd_count, cmd in enumerate(step["run"], 1):
                     rcode, state = cijoe.run(cmd)
 
-                    step["status"]["failure" if rcode else "success"] = 1
+                    step["status"]["failed" if rcode else "passed"] = 1
                     if rcode:
                         break
             else:
@@ -188,16 +190,15 @@ class Workflow(Resource):
                 err = self.collector.resources["worklets"][worklet_ident].func(
                     args, self.collector, cijoe, step
                 )
-                step["status"]["failure" if err else "success"] = 1
+                step["status"]["failed" if err else "passed"] = 1
 
-            for key in ["skipped", "failure", "success"]:
+            for key in ["skipped", "failed", "passed"]:
                 self.state["status"][key] += step["status"][key]
 
-            if step["status"]["failure"]:
+            step["status"]["elapsed"] = time.time() - begin
+            if step["status"]["failed"]:
                 break
 
             self.state_dump(args.output / Workflow.STATE_FILENAME)
-
-        time.sleep(1)
 
         return 0
