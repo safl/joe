@@ -15,6 +15,6 @@ def worklet_entry(cijoe, args, step):
 
     build_dir = os.path.join(conf["repository"], "build")
 
-    cijoe.run("make install", cwd=build_dir)
+    cijoe.run_local("make install", cwd=build_dir)
 
     return True

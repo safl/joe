@@ -37,8 +37,8 @@ def worklet_entry(cijoe, args, step):
         "--target-list=x86_64-softmmu",
     ]
 
-    cijoe.run(f"mkdir -p {build_dir}")
-    cijoe.run("./configure " + " ".join(configure_args), cwd=build_dir)
-    cijoe.run("make -j $(nproc)", cwd=build_dir)
+    cijoe.run_local(f"mkdir -p {build_dir}")
+    cijoe.run_local("./configure " + " ".join(configure_args), cwd=build_dir)
+    cijoe.run_local("make -j $(nproc)", cwd=build_dir)
 
     return True
