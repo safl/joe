@@ -202,12 +202,10 @@ class Workflow(Resource):
                 self.state["status"][key] += step["status"][key]
 
             step["status"]["elapsed"] = time.time() - begin
-            if step["status"]["failed"]:
-                h3(f"step({step['name']}) : got error, exiting early")
+            self.state_dump(args.output / Workflow.STATE_FILENAME)
+
             if step["status"]["failed"] and fail_fast:
                 h3(f"step({step['name']}) : exiting because ('fail_fast: True')")
                 break
-
-            self.state_dump(args.output / Workflow.STATE_FILENAME)
 
         return 1 if self.state["status"]["failed"] else 0
