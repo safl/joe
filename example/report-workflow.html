@@ -249,10 +249,19 @@ div.image {
                 </thead>
                 <tbody>
                   {% for nodeid, testcase in step["logs"]["pytest.log"]["tests"].items() %}
-                  <tr>
+                  {% if testcase["status"] == "failed" %}
+                    {% set tcase_style = "danger" %}
+                  {% elif testcase["status"] == "skipped" %}
+                    {% set tcase_style = "light" %}
+                  {% elif testcase["status"] == "passed" %}
+                    {% set tcase_style = "success" %}
+                  {% else %}
+                    {% set tcase_style = "secondary" %}
+                  {% endif %}
+                  <tr class="table-{{ tcase_style }}">
                     <td>{{ nodeid }}</td>
-                    <td>{{ testcase['outcome'] }}</td>
-                    <td>{{ testcase['duration'] }}</td>
+                    <td>{{ testcase['status'] }}</td>
+                    <td>{{ testcase['duration'] | round(4) }}</td>
                     <td>
                       {% if testcase["run.log"] %}
                       <a href="{{ testcase["run.log"]}}">run.log</a>
