@@ -3,27 +3,60 @@ import pprint
 import json
 from joe.core.misc import h2, h3, dict_from_yaml
 
-def load_pytest_reportlog(args, step):
 
-    path = (args.output / step["id"] / "pytest.log")
-    if not path.exists():
-        return []
+def populate_logs(args, collector, cijoe, step, workflow_state):
 
-    tests = []
-    with path.open() as logfile:
-        for line in logfile.readlines():
-            result = json.loads(line)
+    logfiles = ["run.log", "pytest.log"]
 
-            if result["$report_type"] != "TestReport":
-                continue
+    for step, filename in [(step, filename) for step in workflow_state["steps"] for filename in logfiles]:
+        if "logs" not in step:
+            step["logs"] = {}
 
-            runlog_path = args.output / step["id"] / result["nodeid"] / "run.log"
-            if runlog_path.exists():
-                result["run.log"] = runlog_path
+        path = args.output / step["id"] / filename
+        if not path.exists():
+            continue
 
-            tests.append(result)
+        step["logs"][filename] = {"path": path, "content": ""}
 
-    return tests
+        with path.open() as logfile:
+            if filename == "pytest.log":
+                results = {}
+
+                for count, line in enumerate(logfile.readlines()):
+                    result = json.loads(line)
+                    if result["$report_type"] != "TestReport":
+                        continue
+
+                    nodeid = result["nodeid"]
+                    if nodeid not in results:
+                        results[nodeid] = {
+                            "count": count,
+                            "nodeid": nodeid,
+                            "duration": 0.0,
+                            "outcome": [],
+                            "run.log": "",
+                        }
+                    results[nodeid]["duration"] += result["duration"]
+                    results[nodeid]["outcome"] += [result["outcome"]]
+
+                    runlog_path = args.output / step["id"] / result["nodeid"] / "run.log"
+                    if runlog_path.exists():
+                        results[nodeid]["run.log"] = runlog_path
+
+                for nodeid, result in results.items():
+                    if "failed" in result["outcome"]:
+                        result["status"] = "failed"
+                    elif "skipped" in result["outcome"]:
+                        result["status"] = "skipped"
+                    elif "passed" in result["outcome"]:
+                        result["status"] = "passed"
+                    else:
+                        result["status"] = "unknown"
+
+                step["logs"][filename]["tests"] = results
+            else:
+                step["logs"][filename]["content"] = logfile.read()
+
 
 def worklet_entry(args, collector, cijoe, step):
     """Produce a HTML report of the 'workflow.state' file in 'args.output'"""
@@ -37,14 +70,8 @@ def worklet_entry(args, collector, cijoe, step):
 
     workflow_state = dict_from_yaml(args.output / "workflow.state")
 
-    # Add auxilary information
-    for step in workflow_state["steps"]:
-        runlog_path = (args.output / step["id"] / "run.log")
-        step["run.log"] = runlog_path if runlog_path.exists() else None
+    populate_logs(args, collector, cijoe, step, workflow_state)
 
-        step["pytest"] = load_pytest_reportlog(args, step)
-
-    # Render
     template = jinja2.Environment(
         autoescape=True,
         loader=jinja2.FileSystemLoader(template_path.parent)
