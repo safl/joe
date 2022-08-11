@@ -1,8 +1,9 @@
 """
     Open generated report, if it exists.
 """
-from pathlib import Path
 import webbrowser
+from pathlib import Path
+
 
 def worklet_entry(args, collector, cijoe, step):
     """Produce a HTML report of the 'workflow.state' file in 'args.output'"""

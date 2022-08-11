@@ -49,7 +49,6 @@ class Cijoe(object):
         else:
             self.transport = self.transport_local
 
-
     def get_config(self, subject=None):
         """Return the environment configuration"""
 
@@ -110,7 +109,6 @@ class Cijoe(object):
         """
 
         return self._run(cmd, cwd, evars, self.transport)
-
 
     def run_local(self, cmd, cwd=None, evars=None):
         """

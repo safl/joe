@@ -1,14 +1,18 @@
-import jinja2
-import pprint
 import json
-from joe.core.misc import h2, h3, dict_from_yaml
+import pprint
+
+import jinja2
+
+from joe.core.misc import dict_from_yaml, h2, h3
 
 
 def populate_logs(args, collector, cijoe, step, workflow_state):
 
     logfiles = ["run.log", "testrunner.log"]
 
-    for step, filename in [(step, filename) for step in workflow_state["steps"] for filename in logfiles]:
+    for step, filename in [
+        (step, filename) for step in workflow_state["steps"] for filename in logfiles
+    ]:
         if "logs" not in step:
             step["logs"] = {}
 
@@ -39,7 +43,9 @@ def populate_logs(args, collector, cijoe, step, workflow_state):
                     results[nodeid]["duration"] += result["duration"]
                     results[nodeid]["outcome"] += [result["outcome"]]
 
-                    runlog_path = args.output / step["id"] / result["nodeid"] / "run.log"
+                    runlog_path = (
+                        args.output / step["id"] / result["nodeid"] / "run.log"
+                    )
                     if runlog_path.exists():
                         results[nodeid]["run.log"] = runlog_path
 
@@ -73,8 +79,7 @@ def worklet_entry(args, collector, cijoe, step):
     populate_logs(args, collector, cijoe, step, workflow_state)
 
     template = jinja2.Environment(
-        autoescape=True,
-        loader=jinja2.FileSystemLoader(template_path.parent)
+        autoescape=True, loader=jinja2.FileSystemLoader(template_path.parent)
     ).get_template(template_path.name)
 
     with (report_path).open("w") as report:
