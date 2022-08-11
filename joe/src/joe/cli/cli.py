@@ -51,6 +51,7 @@ def cli_resources(args, collector):
 
     h2("Resources")
     for category, resources in sorted(collector.resources.items()):
+        h3(f"{category}")
         print(f"{category}:" + ("" if resources.items() else " ~"))
 
         for ident, path in sorted(resources.items()):
