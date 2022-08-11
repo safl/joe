@@ -3,7 +3,7 @@
     Builds qemu system(x86_64-softmmu), disabling most graphics related features, and
     enabling virtfs and debugging.
 """
-import os
+from pathlib import Path
 
 
 def worklet_entry(cijoe, args, step):
@@ -13,7 +13,7 @@ def worklet_entry(cijoe, args, step):
     if not conf:
         return False
 
-    build_dir = os.path.join(conf["repository"], "build")
+    build_dir = Path(conf["repository"]) / "build"
 
     configure_args = [
         '--audio-drv-list=""',
