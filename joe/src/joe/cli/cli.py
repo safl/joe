@@ -184,8 +184,12 @@ def parse_args():
     parser.add_argument(
         "-s",
         "--skeleton",
-        action="store_true",
-        help="Create a default '.config' and '.workflow' in `pwd` then exit.",
+        action="store",
+        const="core",
+        type=str,
+        nargs="?",
+        default=None,
+        help="Create a 'default.config' and 'example.workflow' in `pwd` then exit.",
     )
     parser.add_argument(
         "-v",
@@ -210,6 +214,8 @@ def main():
 
     if args.resources:
         return cli_resources(args, collector)
+
+    pprint.pprint(args)
 
     if args.skeleton:
         return cli_skeleton(args, collector)
