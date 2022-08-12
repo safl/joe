@@ -16,7 +16,6 @@ The :ref:`sec-quickstart` section is provided for the impatient reader. For a
 thorough description, the rest of the documentation is provided with the
 :ref:`sec-introduction` serving as the starting point.
 
-
 Contents:
 
 .. toctree::
