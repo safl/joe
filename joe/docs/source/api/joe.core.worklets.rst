@@ -9,42 +9,11 @@ joe.core.worklets package
 Submodules
 ----------
 
-joe.core.worklets.browser\_open module
---------------------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: joe.core.worklets.browser_open
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-joe.core.worklets.dump\_metrics module
---------------------------------------
-
-.. automodule:: joe.core.worklets.dump_metrics
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-joe.core.worklets.extract module
---------------------------------
-
-.. automodule:: joe.core.worklets.extract
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-joe.core.worklets.reporter module
----------------------------------
-
-.. automodule:: joe.core.worklets.reporter
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-joe.core.worklets.testrunner module
------------------------------------
-
-.. automodule:: joe.core.worklets.testrunner
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   joe.core.worklets.browser_open
+   joe.core.worklets.dump_metrics
+   joe.core.worklets.extract
+   joe.core.worklets.reporter
+   joe.core.worklets.testrunner

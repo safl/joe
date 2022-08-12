@@ -22,42 +22,11 @@ Subpackages
 Submodules
 ----------
 
-joe.core.command module
------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: joe.core.command
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-joe.core.misc module
---------------------
-
-.. automodule:: joe.core.misc
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-joe.core.resources module
--------------------------
-
-.. automodule:: joe.core.resources
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-joe.core.transport module
--------------------------
-
-.. automodule:: joe.core.transport
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-joe.core.workflow module
-------------------------
-
-.. automodule:: joe.core.workflow
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   joe.core.command
+   joe.core.misc
+   joe.core.resources
+   joe.core.transport
+   joe.core.workflow

@@ -9,10 +9,7 @@ joe.pytest\_plugin package
 Submodules
 ----------
 
-joe.pytest\_plugin.hooks\_and\_fixtures module
-----------------------------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: joe.pytest_plugin.hooks_and_fixtures
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   joe.pytest_plugin.hooks_and_fixtures

@@ -9,10 +9,7 @@ joe.cli package
 Submodules
 ----------
 
-joe.cli.cli module
-------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: joe.cli.cli
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   joe.cli.cli

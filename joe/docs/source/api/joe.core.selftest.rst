@@ -9,42 +9,11 @@ joe.core.selftest package
 Submodules
 ----------
 
-joe.core.selftest.conftest module
----------------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: joe.core.selftest.conftest
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-joe.core.selftest.test\_collector module
-----------------------------------------
-
-.. automodule:: joe.core.selftest.test_collector
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-joe.core.selftest.test\_commands module
----------------------------------------
-
-.. automodule:: joe.core.selftest.test_commands
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-joe.core.selftest.test\_transfer module
----------------------------------------
-
-.. automodule:: joe.core.selftest.test_transfer
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-joe.core.selftest.test\_workflow module
----------------------------------------
-
-.. automodule:: joe.core.selftest.test_workflow
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   joe.core.selftest.conftest
+   joe.core.selftest.test_collector
+   joe.core.selftest.test_commands
+   joe.core.selftest.test_transfer
+   joe.core.selftest.test_workflow

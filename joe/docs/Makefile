@@ -15,7 +15,7 @@ endef
 apidoc:
 	@echo "## apidoc"
 	rm -rf ${SPHINX_SOURCEDIR}/api
-	${PY_ENV_ACTIVATE} && sphinx-apidoc --implicit-namespaces -M -f --tocfile index -o ${SPHINX_SOURCEDIR}/api ../src/joe
+	${PY_ENV_ACTIVATE} && sphinx-apidoc --implicit-namespaces -e -H "API" -M -f --tocfile index -o ${SPHINX_SOURCEDIR}/api ../src/joe
 
 define build-help
 # Build the documentation (invoke sphinx)
@@ -53,3 +53,5 @@ venv-setup:
 	@${PY_ENV} -m pip install --upgrade pip
 	@echo "## venv-setup: installing dependencies (for sphinx)"
 	@${PY_ENV} -m pip install -r requirements.txt
+	@echo "## venv-setup: installing cijoe (for sphinx autodoc)"
+	@${PY_ENV} -m pip install ..
