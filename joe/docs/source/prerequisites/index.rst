@@ -44,8 +44,8 @@ unprompted login and verifying that the setup is ready to use with **cijoe**.
 
 .. _sec-ssh:
 
-Secure SHell (SSH) Setup
-------------------------
+SSH Setup (required)
+--------------------
 
 **cijoe** uses ``SSH`` to run commands remotely. This section provides a couple
 of setup notes which makes it a pleasant experience. Start with setting up
@@ -135,8 +135,8 @@ It should now be ready for running ``ssh-copy-id`` as described above.
 
 .. _sec-ssh-sshfs:
 
-sshfs
------
+sshfs (optional)
+----------------
 
 The Secure-SHell File-System is a libfuse-based user space file-system which
 provides a very easy way to mount a remote file-system via SSH. Install it

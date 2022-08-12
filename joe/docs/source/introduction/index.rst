@@ -11,9 +11,9 @@ as the **dev box**.
 Said **changes** are then deployed for testing on one or more
 boxes/VMs/systems, we refer to the latter as **test-targets**.
 
-With **cijoe** you create an :ref:`sec-environment` for each of available
+With **cijoe** you create an :ref:`sec-config` for each of available
 **test-target**. Thus, when you are e.g. :ref:`sec-running`, then you can
-easily switch **test-target** by providing a different :ref:`sec-environment`.
+easily switch **test-target** by providing a different :ref:`sec-config`.
 
 .. _devenv:
 .. figure:: ../_static/environment.png
@@ -25,13 +25,13 @@ easily switch **test-target** by providing a different :ref:`sec-environment`.
 The sections :ref:`sec-prerequisites` and :ref:`sec-installation`  describe
 what is needed on your **dev box** and your **test-target(s)**.
 
-.. note:: An :ref:`sec-environment-example` **environment definition** for a
+.. note:: An :ref:`sec-config-example` **environment definition** for a
    **test-target** named ``box01`` is used throughout the documentation, such
    as in the examples of :ref:`sec-running` and dropping into the
    :ref:`sec-shell`.
 
 Once you have ensured that :ref:`sec-prerequisites` are met, have gone through
-the :ref:`sec-installation`, and created your :ref:`sec-environment`, then you
+the :ref:`sec-installation`, and created your :ref:`sec-config`, then you
 have the basics in place and you can start :ref:`sec-running`, generate reports
 using the :ref:`sec-post-processing-reporter`, extract **metrics** of interest
 using the :ref:`sec-post-processing-extractor` and feed extracted metrics to

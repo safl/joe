@@ -120,11 +120,11 @@ Bash scripts look more like Python and less like C++ and PHP.
 Reference Environment(s)
 ========================
 
-The main instrumental entity in **cijoe** is the :ref:`sec-environment`. To
+The main instrumental entity in **cijoe** is the :ref:`sec-config`. To
 assist in the creation of these, then a **cijoe package** provide examples aka
 **reference environments**. These serve as the name suggests, as a reference
 for the user of a given **cijoe package** when creating an
-:ref:`sec-environment` using a what a given package provides.
+:ref:`sec-config` using a what a given package provides.
 
 This includes the variables required by :ref:`sec-packages-testcases`,
 :ref:`sec-packages-hooks`, and :ref:`sec-packages-modules`. Reference
@@ -175,7 +175,7 @@ first thing it does.
    :ref:`sec-packages-testcases` are repeating the same commands, and
    maintaining differences is error-prone. The ``env`` comes in handy here as
    it ensures that the required variables are well-defined in the
-   :ref:`sec-environment`. The **env-verification** might be the only function
+   :ref:`sec-config`. The **config-verification** might be the only function
    you need in your module.
 
 .. note:: Modules are installed into the ``$CIJ_MODULES`` directory, jump to
