@@ -26,6 +26,14 @@ apidoc:
 	rm -rf ${SPHINX_SOURCEDIR}/api
 	${PY_ENV_ACTIVATE} && sphinx-apidoc --implicit-namespaces -e -H "API" -M -f --tocfile index -o ${SPHINX_SOURCEDIR}/api ../src/joe
 
+define kmdo-help
+# Generate api documentation using Sphinx autodoc
+endef
+.PHONY: kmdo
+kmdo:
+	@echo "## kmdo"
+	rm -rf ${SPHINX_SOURCEDIR}/api
+
 define build-help
 # Build the documentation (invoke sphinx)
 endef

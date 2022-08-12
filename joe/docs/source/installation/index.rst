@@ -14,7 +14,7 @@ Do a **user-local** install of ``cijoe`` and the **cijoe package** named
 
 .. code-block:: bash
 
-  python3 -m pip install --user cijoe cijoe-pkg-example
+  python3 -m pip install --user cijoe
 
 The **user-local** install (``--user``) isolates the installation to the
 current user account, instead of installing it **system-wide** and potentially
@@ -30,17 +30,18 @@ used through the documentation.
 .. tip:: To create your own **cijoe package**, have a look at the
    :ref:`sec-packages` section.
 
-====
+Check installation
+------------------
 
 Check that it installed correctly, by invoking one of **cijoe** command-line
-tools:
+tool:
 
-.. literalinclude:: cij_runner.cmd
+.. literalinclude:: joe.cmd
    :language: bash
 
 It should provide a usage page that looks like this:
 
-.. literalinclude:: cij_runner.out
+.. literalinclude:: joe.out
    :language: bash
 
 If this does not produce the usage-page of the runner, then your system is
@@ -57,6 +58,3 @@ to your shell, e.g. for Bash do:
 
 Once you have verified that **cijoe** is installed correctly and that you can
 execute the command-line tools, then procede to :ref:`sec-running`.
-
-.. _Bash: https://www.gnu.org/software/bash/
-.. _Python 3: https://www.python.org/

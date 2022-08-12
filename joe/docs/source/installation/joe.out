@@ -1,0 +1,22 @@
+usage: joe [-h] [-w WORKFLOW] [-c CONFIG] [-o OUTPUT] [-l] [-r]
+           [-s [SKELETON]] [-v]
+           [step ...]
+
+positional arguments:
+  step                  One or more workflow steps to run.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -w WORKFLOW, --workflow WORKFLOW
+                        Path to Workflow file.
+  -c CONFIG, --config CONFIG
+                        Path to the Configuration file.
+  -o OUTPUT, --output OUTPUT
+                        Path to output directory.
+  -l, --lint            Check integrity of workflow and exit.
+  -r, --resources       List collected resources and exit.
+  -s [SKELETON], --skeleton [SKELETON]
+                        Create a 'default.config' and 'example.workflow' in
+                        `pwd` then exit.
+  -v, --version         Print the version number of 'joe' and exit.
+
