@@ -8,14 +8,16 @@ Run the following commands in your shell:
 
 .. code-block:: bash
 
-  # Install CIJOE and the CIJOE example package
-  python3 -m pip install --user cijoe cijoe-pkg-example
+  # Install CIJOE
+  python3 -m pip install --user cijoe
+
+  # Create a default configuration and workflow
+  joe -s
 
   # Run the example workflow, locally
-  python3 -m joe.cli run example
+  joe
 
-  # Inspect the report
-  xdg-open cijoe*/report.html
+.. NOTE: In case 'joe' is not found. Then you can run it via ``python3 -m joe.cli``
 
 In case the above did not work for you, or you just want to know what went on
 above, or you want to know what else you can do with **cijoe**, or whatever

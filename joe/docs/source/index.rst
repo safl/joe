@@ -32,8 +32,6 @@ Contents:
    workflows/index.rst
    worklets/index.rst
 
-   postprocessing/index.rst
-   provisioning/index.rst
    packages/index.rst
 
    ssh/index.rst
