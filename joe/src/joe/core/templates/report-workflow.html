@@ -254,7 +254,7 @@ div.image {
                     {% set tcase_style = "secondary" %}
                   {% endif %}
                   <tr class="table-{{ tcase_style }}">
-                    <td>{{ nodeid }}</td>
+                    <td><b>{{ nodeid }}</b></td>
                     <td>{{ testcase['status'] }}</td>
                     <td>{{ testcase['duration'] | round(4) }}</td>
                     <td>
