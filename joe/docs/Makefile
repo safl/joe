@@ -6,7 +6,7 @@ PY_ENV = ${PY_ENV_ACTIVATE} && ${PY_BIN}
 SPHINX_SOURCEDIR=source
 SPHINX_BUILDDIR=build
 
-default: clean apidoc build view
+all: clean apidoc build view
 
 define build-help
 # Remove auto-generated documentation the source-dir and the generated docs in build-dir
