@@ -11,10 +11,10 @@ Run the following commands in your shell:
   # Install CIJOE
   python3 -m pip install --user cijoe
 
-  # Create a default configuration and workflow
+  # Create a default configuration and a workflow example
   joe -s
 
-  # Run the example workflow, locally
+  # Run the workflow using the default configuration
   joe
 
 .. NOTE: In case 'joe' is not found. Then you can run it via ``python3 -m joe.cli``
