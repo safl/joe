@@ -6,7 +6,16 @@ PY_ENV = ${PY_ENV_ACTIVATE} && ${PY_BIN}
 SPHINX_SOURCEDIR=source
 SPHINX_BUILDDIR=build
 
-default: apidoc build view
+default: clean apidoc build view
+
+define build-help
+# Remove auto-generated documentation the source-dir and the generated docs in build-dir
+endef
+.PHONY: clean
+clean:
+	@echo "## clean"
+	rm -rf "${SPHINX_BUILDDIR}"
+	rm -rf "${SPHINX_SOURCEDIR}/api"
 
 define apidoc-help
 # Generate api documentation using Sphinx autodoc
@@ -24,15 +33,6 @@ endef
 build:
 	@echo "## build"
 	${PY_ENV_ACTIVATE} && sphinx-build -b html ${SPHINX_SOURCEDIR} ${SPHINX_BUILDDIR}
-
-define build-help
-# Remove documentation in build directory
-endef
-.PHONY: clean
-clean:
-	@echo "## clean"
-	rm -rf "${SPHINX_BUILDDIR}"
-	rm -rf "${SPHINX_SOURCEDIR}/api"
 
 define build-help
 # Open the HTML documentation using (xdg-open)

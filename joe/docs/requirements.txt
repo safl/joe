@@ -1,4 +1,4 @@
-sphinx
-sphinx_rtd_theme
-sphinx-autopackagesummary
 kmdo
+sphinx
+sphinx-autopackagesummary
+sphinx_rtd_theme

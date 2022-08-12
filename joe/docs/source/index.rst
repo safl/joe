@@ -28,15 +28,11 @@ Contents:
    prerequisites/index.rst
    installation/index.rst
 
-
    configs/index.rst
    workflows/index.rst
    worklets/index.rst
 
-   environment/index.rst
-   running/index.rst
    postprocessing/index.rst
-   shell/index.rst
    provisioning/index.rst
    packages/index.rst
 
