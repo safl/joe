@@ -39,6 +39,7 @@ Contents:
    configs/index.rst
    workflows/index.rst
    worklets/index.rst
+   resources/index.rst
 
    packages/index.rst
 
