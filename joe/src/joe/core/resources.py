@@ -4,7 +4,7 @@
 
     Except for the core library, then everything else is implemented as a dynamically
     collectable and loadable resources. That is, configuration-files, worklets,
-    workflows, and auxilary testfiles.
+    workflows, and auxilaryfiles.
 
     Resources are "collectable" from Python namespace-packages, as well as directly for
     the current work directory, and recursively down one sub-directory.
@@ -121,7 +121,7 @@ class Collector(object):
             resource.content_from_file()
 
             if not resource.content_has_worklet_func():
-                category = "testfiles"
+                category = "auxilary"
         else:
             resource = Resource(candidate, pkg)
 

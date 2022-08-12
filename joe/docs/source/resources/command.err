@@ -1,0 +1,13 @@
+
+Traceback (most recent call last):
+  File "/home/safl/.local/bin/joe", line 8, in <module>
+    sys.exit(main())
+  File "/home/safl/.local/lib/python3.9/site-packages/joe/cli/cli.py", line 227, in main
+    collector.collect()
+  File "/home/safl/.local/lib/python3.9/site-packages/joe/core/resources.py", line 176, in collect
+    self.collect_from_path()
+  File "/home/safl/.local/lib/python3.9/site-packages/joe/core/resources.py", line 148, in collect_from_path
+    self.process_candidate(candidate, category, None)
+  File "/home/safl/.local/lib/python3.9/site-packages/joe/core/resources.py", line 128, in process_candidate
+    self.resources[category][resource.ident] = resource
+KeyError: 'testfiles'

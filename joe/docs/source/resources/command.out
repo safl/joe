@@ -1,0 +1,38 @@
+== Resources ===============================================
+Resources collected by the CIJOE collector are listed below.
+------------------------------------------------------------
+auxilary:
+  - ident: core.example
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/core/auxilary/example.perfreq
+configs:
+  - ident: core.default
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/core/configs/default.config
+  - ident: core.transport-ssh
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/core/configs/transport-ssh.config
+  - ident: qemu.default
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/configs/default.config
+perf_reqs: ~
+templates:
+  - ident: core.report-workflow
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/core/templates/report-workflow.html
+workflows:
+  - ident: core.example
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/core/workflows/example.workflow
+  - ident: qemu.example
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/workflows/example.workflow
+worklets:
+  - ident: core.browser_open
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/core/worklets/browser_open.py
+  - ident: core.dump_metrics
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/core/worklets/dump_metrics.py
+  - ident: core.extract
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/core/worklets/extract.py
+  - ident: core.reporter
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/core/worklets/reporter.py
+  - ident: core.testrunner
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/core/worklets/testrunner.py
+  - ident: qemu.build_x86
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/worklets/build_x86.py
+  - ident: qemu.install
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/worklets/install.py
+

@@ -29,16 +29,6 @@ for your project. Start by downloading and unpacking the `zip-file
 <https://github.com/refenv/cijoe-pkg-example/archive/refs/heads/main.zip>`_, if
 you have ``wget`` and ``unzip`` then run:
 
-.. literalinclude:: fetch.cmd
-   :language: bash
-   :lines: 3-
-
-Once retrieved then modify the following files::
-
-  setup.py
-  Makefile
-  README.rst
-
 Go through the files, replacing all instances of "**example**" with the name of
 your project, make certain you modify ``setup.py`` appropriately, providing the
 correct author information, license, version, email, and all the other Python

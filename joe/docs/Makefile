@@ -33,6 +33,7 @@ endef
 kmdo:
 	@echo "## kmdo"
 	rm -rf ${SPHINX_SOURCEDIR}/api
+	kmdo source
 
 define build-help
 # Build the documentation (invoke sphinx)
