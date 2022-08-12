@@ -1,3 +1,5 @@
+.. _sec-worklets:
+
 Worklets
 ========
 
