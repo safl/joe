@@ -7,10 +7,10 @@
 
 **cijoe** is a means to collect, and loosely formalize, the bits and pieces
 commonly used during systems development in order to obtain an **automated**
-and **reproducible** workflow. **cijoe** comes in handy regardless of whether
-your development environment consist of a single machine, a collection of
-locally available hardware resources, virtual machines, integrated **CI/CD**
-pipelines, or a mixture thereof.
+and **reproducible** workflow.
+
+Quickstart
+==========
 
 .. code-block:: bash
 
@@ -23,8 +23,7 @@ pipelines, or a mixture thereof.
   # Run the example workflow, locally
   joe
 
-The :ref:`sec-quickstart` section is provided for the impatient reader. For a
-thorough description, the rest of the documentation is provided with the
+For a thorough description, the rest of the documentation is provided with the
 :ref:`sec-introduction` serving as the starting point.
 
 Contents:
@@ -33,7 +32,6 @@ Contents:
    :maxdepth: 2
    :includehidden:
 
-   quickstart.rst
    introduction/index.rst
    prerequisites/index.rst
    installation/index.rst
