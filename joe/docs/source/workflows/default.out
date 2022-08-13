@@ -1,4 +1,4 @@
-Namespace(step=[], workflow=PosixPath('/home/safl/git/joe/joe/docs/source/workflows/example.workflow'), config=PosixPath('/home/safl/git/joe/joe/docs/source/workflows/default.config'), output=PosixPath('/home/safl/git/joe/joe/docs/source/workflows/cijoe-output-20220812-202613'), lint=False, resources=False, skeleton='core', version=False)
+Namespace(step=[], workflow=PosixPath('/home/safl/git/joe/joe/docs/source/workflows/example.workflow'), config=PosixPath('/home/safl/git/joe/joe/docs/source/workflows/default.config'), output=PosixPath('/home/safl/git/joe/joe/docs/source/workflows/cijoe-output-20220813-092215'), lint=False, resources=False, skeleton='core', version=False)
 == Skeleton ================================================
 config: /home/safl/git/joe/joe/docs/source/workflows/default.config
 workflow: /home/safl/git/joe/joe/docs/source/workflows/example.workflow

@@ -26,9 +26,9 @@ steps:
     hostname
 
 - name: test
-  uses: core.testrunnner
+  uses: core.testrunner
   with:
     args: "--pyargs joe.core.selftest"
 
 - name: report
-  uses: core.report
+  uses: core.reporter

@@ -11,27 +11,15 @@ configs:
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/configs/default.config
   - ident: core.transport-ssh
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/configs/transport-ssh.config
-  - ident: default
-    path: /home/safl/git/joe/joe/docs/default.config
   - ident: qemu.default
     path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/configs/default.config
 perf_reqs: ~
 templates:
   - ident: core.report-workflow
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/templates/report-workflow.html
-  - ident: genindex
-    path: /home/safl/git/joe/joe/docs/build/genindex.html
-  - ident: index
-    path: /home/safl/git/joe/joe/docs/build/index.html
-  - ident: py-modindex
-    path: /home/safl/git/joe/joe/docs/build/py-modindex.html
-  - ident: search
-    path: /home/safl/git/joe/joe/docs/build/search.html
 workflows:
   - ident: core.example
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/workflows/example.workflow
-  - ident: example
-    path: /home/safl/git/joe/joe/docs/example.workflow
   - ident: qemu.example
     path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/workflows/example.workflow
 worklets:

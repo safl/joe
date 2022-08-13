@@ -1,0 +1,6 @@
+== Lint ====================================================
+workflow: '/home/safl/git/joe/joe/docs/source/workflows/example.workflow'
+config: '/home/safl/git/joe/joe/docs/source/workflows/default.config'
+------------------------------------------------------------
+== Lint: 'no errors'; Success ==============================
+
