@@ -150,7 +150,7 @@ class Workflow(Resource):
 
         resources = self.collector.resources
         config = dict_from_yaml(args.config) if args.config else {}
-        cijoe = Cijoe(config, args.output)
+        cijoe = Cijoe(args.config, args.output)
 
         self.load(self.collector, config)
 

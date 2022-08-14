@@ -3,18 +3,19 @@
     Builds qemu system(x86_64-softmmu), disabling most graphics related features, and
     enabling virtfs and debugging.
 """
-import os
+from pathlib import Path
+import errno
 
 
-def worklet_entry(cijoe, args, step):
+def worklet_entry(args, collector, cijoe, step):
     """Build qemu"""
 
     conf = cijoe.config.get("qemu", None)
     if not conf:
-        return False
+        return errno.EINVAL
 
-    build_dir = os.path.join(conf["repository"], "build")
+    build_dir = Path(conf["repository"]["path"] / "build"
 
-    cijoe.run_local("make install", cwd=build_dir)
+    rcode, _ = cijoe.run_local("make install", cwd=build_dir)
 
-    return True
+    return rcode

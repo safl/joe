@@ -6,39 +6,47 @@
 from pathlib import Path
 
 
-def worklet_entry(cijoe, args, step):
+def worklet_entry(args, collector, cijoe, step):
     """Build qemu"""
 
     conf = cijoe.config.get("qemu", None)
     if not conf:
-        return False
+        return 0
 
-    build_dir = Path(conf["repository"]) / "build"
+    build_dir = Path(conf["repository"]["path"]) / "build"
 
     configure_args = [
-        '--audio-drv-list=""',
-        "--disable-docs",
-        "--disable-opengl",
-        "--disable-virglrenderer",
-        "--disable-vte",
-        "--disable-gtk",
-        "--disable-sdl",
-        "--disable-spice",
-        "--disable-vnc",
+        f"--prefix={conf['build']['prefix']}",
+        "--audio-drv-list=''",
         "--disable-curses",
-        "--disable-xen",
-        "--disable-smartcard",
+        "--disable-docs",
+        "--disable-glusterfs",
+        "--disable-gtk",
         "--disable-libnfs",
         "--disable-libusb",
-        "--disable-glusterfs",
-        "--enable-virtfs",
+        "--disable-opengl",
+        "--disable-sdl",
+        "--disable-smartcard",
+        "--disable-spice",
+        "--disable-virglrenderer",
+        "--disable-vnc",
+        "--disable-vte",
+        "--disable-xen",
         "--enable-debug",
-        "--prefix={conf['build']['prefix']}",
+        "--enable-virtfs",
         "--target-list=x86_64-softmmu",
     ]
 
-    cijoe.run_local(f"mkdir -p {build_dir}")
-    cijoe.run_local("./configure " + " ".join(configure_args), cwd=build_dir)
-    cijoe.run_local("make -j $(nproc)", cwd=build_dir)
+    rcode, _ = cijoe.run_local(f"mkdir -p {build_dir}")
+    if rcode:
+        return rcode
 
-    return True
+    rcode, _ = cijoe.run_local("../configure " + " ".join(configure_args), cwd=build_dir)
+    if rcode:
+        return rcode
+
+    rcode, _ = cijoe.run_local("make -j $(nproc)", cwd=build_dir)
+    if rcode:
+        return rcode
+
+    return 0
