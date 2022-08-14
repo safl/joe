@@ -15,4 +15,6 @@ def worklet_entry(args, collector, cijoe, step):
     if isinstance(url, Path) and not url.exists():
         print(f"url: '{url}', does not exist, not opening.")
 
-    return webbrowser.open(str(url))
+    webbrowser.open(str(url))
+
+    return 0

@@ -18,7 +18,7 @@ steps:
     hostname
 
 - name: build
-  uses: build_x86
+  uses: qemu.build_x86
 
 - name: install
   uses: qemu.install

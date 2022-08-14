@@ -41,7 +41,9 @@ def worklet_entry(args, collector, cijoe, step):
     if rcode:
         return rcode
 
-    rcode, _ = cijoe.run_local("../configure " + " ".join(configure_args), cwd=build_dir)
+    rcode, _ = cijoe.run_local(
+        "../configure " + " ".join(configure_args), cwd=build_dir
+    )
     if rcode:
         return rcode
 

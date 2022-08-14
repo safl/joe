@@ -3,8 +3,8 @@
     Builds qemu system(x86_64-softmmu), disabling most graphics related features, and
     enabling virtfs and debugging.
 """
-from pathlib import Path
 import errno
+from pathlib import Path
 
 
 def worklet_entry(args, collector, cijoe, step):
@@ -14,7 +14,7 @@ def worklet_entry(args, collector, cijoe, step):
     if not conf:
         return errno.EINVAL
 
-    build_dir = Path(conf["repository"]["path"] / "build"
+    build_dir = Path(conf["repository"]["path"]) / "build"
 
     rcode, _ = cijoe.run_local("make install", cwd=build_dir)
 
