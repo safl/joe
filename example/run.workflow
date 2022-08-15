@@ -15,6 +15,9 @@ steps:
 - name: run
   uses: qemu.run
 
+- name: kill
+  uses: qemu.kill
+
 - name: report
   uses: core.reporter
 

@@ -4,7 +4,6 @@
 """
 import errno
 from pathlib import Path
-
 from joe.qemu.wrapper import Guest
 
 
@@ -13,4 +12,4 @@ def worklet_entry(args, collector, cijoe, step):
 
     guest = Guest(cijoe, cijoe.config)
 
-    return guest.run()
+    return guest.kill()
