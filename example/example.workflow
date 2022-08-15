@@ -14,8 +14,17 @@ doc: |
 steps:
 - name: info
   run: |
-    cat /proc/cpuinfo
     hostname
+    lsblk
+    lscpu
+    lsipc
+    lslocks
+    lslogins
+    lsmem
+    lsmod
+    lsns
+    lspci
+    lsusb
 
 - name: test
   uses: core.testrunner
