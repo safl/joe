@@ -8,7 +8,7 @@ from joe.core.misc import dict_from_yaml, h2, h3
 
 def populate_logs(args, collector, cijoe, step, workflow_state):
 
-    logfiles = ["run.log", "testrunner.log"]
+    logfiles = ["cmd.log", "testrunner.log"]
 
     for step, filename in [
         (step, filename) for step in workflow_state["steps"] for filename in logfiles

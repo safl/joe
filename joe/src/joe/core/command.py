@@ -62,23 +62,25 @@ class Cijoe(object):
         return self.config_fpath
 
     def set_output_ident(self, output_ident):
-        """This is a path relative to the self.output"""
+        """
+        This sets the output-identifier which is used in order to provide a subfolder
+        for artifacts, command-output etc. Additionally, then it reset the command
+        run-count
+        """
 
+        self.run_count = 0
         self.output_ident = output_ident
         self.transport.output_ident = output_ident
 
     def _run(self, cmd, cwd=None, evars=None, transport=None):
 
-        self.count += 1
+        self.run_count += 1
         cmd_output_dpath = os.path.join(self.output_path, self.output_ident)
-        cmd_output_fpath = os.path.join(cmd_output_dpath, f"run_{self.run_count}.log")
-        cmd_state_fpath = os.path.join(cmd_output_dpath, "cmd_{self.run_count}.state")
+        cmd_output_fpath = os.path.join(cmd_output_dpath, f"cmd_{self.run_count:02}.output")
+        cmd_state_fpath = os.path.join(cmd_output_dpath, f"cmd_{self.run_count:02}.state")
         os.makedirs(cmd_output_dpath, exist_ok=True)
 
         with open(cmd_output_fpath, "a", encoding=ENCODING) as logfile:
-            logfile.write(f'# do: "{cmd}"\n')
-            logfile.flush()
-
             begin = time.time()
             rcode = transport.run(cmd, cwd, evars, logfile)
             end = time.time()
@@ -92,10 +94,6 @@ class Cijoe(object):
                 "elapsed": end - begin,
                 "output_fpath": cmd_output_fpath,
             }
-
-            logfile.write(f"# state: {state}\n")
-            logfile.flush()
-
             with open(cmd_state_fpath, "a", encoding=ENCODING) as state_file:
                 state_file.write(str(state))
 
