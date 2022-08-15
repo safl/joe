@@ -76,8 +76,12 @@ class Cijoe(object):
 
         self.run_count += 1
         cmd_output_dpath = os.path.join(self.output_path, self.output_ident)
-        cmd_output_fpath = os.path.join(cmd_output_dpath, f"cmd_{self.run_count:02}.output")
-        cmd_state_fpath = os.path.join(cmd_output_dpath, f"cmd_{self.run_count:02}.state")
+        cmd_output_fpath = os.path.join(
+            cmd_output_dpath, f"cmd_{self.run_count:02}.output"
+        )
+        cmd_state_fpath = os.path.join(
+            cmd_output_dpath, f"cmd_{self.run_count:02}.state"
+        )
         os.makedirs(cmd_output_dpath, exist_ok=True)
 
         with open(cmd_output_fpath, "a", encoding=ENCODING) as logfile:

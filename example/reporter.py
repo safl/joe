@@ -1,12 +1,13 @@
 import json
 import pprint
+from pathlib import Path
 
 import jinja2
-from pathlib import Path
+
 from joe.core.misc import dict_from_yaml, h2, h3
 
 
-def augment_runlog(path : Path):
+def augment_runlog(path: Path):
     """Produce a dict of command-dicts with paths to .output and .state files"""
 
     run = {}
@@ -21,14 +22,24 @@ def augment_runlog(path : Path):
             continue
 
         if stem not in run:
-            run[stem] = {"output_path": None, "state_path": None}
+            run[stem] = {
+                "output_path": None,
+                "output": "",
+                "state": {},
+                "state_path": None,
+            }
 
         run[stem][f"{suffix}_path"] = cmd_path
+        if suffix == "output":
+            with run[stem][f"{suffix}_path"].open() as content:
+                run[stem][f"{suffix}"] = content.read()
+        elif suffix == "state":
+            run[stem][f"{suffix}"] = dict_from_yaml(run[stem][f"{suffix}_path"])
 
     return run
 
 
-def augment_testreport(path : Path):
+def augment_testreport(path: Path):
     """Parse the given testfile into a list of "tests"""
 
     results = {}
@@ -57,7 +68,7 @@ def augment_testreport(path : Path):
 
             runlog = augment_run(path / result["nodeid"])
             if runlog:
-                results[nodeid]["run.log"] = runlog
+                results[nodeid]["runlog"] = runlog
 
     return results
 
@@ -65,7 +76,7 @@ def augment_testreport(path : Path):
 def worklet_entry(args, collector, cijoe, step):
     """Produce a HTML report of the 'workflow.state' file in 'args.output'"""
 
-    #template_path = collector.resources["templates"]["core.report-workflow"].path
+    # template_path = collector.resources["templates"]["core.report-workflow"].path
     template_path = collector.resources["templates"]["report-workflow"].path
     report_path = args.output / "report.html"
 

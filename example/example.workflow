@@ -17,6 +17,11 @@ steps:
     cat /proc/cpuinfo
     hostname
 
+- name: test
+  uses: core.testrunner
+  with:
+    args: ""
+
 - name: report
   uses: reporter
 

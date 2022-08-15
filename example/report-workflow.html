@@ -222,9 +222,11 @@ div.image {
           <div class="collapse" id="runlog_{{ step['id'] }}" data-bs-parent="#CONTENT_{{ step['id'] }}">
             <div class="card-body">
               {% for stem, runlog in step['extras']['runlog'].items() %}
-              <a href="{{ runlog["output_path"] }}">{{ runlog["output_path"].name }}</a>
-              <a href="{{ runlog["state_path"] }}">{{ runlog["state_path"].name }}</a>
+              <a href="{{ runlog["output_path"] }}">output-file</a>
+              <a href="{{ runlog["state_path"] }}">state-file</a>
               <br />
+              # {{ runlog["state"]["cmd"] }}
+              <pre><code>{{ runlog["output"] }}</code></pre>
               {% endfor %}
             </div>
           </div>
