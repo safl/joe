@@ -202,6 +202,7 @@ class Workflow(Resource):
                 self.state["status"][key] += step["status"][key]
 
             step["status"]["elapsed"] = time.time() - begin
+            self.state["status"]["elapsed"] += step["status"]["elapsed"]
             self.state_dump(args.output / Workflow.STATE_FILENAME)
 
             if step["status"]["failed"] and fail_fast:

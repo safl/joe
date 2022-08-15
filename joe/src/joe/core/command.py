@@ -28,6 +28,8 @@ class Cijoe(object):
         self.config = dict_from_yaml(self.config_fpath) if self.config_fpath else {}
         if not self.config:
             self.config = {}
+
+        self.run_count = 0
         self.output_path = output_path if output_path else default_output_path()
         self.output_ident = "artifacts"
 
@@ -67,9 +69,10 @@ class Cijoe(object):
 
     def _run(self, cmd, cwd=None, evars=None, transport=None):
 
+        self.count += 1
         cmd_output_dpath = os.path.join(self.output_path, self.output_ident)
-        cmd_output_fpath = os.path.join(cmd_output_dpath, "run.log")
-        cmd_state_fpath = os.path.join(cmd_output_dpath, "cmd.state")
+        cmd_output_fpath = os.path.join(cmd_output_dpath, f"run_{self.run_count}.log")
+        cmd_state_fpath = os.path.join(cmd_output_dpath, "cmd_{self.run_count}.state")
         os.makedirs(cmd_output_dpath, exist_ok=True)
 
         with open(cmd_output_fpath, "a", encoding=ENCODING) as logfile:
