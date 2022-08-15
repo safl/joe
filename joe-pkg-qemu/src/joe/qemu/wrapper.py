@@ -30,7 +30,6 @@ def guest_init(cijoe, guest_name=None):
 
 
 class Guest(object):
-
     def __init__(self, cijoe, config):
         """."""
 
@@ -114,4 +113,3 @@ class Guest(object):
         rcode, _ = self.cijoe.run_local(" ".join(args))
 
         return rcode
-
