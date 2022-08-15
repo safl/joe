@@ -61,7 +61,7 @@ def augment_testreport(path: Path):
                     "nodeid": nodeid,
                     "duration": 0.0,
                     "outcome": [],
-                    "run.log": {},
+                    "runlog": {},
                 }
             results[nodeid]["duration"] += result["duration"]
             results[nodeid]["outcome"] += [result["outcome"]]
