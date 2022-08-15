@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CIJOE: Workflow State Report</title>
+<!-- TODO: once done, then inline this such that it works "offline" -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+
+<!-- Highlight .js Solarized Theme -->
+<style>
+.hljs{display:block;overflow-x:auto;padding:0.5em;background:#002b36;color:#839496}.hljs-comment,.hljs-quote{color:#586e75}.hljs-keyword,.hljs-selector-tag,.hljs-addition{color:#859900}.hljs-number,.hljs-string,.hljs-meta .hljs-meta-string,.hljs-literal,.hljs-doctag,.hljs-regexp{color:#2aa198}.hljs-title,.hljs-section,.hljs-name,.hljs-selector-id,.hljs-selector-class{color:#268bd2}.hljs-attribute,.hljs-attr,.hljs-variable,.hljs-template-variable,.hljs-class .hljs-title,.hljs-type{color:#b58900}.hljs-symbol,.hljs-bullet,.hljs-subst,.hljs-meta,.hljs-meta .hljs-keyword,.hljs-selector-attr,.hljs-selector-pseudo,.hljs-link{color:#cb4b16}.hljs-built_in,.hljs-deletion{color:#dc322f}.hljs-formula{background:#073642}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:bold}
+</style>
+<style>
+div.image {
+  width:100px;
+  height:100px;
+/*  background-image:url(data:image/png;base64,iVBORwA<MoreBase64SringHere>);*/
+  background-image:url(https://cijoe.readthedocs.io/en/latest/_images/logo.png);
+}
+</style>
+<style>
+.jumbotron-fluid {
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+.jumbotron:last-of-type {
+  margin-bottom: 0;
+}
+
+.jumbotron:last-of-type p {
+  margin-bottom: 0;
+}
+
+.jumbotron .btn-group {
+  top: 1.5rem;
+}
+
+.btn-primary {
+  border-color: #0062cc;
+}
+
+.ansi2html-content { display: inline; white-space: pre-wrap; word-wrap: break-word; }
+
+.list-steps .list-group-item {
+  padding: 0.1rem;
+}
+
+.runlog pre {
+  background-color: white;
+  background-opacity: 0.9;
+}
+
+.nav-item > a.nav-link {
+  border: 1px solid transparent;
+  border-color: #e9ecef #e9ecef #dee2e6;
+}
+
+.nav-item > a.nav-link:hover {
+  background-color: white;
+  background-opacity: 0.5;
+}
+.workflow-documentation {
+  padding: 1rem;
+}
+.workflow-configuration {
+  padding: 1rem;
+}
+</style>
+</head>
+<body>
+
+  <div class="jumbotron jumbotron-fluid">
+    <div class="container">&nbsp;</div>
+  </div>
+
+  <div class="container"> <!-- BEGIN: First part: status, configuration, documentation -->
+    <div class="card mb-3 border-primary">
+      <div class="card-header">
+        <img class="card-img-top" src="https://cijoe.readthedocs.io/en/latest/_images/logo.png" alt="Overview" style="width: 18rem;">
+      </div>
+
+      <h3 class="card-header {{ step_style }}">Workflow Report</h3>
+
+      <div class="card-body">
+
+        <p>This is a HTML-ification of Workflow state (<a href="workflow.state">workflow.state</a>) and
+        the associated files in the workflow <a href="./">output</a> directory.</p>
+
+        <ul class="nav nav-tabs" id="tab-content" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="status-tab" data-bs-toggle="tab"
+              data-bs-target="#status-tab-pane" type="button" role="tab" aria-controls="status-tab-pane"
+              aria-selected="true">Status</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="config-tab" data-bs-toggle="tab"
+              data-bs-target="#config-tab-pane" type="button" role="tab" aria-controls="config-tab-pane"
+              aria-selected="false">Configuration</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="doc-tab" data-bs-toggle="tab"
+              data-bs-target="#doc-tab-pane" type="button" role="tab" aria-controls="doc-tab-pane"
+              aria-selected="false">Documentation</button>
+          </li>
+        </ul>
+        <div class="tab-content border border-top-0 rounded-bottom" id="tab-content">
+          <div class="tab-pane show active" id="status-tab-pane" role="tabpanel" aria-labelledby="status-tab" tabindex="0">
+
+            <div class="container">
+              <p>
+              Below is a status summary for steps, the color-coding is re-used below on the steps
+              themselves, as well as in test-reports from e.g. pytest.
+              </p>
+            </div>
+
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td class="table-success"><button class="btn btn-success">Passed: {{ status.passed }}</button></td>
+                  <td class="table-danger"><button class="btn btn-danger">Failed {{ status.failed }}</button></td>
+                  <td class="table-secondary"><button class="btn btn-secondary">Skipped {{ status.skipped }}</button></td>
+                  <td class="table-info"><button class="btn btn-info">Elapsed {{ status.elapsed | round(2) }} sec</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="tab-pane" id="config-tab-pane" role="tabpanel" aria-labelledby="config-tab" tabindex="0">
+            <pre class="workflow-configuration">{{ config | pprint }}</pre>
+          </div>
+
+          <div class="tab-pane" id="doc-tab-pane" role="tabpanel" aria-labelledby="doc-tab" tabindex="0">
+            <pre class="workflow-documentation">{{ doc }}</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- workflow-steps BEGIN -->
+      <h3 class="card-header {{ step_style }}">
+        Steps
+      </h3>
+      <div class="card-body" id="steps">
+
+        <!-- workflow-step BEGIN -->
+        {% for step in steps%}
+        {% if step["status"]["failed"] %}
+          {% set step_state = "Failed" %}
+          {% set step_style = "danger" %}
+        {% elif step["status"]["passed"] %}
+          {% set step_state = "Ok" %}
+          {% set step_style = "success" %}
+        {% elif step["status"]["skipped"] %}
+          {% set step_state = "Skipped" %}
+          {% set step_style = "light" %}
+        {% else %}
+          {% set step_state = "Unprocessed" %}
+          {% set step_style = "secondary" %}
+        {% endif %}
+
+        <!-- workflow-step-buttons BEGIN -->
+        <ul class="list-group list-steps">
+          <li class="list-group-item list-group-item-{{ step_style }}">
+
+            <!-- workflow-step-buttons-left BEGIN -->
+            <button class="btn btn-{{ step_style }}" type="button">
+              <span style="font-family: monospace;">
+                <b>{{ step["name"] }}</b>
+                {% if "run" in step %}
+                (inline commands)
+                {% else %}
+                ({{ step["uses"] }})
+                {% endif %}
+              </span>
+            </button>
+            <!-- workflow-step-buttons-left END -->
+
+            <!-- workflow-step-buttons-right BEGIN -->
+            <div class="btn-group float-end" role="group">
+              <button class="btn btn-info" type="button" disabled="disabled">
+                <span style="font-family: monospace;"
+                      title="Elapsed Wall-Clock time in seconds"
+                      data-bs-original-title="Tooltip on right">
+                  {{ step["status"]["elapsed"] | round(2) }} sec
+                </span>
+              </button>
+
+              {% for extra, _ in step["extras"].items() | sort %}
+              <button class="btn btn-primary" type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#{{ extra }}_{{ step['id'] }}"
+                      aria-controls="{{ extra }}_{{ step['id'] }}"
+                      aria-expanded="false">{{ extra }}</button>
+              {% endfor %}
+
+              <button class="btn btn-primary" type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#YAML_{{ step['id'] }}"
+                      aria-controls="YAML_{{ step['id'] }}"
+                      aria-expanded="false">yaml</button>
+            </div>
+            <!-- workflow-step-buttons-right END -->
+
+          </li>
+        </ul>
+        <!-- workflow-step-buttons END -->
+
+        <!-- workflow-step-content BEGIN -->
+        <div id="CONTENT_{{ step['id'] }}">
+
+          <!-- workflow-step-content-yaml BEGIN -->
+          <div class="collapse" id="YAML_{{ step['id'] }}" data-bs-parent="#CONTENT_{{ step['id'] }}">
+            <div class="card-body">
+              <pre>{{ step | pprint }}</pre>
+            </div>
+          </div>
+          <!-- workflow-step-content-yaml END -->
+
+          <!-- workflow-step-content-runlog BEGIN -->
+          {% if "runlog" in step['extras'] %}
+          <div class="collapse" id="runlog_{{ step['id'] }}" data-bs-parent="#CONTENT_{{ step['id'] }}">
+            <div class="card-body">
+              {% for stem, runlog in step['extras']['runlog'].items() %}
+              <a href="{{ runlog["output_path"] }}">{{ runlog["output_path"].name }}</a>
+              <a href="{{ runlog["state_path"] }}">{{ runlog["state_path"].name }}</a>
+              <br />
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+          <!-- workflow-step-content-runlog END -->
+
+          <!-- workflow-step-content-testrunner BEGIN -->
+          {% if "testreport" in step['extras'] %}
+          <div class="collapse" id="testreport_{{ step['id'] }}" data-bs-parent="#CONTENT_{{ step['id'] }}">
+            <div class="card-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Testcase</th>
+                    <th>Outcome</th>
+                    <th>Duration</th>
+                    <th>run.log</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for nodeid, testcase in step["extras"]["testreport"].items() %}
+                  {% if testcase["status"] == "failed" %}
+                    {% set tcase_style = "danger" %}
+                  {% elif testcase["status"] == "skipped" %}
+                    {% set tcase_style = "light" %}
+                  {% elif testcase["status"] == "passed" %}
+                    {% set tcase_style = "success" %}
+                  {% else %}
+                    {% set tcase_style = "secondary" %}
+                  {% endif %}
+                  <tr class="table-{{ tcase_style }}">
+                    <td><b>{{ nodeid }}</b></td>
+                    <td>{{ testcase['status'] }}</td>
+                    <td>{{ testcase['duration'] | round(4) }}</td>
+                    <td>
+                      {% if testcase["run.log"] %}
+                      <a href="{{ testcase["run.log"]}}">run.log</a>
+                      {% else %}
+                      N/A
+                      {% endif %}
+                    <td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {% endif %}
+          <!-- workflow-step-content-testrunner END -->
+
+        </div>
+        <!-- workflow-step-content END -->
+
+        {% endfor %}
+        <!-- workflow-step END -->
+      </div>
+      <!-- workflow-steps END -->
+
+      <div class="card-footer text-muted">
+        EOL: In the presence of failure, recall, this too shall pass.
+      </div>
+    </div>
+  </div> <!-- END: First part: status, configuration, documentation -->
+
+  <!-- TODO: once done, then inline this such that it works "offline" -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+</body>
+</html>

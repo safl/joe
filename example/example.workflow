@@ -17,14 +17,8 @@ steps:
     cat /proc/cpuinfo
     hostname
 
-- name: build
-  uses: qemu.build_x86
-
-- name: install
-  uses: qemu.install
-
 - name: report
-  uses: core.reporter
+  uses: reporter
 
 - name: inspect
   uses: core.browser_open
