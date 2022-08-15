@@ -20,7 +20,7 @@ steps:
 - name: test
   uses: core.testrunner
   with:
-    args: ""
+    args: "--pyargs joe.core.selftest"
 
 - name: report
   uses: reporter

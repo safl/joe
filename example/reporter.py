@@ -66,7 +66,7 @@ def augment_testreport(path: Path):
             results[nodeid]["duration"] += result["duration"]
             results[nodeid]["outcome"] += [result["outcome"]]
 
-            runlog = augment_run(path / result["nodeid"])
+            runlog = augment_runlog(path / result["nodeid"])
             if runlog:
                 results[nodeid]["runlog"] = runlog
 
