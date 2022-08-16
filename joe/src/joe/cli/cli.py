@@ -232,8 +232,6 @@ def main():
     if args.resources:
         return cli_resources(args, collector)
 
-    pprint.pprint(args)
-
     if args.skeleton:
         return cli_skeleton(args, collector)
 
