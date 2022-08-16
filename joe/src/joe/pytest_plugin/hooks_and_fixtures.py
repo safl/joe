@@ -1,5 +1,6 @@
-import pytest
 from pathlib import Path
+
+import pytest
 
 from joe.core.command import Cijoe, default_output_path
 

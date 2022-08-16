@@ -95,7 +95,7 @@ class SSH(Transport):
         """Invoke the given command"""
 
         if not self.scp:
-            self.__conect()
+            self.__connect()
 
         if cwd:
             cmd = f"cd {cwd}; {cmd}"

@@ -12,15 +12,61 @@ import ast
 import importlib
 import inspect
 import os
-import yaml
-import jinja2
 import pkgutil
 from importlib.machinery import SourceFileLoader
 from pathlib import Path
 
+import jinja2
 import setuptools
+import yaml
 
 import joe
+
+
+def default_context(config={}, resources={}):
+    """Return a default context for dict-substitution"""
+
+    return {
+        "local": {
+            "env": os.environ,
+        },
+        "config": config,
+        "resources": resources,
+    }
+
+
+def dict_from_yamlfile(path: Path):
+    """Returns content of yamlfile at 'path' as dict and {} on empty document."""
+
+    if not path:
+        return {}
+
+    with path.open() as yamlfile:
+        return yaml.safe_load(yamlfile) or {}
+
+
+def dict_substitute(topic: dict, context: dict) -> list:
+    """Traverse the given 'topic', replacing {{ foo.bar }} entities with context-values"""
+
+    errors = []
+
+    jinja_env = jinja2.Environment(undefined=jinja2.StrictUndefined)
+    for key, value in topic.items():
+        try:
+            if isinstance(value, str):
+                topic[key] = jinja_env.from_string(value).render(context)
+            elif isinstance(value, list) and all(
+                isinstance(line, str) for line in value
+            ):
+                topic[key] = [
+                    jinja_env.from_string(line).render(context) for line in value
+                ]
+            elif isinstance(value, dict):
+                errors += dict_substitute(value, context)
+        except jinja2.exceptions.UndefinedError as exc:
+            errors.append(f"Substitution-error: {exc}")
+
+    return errors
 
 
 class Resource(object):
@@ -81,13 +127,13 @@ class Worklet(Resource):
         """Loads the module and the worklet-entry function"""
 
         if self.func:
-            return True
+            return []
 
         if not self.content:
             self.content_from_file()
 
         if not self.content_has_worklet_func():
-            return False
+            return ["Missing worklet_entry() function in ast"]
 
         mod = SourceFileLoader("", str(self.path)).load_module()
         for function_name, function in inspect.getmembers(mod, inspect.isfunction):
@@ -97,9 +143,26 @@ class Worklet(Resource):
             self.mod = mod
             self.mod_name = Path(self.path).stem
             self.func = function
-            return True
+            return []
 
-        return False
+        return ["Missing worklet_entry() function in loaded module"]
+
+
+class Config(Resource):
+    def __init__(self, path, pkg=None):
+        super().__init__(path, pkg)
+
+        self.state = {}
+
+    def load(self):
+
+        config_dict = dict_from_yamlfile(self.path)
+        errors = dict_substitute(config_dict, default_context())
+        if errors:
+            return errors
+
+        self.state = config_dict
+        return []
 
 
 class Collector(object):
@@ -117,44 +180,6 @@ class Collector(object):
 
     def __init__(self):
         self.resources = {category: {} for category, _ in Collector.RESOURCES}
-
-    @staticmethod
-    def dict_from_yamlfile(path : Path):
-        """Load the yaml-file, return {} on empty document."""
-
-        if not path:
-            return {}
-
-        with path.open() as yamlfile:
-            return yaml.safe_load(yamlfile) or {}
-
-    @staticmethod
-    def dict_substitute(topic : dict, config={}, resources={}):
-        """Traverse the given 'topic', replacing {{ foo.bar }} entities with context-values"""
-
-        errors = []
-
-        context = {
-            "local": {
-                "env": os.environ,
-            },
-            "config": config,
-            "resources": resources,
-        }
-
-        jinja_env = jinja2.Environment(undefined=jinja2.StrictUndefined)
-        for key, value in topic.items():
-            try:
-                if isinstance(value, str):
-                    topic[key] = jinja_env.from_string(value).render(context)
-                elif isinstance(value, list) and all(isinstance(line, str) for line in value):
-                    topic[key] = [jinja_env.from_string(line).render(context) for line in value]
-                elif isinstance(value, dict):
-                    errors += Collector.dict_substitute(value)
-            except jinja2.exceptions.UndefinedError as exc:
-                errors.append(f"Substitution-error: {exc}")
-
-        return errors
 
     def process_candidate(self, candidate: Path, category: str, pkg):
         """Inserts the given candidate"""

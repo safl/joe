@@ -7,7 +7,7 @@ from pathlib import Path
 import joe.core
 from joe.core.command import default_output_path
 from joe.core.misc import h1, h2, h3
-from joe.core.resources import Collector
+from joe.core.resources import Collector, Config
 from joe.core.workflow import Workflow
 
 
@@ -24,8 +24,8 @@ def cli_lint(args, collector):
     h3()
 
     workflow_dict = Collector.dict_from_yamlfile(args.workflow.resolve())
-    errors = Workflow.yaml_normalize(workflow_dict)           # Normalize it
-    errors += Workflow.yaml_lint(workflow_dict, collector)    # Check the yaml-file
+    errors = Workflow.dict_normalize(workflow_dict)  # Normalize it
+    errors += Workflow.dict_lint(workflow_dict, collector)  # Check the yaml-file
 
     if args.config:  # Check config/substitutions
         config = Collector.dict_from_yamlfile(args.config.resolve())
@@ -129,15 +129,15 @@ def cli_run(args, collector):
     print(f"config: {args.config}")
     print(f"output: {args.output}")
 
-    config = Collector.dict_from_yamlfile(args.config.resolve())
-    errors = Collector.dict_substitute(config, {}, collector.resources)
-
+    config = Config(args.config.resolve())
+    errors = config.load()
     if errors:
-        h2("Run: 'Collector.dict_substitute(config, ...)'; Failed")
+        pprint.pprint(errors)
+        h2("Run: 'Config(args.config).load()'; Failed")
         return errno.EINVAL
 
     workflow = Workflow(args.workflow)
-    if not workflow.load(collector, config):
+    if not workflow.load(collector, config.state):
         h2("Run: 'workflow.load()'; Failed")
         return 1
 

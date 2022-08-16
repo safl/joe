@@ -1,13 +1,20 @@
 import os
 import re
 import time
+import pprint
 
 import jinja2
 import yaml
 
 from joe.core.command import Cijoe
 from joe.core.misc import h3
-from joe.core.resources import Resource, Collector
+from joe.core.resources import (
+    Collector,
+    Resource,
+    Config,
+    dict_from_yamlfile,
+    dict_substitute,
+)
 
 
 class Workflow(Resource):
@@ -35,7 +42,7 @@ class Workflow(Resource):
             yaml.dump(self.state, state_file)
 
     @staticmethod
-    def dict_normalize(topic : dict):
+    def dict_normalize(topic: dict):
         """Normalize the workflow-dict, transformation of the 'run' shorthand"""
 
         errors = []
@@ -49,16 +56,14 @@ class Workflow(Resource):
                 continue
 
             step["uses"] = "core.cmdrunner"
-            step["with"] = {
-                "commands": step["run"].splitlines()
-            }
+            step["with"] = {"commands": step["run"].splitlines()}
 
             del step["run"]
 
         return errors
 
     @staticmethod
-    def dict_lint(topic : dict, collector=None):
+    def dict_lint(topic: dict, collector=None):
         """Returns a list of integrity-errors for the given workflow-dict(topic)"""
 
         errors = []
@@ -107,27 +112,32 @@ class Workflow(Resource):
         the object properties
         """
 
+        errors = []
+
         if self.state:
-            return True
+            return errors
 
         self.collector = collector
 
-        workflow_dict = Collector.dict_from_yamlfile(self.path)
+        workflow_dict = dict_from_yamlfile(self.path)
 
-        errors = Workflow.dict_normalize(workflow_dict)
+        errors += Workflow.dict_normalize(workflow_dict)
         if errors:
+            print(errors)
             h3("Workflow.normalize() : Failed; Check workflow with 'joe -l'")
-            return False
+            return errors
 
-        errors = Workflow.dict_lint(workflow_dict, collector)
+        errors += Workflow.dict_lint(workflow_dict, collector)
         if errors:
+            print(errors)
             h3("Workflow.lint() : Failed; Check workflow with 'joe -l'")
-            return False
+            return errors
 
-        errors = Collector.dict_substitute(workflow_dict, config)
+        errors += dict_substitute(workflow_dict, config)
         if errors:
+            print(errors)
             h3("Collector.dict_substitute() : Failed; Check workflow with 'joe -l'")
-            return False
+            return errors
 
         state = Workflow.STATE.copy()
         state["doc"] = workflow_dict.get("doc")
@@ -141,16 +151,24 @@ class Workflow(Resource):
 
         self.state = state
 
-        return True
+        return errors
 
     def run(self, args):
         """Run the workflow using the given configuration(args.config)"""
 
         resources = self.collector.resources
-        config = Collector.dict_from_yamlfile(args.config) if args.config else {}
+        cfg = Config(args.config)
+        errors = cfg.load()
+        if errors:
+            print(f"cfg.load() : Failed; Check the workflow using 'joe -l'")
+            return 1
+
+        pprint.pprint(cfg.state)
+        pprint.pprint(args.config)
+
         cijoe = Cijoe(args.config, args.output)
 
-        if not self.load(self.collector, config):
+        if not self.load(self.collector, cfg.state):
             print(f"workflow.load() : Failed; Check the workflow using 'joe -l'")
             return 1
 
