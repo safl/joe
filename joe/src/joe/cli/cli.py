@@ -6,7 +6,7 @@ from pathlib import Path
 
 import joe.core
 from joe.core.command import default_output_path
-from joe.core.misc import dict_from_yaml, yaml_substitute, h1, h2, h3
+from joe.core.misc import h1, h2, h3
 from joe.core.resources import Collector
 from joe.core.workflow import Workflow
 
@@ -23,24 +23,19 @@ def cli_lint(args, collector):
         return 1
     h3()
 
-    yml = dict_from_yaml(args.workflow)
-    errors = Workflow.yaml_normalize(yml)           # Normalize it
-    errors += Workflow.yaml_lint(yml, collector)    # Check the yaml-file
-    for error in errors:
-        print(error)
-    if errors:
-        h2("Lint: 'see errors above'; Failed")
-        return 1
+    workflow_dict = Collector.dict_from_yamlfile(args.workflow.resolve())
+    errors = Workflow.yaml_normalize(workflow_dict)           # Normalize it
+    errors += Workflow.yaml_lint(workflow_dict, collector)    # Check the yaml-file
 
     if args.config:  # Check config/substitutions
-        config = dict_from_yaml(args.config.resolve())
-        errors = Workflow.yaml_substitute(yml, config)
+        config = Collector.dict_from_yamlfile(args.config.resolve())
+        errors = Workflow.dict_substitute(workflow_dict, config)
         for error in errors:
             print(error)
 
-        if errors:
-            h2("Lint: 'see errors above'; Failed")
-            return 1
+    if errors:
+        h2("Lint: 'see errors above'; Failed")
+        return 1
 
     h2("Lint: 'no errors'; Success")
 
@@ -134,10 +129,11 @@ def cli_run(args, collector):
     print(f"config: {args.config}")
     print(f"output: {args.output}")
 
-    config = dict_from_yaml(args.config.resolve())
-    errors = yaml_substitute(config, {}, collector.resources)
+    config = Collector.dict_from_yamlfile(args.config.resolve())
+    errors = Collector.dict_substitute(config, {}, collector.resources)
+
     if errors:
-        h2("Run: 'yaml_substitute(config, ...)'; Failed")
+        h2("Run: 'Collector.dict_substitute(config, ...)'; Failed")
         return errno.EINVAL
 
     workflow = Workflow(args.workflow)

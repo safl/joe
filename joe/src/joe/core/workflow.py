@@ -35,16 +35,16 @@ class Workflow(Resource):
             yaml.dump(self.state, state_file)
 
     @staticmethod
-    def yaml_normalize(yml):
-        """Normalize the YAML, currently just a transformation of the 'run' shorthand"""
+    def dict_normalize(topic : dict):
+        """Normalize the workflow-dict, transformation of the 'run' shorthand"""
 
         errors = []
 
-        if "steps" not in yml:
+        if "steps" not in topic:
             errors.append(f"Missing required top-level key: 'steps'")
             return errors
 
-        for step in yml["steps"]:
+        for step in topic["steps"]:
             if "run" not in step.keys():
                 continue
 
@@ -58,23 +58,23 @@ class Workflow(Resource):
         return errors
 
     @staticmethod
-    def yaml_lint(yml, collector=None):
-        """Returns a list of integrity-errors for the given yml-file"""
+    def dict_lint(topic : dict, collector=None):
+        """Returns a list of integrity-errors for the given workflow-dict(topic)"""
 
         errors = []
 
-        for top in set(yml.keys()) - set(["doc", "config", "steps"]):
+        for top in set(topic.keys()) - set(["doc", "config", "steps"]):
             errors.append(f"Unsupported top-level key: '{top}'")
             return False
         for top in ["doc", "steps"]:
-            if top not in yml:
+            if top not in topic:
                 errors.append(f"Missing required top-level key: '{top}'")
                 return False
 
         valid = set(["name", "uses", "with"])
         required = set(["name", "uses"])
 
-        for count, step in enumerate(yml["steps"], 1):
+        for count, step in enumerate(topic["steps"], 1):
             keys = set(step.keys())
 
             missing = required - keys
@@ -101,62 +101,38 @@ class Workflow(Resource):
 
         return errors
 
-    @staticmethod
-    def yaml_substitute(yml, config):
-        """Substitute workflow place-holders, returns a list of substitution errors"""
-
-        errors = []
-
-        cfg = yml.get("config", {})
-        cfg.update(config)
-
-        # Substitute values in workflow-yaml with config entities
-        jinja_env = jinja2.Environment(undefined=jinja2.StrictUndefined)
-        """
-        for step in yml["steps"]:
-            if "run" in step:
-                try:
-                    step["run"] = [
-                        jinja_env.from_string(ln).render(cfg)
-                        for ln in step["run"].splitlines()
-                    ]
-                except jinja2.exceptions.UndefinedError as exc:
-                    errors.append(f"Substitution-error: {exc}")
-
-            # TODO: substitute in "uses"
-        """
-
-        return errors
-
     def load(self, collector, config):
-        """Load raw yaml, lint it, then construct the object properties"""
+        """
+        Load the workflow-yamlfile, normalize it, lint it, substitute, then construct
+        the object properties
+        """
 
         if self.state:
             return True
 
         self.collector = collector
 
-        yml = dict_from_yaml(self.path)
+        workflow_dict = Collector.dict_from_yamlfile(self.path)
 
-        errors = Workflow.yaml_normalize(yml)
+        errors = Workflow.dict_normalize(workflow_dict)
         if errors:
-            h3("workflow.yaml_normalize() : Failed; Check workflow with 'joe -l'")
+            h3("Workflow.normalize() : Failed; Check workflow with 'joe -l'")
             return False
 
-        errors = Workflow.yaml_lint(yml, collector)
+        errors = Workflow.dict_lint(workflow_dict, collector)
         if errors:
-            h3("workflow.yaml_lint() : Failed; Check workflow with 'joe -l'")
+            h3("Workflow.lint() : Failed; Check workflow with 'joe -l'")
             return False
 
-        errors = Workflow.yaml_substitute(yml, config)
+        errors = Collector.dict_substitute(workflow_dict, config)
         if errors:
-            h3("workflow.yaml_substitute() : Failed; Check workflow with 'joe -l'")
+            h3("Collector.dict_substitute() : Failed; Check workflow with 'joe -l'")
             return False
 
         state = Workflow.STATE.copy()
-        state["doc"] = yml.get("doc")
-        state["config"] = yml.get("config", {})
-        for count, step in enumerate(yml["steps"], 1):
+        state["doc"] = workflow_dict.get("doc")
+        state["config"] = workflow_dict.get("config", {})
+        for count, step in enumerate(workflow_dict["steps"], 1):
             step["count"] = count
             step["status"] = {"skipped": 0, "passed": 0, "failed": 0, "elapsed": 0.0}
             step["id"] = f"{count}_{step['name']}"
@@ -171,7 +147,7 @@ class Workflow(Resource):
         """Run the workflow using the given configuration(args.config)"""
 
         resources = self.collector.resources
-        config = dict_from_yaml(args.config) if args.config else {}
+        config = Collector.dict_from_yamlfile(args.config) if args.config else {}
         cijoe = Cijoe(args.config, args.output)
 
         if not self.load(self.collector, config):

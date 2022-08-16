@@ -13,6 +13,7 @@ import importlib
 import inspect
 import os
 import yaml
+import jinja2
 import pkgutil
 from importlib.machinery import SourceFileLoader
 from pathlib import Path
@@ -137,8 +138,8 @@ class Collector(object):
             "local": {
                 "env": os.environ,
             },
-            "config": {},
-            "resources": {},
+            "config": config,
+            "resources": resources,
         }
 
         jinja_env = jinja2.Environment(undefined=jinja2.StrictUndefined)
@@ -149,9 +150,9 @@ class Collector(object):
                 elif isinstance(value, list) and all(isinstance(line, str) for line in value):
                     topic[key] = [jinja_env.from_string(line).render(context) for line in value]
                 elif isinstance(value, dict):
-                    errors += yaml_substitute(value)
+                    errors += Collector.dict_substitute(value)
             except jinja2.exceptions.UndefinedError as exc:
-                        errors.append(f"Substitution-error: {exc}")
+                errors.append(f"Substitution-error: {exc}")
 
         return errors
 
