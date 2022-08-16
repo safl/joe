@@ -32,7 +32,7 @@ steps:
     args: "--pyargs joe.core.selftest"
 
 - name: report
-  uses: reporter
+  uses: core.reporter
 
 - name: inspect
   uses: core.browser_open
