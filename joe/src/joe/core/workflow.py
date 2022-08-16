@@ -6,8 +6,8 @@ import jinja2
 import yaml
 
 from joe.core.command import Cijoe
-from joe.core.misc import dict_from_yaml, h3
-from joe.core.resources import Resource
+from joe.core.misc import h3
+from joe.core.resources import Resource, Collector
 
 
 class Workflow(Resource):

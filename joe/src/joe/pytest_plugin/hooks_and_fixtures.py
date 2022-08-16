@@ -1,4 +1,5 @@
 import pytest
+from pathlib import Path
 
 from joe.core.command import Cijoe, default_output_path
 
@@ -9,12 +10,14 @@ def pytest_addoption(parser):
     parser.addoption(
         "--config",
         action="store",
+        type=Path,
         help="Path to CIJOE Environment Definition",
         default=None,
     )
     parser.addoption(
         "--output",
         action="store",
+        type=Path,
         help="Path to auxilary output directory",
         default=default_output_path(),
     )

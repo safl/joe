@@ -25,8 +25,8 @@ class Cijoe(object):
     def __init__(self, config_fpath=None, output_path=None):
         """Create a cijoe encapsulation defined by the given config_fpath"""
 
-        self.config_fpath = os.path.abspath(config_fpath) if config_fpath else None
-        self.config = Collector.dict_from_yamlfile(self.config_fpath) if self.config_fpath else {}
+        self.config_fpath = config_fpath if config_fpath else None
+        self.config = Collector.dict_from_yamlfile(self.config_fpath)
 
         self.run_count = 0
         self.output_path = output_path if output_path else default_output_path()

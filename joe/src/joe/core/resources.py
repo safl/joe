@@ -12,6 +12,7 @@ import ast
 import importlib
 import inspect
 import os
+import yaml
 import pkgutil
 from importlib.machinery import SourceFileLoader
 from pathlib import Path
@@ -104,12 +105,12 @@ class Collector(object):
     """Collects resources from installed packages and the current working directory"""
 
     RESOURCES = [
-        ("configs", [".config"]),
-        ("perf_reqs", [".perfreq"]),
-        ("templates", [".html"]),
-        ("workflows", [".workflow"]),
-        ("worklets", [".py"]),
-        ("auxilary", [".*"]),
+        ("configs", ".config"),
+        ("perf_reqs", ".perfreq"),
+        ("templates", ".html"),
+        ("workflows", ".workflow"),
+        ("worklets", ".py"),
+        ("auxilary", ".*"),
     ]
     IGNORE = ["__init__.py", "__pycache__", "setup.py"]
 
@@ -120,8 +121,11 @@ class Collector(object):
     def dict_from_yamlfile(path : Path):
         """Load the yaml-file, return {} on empty document."""
 
+        if not path:
+            return {}
+
         with path.open() as yamlfile:
-            return yaml.safe_load(yaml_file) or {}
+            return yaml.safe_load(yamlfile) or {}
 
     @staticmethod
     def dict_substitute(topic : dict, config={}, resources={}):
@@ -177,10 +181,10 @@ class Collector(object):
             if max_depth and level > base + max_depth:
                 continue
 
-            for category, suffixes in Collector.RESOURCES:
+            for category, suffix in Collector.RESOURCES:
                 if candidate.name in Collector.IGNORE:
                     continue
-                if candidate.suffix not in suffixes:
+                if candidate.suffix != suffix:
                     continue
 
                 self.process_candidate(candidate, category, None)
