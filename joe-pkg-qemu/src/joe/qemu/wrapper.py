@@ -56,7 +56,7 @@ class Guest(object):
         """Shutdown qemu guests by killing the process using the 'guest.pidfile'"""
 
         with self.pid.open() as pidfile:
-            pid = pidfile.read()
+            pid = pidfile.read().strip()
 
         rcode, _ = self.cijoe.run_local(f"kill {pid}")
 

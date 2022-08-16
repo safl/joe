@@ -18,5 +18,14 @@ steps:
 - name: install
   uses: qemu.install
 
+- name: start
+  uses: qemu.guest_start
+
+- name: kill
+  uses: qemu.guest_kill
+
 - name: report
   uses: core.reporter
+
+- name: inspect
+  uses: core.browser_open
