@@ -6,7 +6,9 @@
 <title>CIJOE: Workflow State Report</title>
 <!-- TODO: once done, then inline this such that it works "offline" -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
 <!-- Highlight .js Solarized Theme -->
 <style>
 .hljs{display:block;overflow-x:auto;padding:0.5em;background:#002b36;color:#839496}.hljs-comment,.hljs-quote{color:#586e75}.hljs-keyword,.hljs-selector-tag,.hljs-addition{color:#859900}.hljs-number,.hljs-string,.hljs-meta .hljs-meta-string,.hljs-literal,.hljs-doctag,.hljs-regexp{color:#2aa198}.hljs-title,.hljs-section,.hljs-name,.hljs-selector-id,.hljs-selector-class{color:#268bd2}.hljs-attribute,.hljs-attr,.hljs-variable,.hljs-template-variable,.hljs-class .hljs-title,.hljs-type{color:#b58900}.hljs-symbol,.hljs-bullet,.hljs-subst,.hljs-meta,.hljs-meta .hljs-keyword,.hljs-selector-attr,.hljs-selector-pseudo,.hljs-link{color:#cb4b16}.hljs-built_in,.hljs-deletion{color:#dc322f}.hljs-formula{background:#073642}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:bold}
@@ -19,6 +21,7 @@ div.image {
   background-image:url(https://cijoe.readthedocs.io/en/latest/_images/logo.png);
 }
 </style>
+
 <style>
 .jumbotron-fluid {
   padding-bottom: 0;
@@ -66,6 +69,10 @@ div.image {
 }
 .workflow-configuration {
   padding: 1rem;
+}
+
+.runlog {
+  margin: 0;
 }
 </style>
 </head>
@@ -119,9 +126,9 @@ div.image {
               <tbody>
                 <tr>
                   <td class="table-success"><button class="btn btn-success">Passed: {{ status.passed }}</button></td>
-                  <td class="table-danger"><button class="btn btn-danger">Failed {{ status.failed }}</button></td>
-                  <td class="table-secondary"><button class="btn btn-secondary">Skipped {{ status.skipped }}</button></td>
-                  <td class="table-info"><button class="btn btn-info">Elapsed {{ status.elapsed | round(2) }} sec</button></td>
+                  <td class="table-danger"><button class="btn btn-danger">Failed: {{ status.failed }}</button></td>
+                  <td class="table-secondary"><button class="btn btn-secondary">Skipped: {{ status.skipped }}</button></td>
+                  <td class="table-info"><button class="btn btn-primary bi bi-clock-history">Elapsed: {{ status.elapsed | round(2) }} sec</button></td>
                 </tr>
               </tbody>
             </table>
@@ -178,7 +185,7 @@ div.image {
 
             <!-- workflow-step-buttons-right BEGIN -->
             <div class="btn-group float-end" role="group">
-              <button class="btn btn-info" type="button" disabled="disabled">
+              <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                 <span style="font-family: monospace;"
                       title="Elapsed Wall-Clock time in seconds"
                       data-bs-original-title="Tooltip on right">
@@ -186,19 +193,19 @@ div.image {
                 </span>
               </button>
 
-              {% for fn, log in step["logs"].items() | sort %}
-              <button class="btn btn-primary" type="button"
+              {% for extra, _ in step["extras"].items() | sort %}
+              <button class="btn btn-primary bi bi-file-earmark-text" type="button"
                       data-bs-toggle="collapse"
-                      data-bs-target="#log_{{ log['path'].stem }}_{{ step['id'] }}"
-                      aria-controls="log_{{ log['path'].stem }}_{{ step['id'] }}"
-                      aria-expanded="false">{{ fn }}</button>
+                      data-bs-target="#CONTENT_{{ extra | upper }}_{{ step['id'] }}"
+                      aria-controls="CONTENT_{{ extra | upper }}_{{ step['id'] }}"
+                      aria-expanded="false">&nbsp;{{ extra }}</button>
               {% endfor %}
 
-              <button class="btn btn-primary" type="button"
+              <button class="btn btn-primary bi bi-filetype-yml" type="button"
                       data-bs-toggle="collapse"
-                      data-bs-target="#YAML_{{ step['id'] }}"
-                      aria-controls="YAML_{{ step['id'] }}"
-                      aria-expanded="false">yaml</button>
+                      data-bs-target="#CONTENT_YAML_{{ step['id'] }}"
+                      aria-controls="CONTENT_YAML_{{ step['id'] }}"
+                      aria-expanded="false">&nbsp;Yaml</button>
             </div>
             <!-- workflow-step-buttons-right END -->
 
@@ -210,7 +217,7 @@ div.image {
         <div id="CONTENT_{{ step['id'] }}">
 
           <!-- workflow-step-content-yaml BEGIN -->
-          <div class="collapse" id="YAML_{{ step['id'] }}" data-bs-parent="#CONTENT_{{ step['id'] }}">
+          <div class="collapse" id="CONTENT_YAML_{{ step['id'] }}" data-bs-parent="#CONTENT_{{ step['id'] }}">
             <div class="card-body">
               <pre>{{ step | pprint }}</pre>
             </div>
@@ -218,57 +225,113 @@ div.image {
           <!-- workflow-step-content-yaml END -->
 
           <!-- workflow-step-content-runlog BEGIN -->
-          {% if "run.log" in step['logs'] %}
-          <div class="collapse" id="log_run_{{ step['id'] }}"
-                data-bs-parent="#CONTENT_{{ step['id'] }}">
-            <div class="card-body">
-              <p>The content of <a href="{{ step['logs']['run.log']['path'] }}">run.log</a> is provided below.</p>
-              <pre>{{ step['logs']['run.log']['content'] }}</pre>
+          {% if "runlog" in step['extras'] %}
+          <div class="collapse" id="CONTENT_RUNLOG_{{ step['id'] }}" data-bs-parent="#CONTENT_{{ step['id'] }}">
+            <div class="card-body" style="background-color: gray;">
+            {% for stem, runlog in step['extras']['runlog'].items() %}
+            {% if runlog["state"]["rcode"] %}
+            {% set cmd_style = "danger" %}
+            {% else %}
+            {% set cmd_style = "success" %}
+            {% endif %}
+            <ul class="list-group">
+              <li class="list-group-item list-group-item-success">
+                <button class="btn btn-{{ cmd_style }}" type="button">
+                  # {{ stem }}
+                </button>
+                <div class="btn-group float-end" role="group">
+                  <button class="btn btn-light" type="button">
+                  <a href="{{ runlog["output_path"] }}" class="bi bi-file-code">.output</a>
+                  </button>
+                  <button class="btn btn-light" type="button">
+                  <a href="{{ runlog["state_path"] }}" class="bi bi-filetype-yml">.state</a>
+                  </button>
+                </div>
+              </li>
+            </ul>
+            <pre class="runlog"><code class="shell">$ {{ runlog["state"]["cmd"] }}</code></pre>
+            <pre class="runlog"><code class="bash">{{ runlog["output"] }}</code></pre>
+            {% endfor %}
             </div>
           </div>
           {% endif %}
           <!-- workflow-step-content-runlog END -->
 
           <!-- workflow-step-content-testrunner BEGIN -->
-          {% if "testrunner.log" in step['logs'] %}
-          <div class="collapse" id="log_testrunner_{{ step['id'] }}" data-bs-parent="#CONTENT_{{ step['id'] }}">
-            <div class="card-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Testcase</th>
-                    <th>Outcome</th>
-                    <th>Duration</th>
-                    <th>run.log</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for nodeid, testcase in step["logs"]["testrunner.log"]["tests"].items() %}
-                  {% if testcase["status"] == "failed" %}
-                    {% set tcase_style = "danger" %}
-                  {% elif testcase["status"] == "skipped" %}
-                    {% set tcase_style = "light" %}
-                  {% elif testcase["status"] == "passed" %}
-                    {% set tcase_style = "success" %}
-                  {% else %}
-                    {% set tcase_style = "secondary" %}
-                  {% endif %}
-                  <tr class="table-{{ tcase_style }}">
-                    <td><b>{{ nodeid }}</b></td>
-                    <td>{{ testcase['status'] }}</td>
-                    <td>{{ testcase['duration'] | round(4) }}</td>
-                    <td>
-                      {% if testcase["run.log"] %}
-                      <a href="{{ testcase["run.log"]}}">run.log</a>
-                      {% else %}
-                      N/A
-                      {% endif %}
-                    <td>
-                  </tr>
+          {% if "testreport" in step['extras'] %}
+          <div class="collapse" id="CONTENT_TESTREPORT_{{ step['id'] }}" data-bs-parent="#CONTENT_{{ step['id'] }}">
+            <div class="card-body" style="background-color: gray;">
+              Add some total stats and a description plus link to the report-log
+              <ul class="list-group">
+                {% for nodeid, testcase in step["extras"]["testreport"].items() %}
+                {% if "failed" in testcase["outcome"] %}
+                  {% set testcase_style = "danger" %}
+                  {% set testcase_text = "failed" %}
+                {% elif "skipped" in testcase["outcome"] %}
+                  {% set testcase_style = "secondary" %}
+                  {% set testcase_text = "skipped" %}
+                {% elif "passed" in testcase["outcome"] %}
+                  {% set testcase_style = "success" %}
+                  {% set testcase_text = "passed" %}
+                {% else %}
+                  {% set testcase_style = "warning" %}
+                {% endif %}
+
+                <li class="list-group-item list-group-item-success">
+                  <button class="btn btn-{{ testcase_style }}" type="button">
+                    <b>{{ testcase_text }}</b>: {{ nodeid }}
+                  </button>
+
+                  <div class="btn-group float-end" role="group">
+                    <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                      {{ testcase['duration'] | round(2) }}
+                    </button>
+                    {% if testcase["runlog"] %}
+                    <button class="btn btn-primary bi bi-file-earmark-text" type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#CONTENT_TESTREPORT_{{ step['id'] }}_runlog_{{ testcase['count'] }}"
+                      aria-controls="CONTENT_TESTREPORT_{{ step['id'] }}_runlog__{{ testcase['count'] }}"
+                      aria-expanded="false">runlog</button>
+                    {% endif %}
+                  </div>
+                </li>
+
+                <!-- workflow-step-content-testrunner-runlog BEGIN -->
+                <li class="collapse" id="CONTENT_TESTREPORT_{{ step['id'] }}_runlog_{{ testcase['count'] }}"
+                  data-bs-parent="#CONTENT_TESTREPORT_{{ step['id'] }}">
+                  <div class="card-body" style="background-color: lightgray;">
+                  {% for stem, runlog in testcase['runlog'].items() %}
+                    {% if runlog["state"]["rcode"] %}
+                    {% set cmd_style = "danger" %}
+                    {% else %}
+                    {% set cmd_style = "success" %}
+                    {% endif %}
+                    <ul class="list-group">
+                      <li class="list-group-item list-group-item-{{ cmd_style }}">
+                        <button class="btn btn-{{ cmd_style }}" type="button">
+                          # {{ stem }}
+                        </button>
+                        <div class="btn-group float-end" role="group">
+                          <button class="btn btn-light" type="button">
+                          <a href="{{ runlog["output_path"] }}" class="bi bi-file-code">.output</a>
+                          </button>
+                          <button class="btn btn-light" type="button">
+                          <a href="{{ runlog["state_path"] }}" class="bi bi-filetype-yml">.state</a>
+                          </button>
+                        </div>
+                      </li>
+                    </ul>
+                    <pre class="runlog"><code class="shell">$ {{ runlog["state"]["cmd"] }}</code></pre>
+                    <pre class="runlog"><code class="bash">{{ runlog["output"] }}</code></pre>
                   {% endfor %}
-                </tbody>
-              </table>
+                  </div>
+                </li>
+                {% endfor %}
+                <!-- workflow-step-content-testrunner-runlog END -->
+
+              </ul>
             </div>
+
           </div>
           {% endif %}
           <!-- workflow-step-content-testrunner END -->
@@ -289,5 +352,6 @@ div.image {
 
   <!-- TODO: once done, then inline this such that it works "offline" -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
 </body>
 </html>
