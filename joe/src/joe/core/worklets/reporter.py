@@ -1,67 +1,76 @@
 import json
 import pprint
+from pathlib import Path
 
 import jinja2
 
 from joe.core.misc import dict_from_yaml, h2, h3
 
 
-def populate_logs(args, collector, cijoe, step, workflow_state):
+def augment_runlog(path: Path):
+    """Produce a dict of command-dicts with paths to .output and .state files"""
 
-    logfiles = ["cmd.log", "testrunner.log"]
+    run = {}
 
-    for step, filename in [
-        (step, filename) for step in workflow_state["steps"] for filename in logfiles
-    ]:
-        if "logs" not in step:
-            step["logs"] = {}
+    if not (path.is_dir() and path.exists()):
+        return run
 
-        path = args.output / step["id"] / filename
-        if not path.exists():
+    for cmd_path in sorted(path.glob("cmd_*.*")):
+        stem = cmd_path.stem
+        suffix = cmd_path.suffix[1:]
+        if suffix not in ["output", "state"]:
             continue
 
-        step["logs"][filename] = {"path": path, "content": ""}
+        if stem not in run:
+            run[stem] = {
+                "output_path": None,
+                "output": "",
+                "state": {},
+                "state_path": None,
+            }
 
-        with path.open() as logfile:
-            if filename == "testrunner.log":
-                results = {}
+        run[stem][f"{suffix}_path"] = cmd_path
+        if suffix == "output":
+            with run[stem][f"{suffix}_path"].open() as content:
+                run[stem][f"{suffix}"] = content.read()
+        elif suffix == "state":
+            run[stem][f"{suffix}"] = dict_from_yaml(run[stem][f"{suffix}_path"])
 
-                for count, line in enumerate(logfile.readlines()):
-                    result = json.loads(line)
-                    if result["$report_type"] != "TestReport":
-                        continue
+    return run
 
-                    nodeid = result["nodeid"]
-                    if nodeid not in results:
-                        results[nodeid] = {
-                            "count": count,
-                            "nodeid": nodeid,
-                            "duration": 0.0,
-                            "outcome": [],
-                            "run.log": "",
-                        }
-                    results[nodeid]["duration"] += result["duration"]
-                    results[nodeid]["outcome"] += [result["outcome"]]
 
-                    runlog_path = (
-                        args.output / step["id"] / result["nodeid"] / "run.log"
-                    )
-                    if runlog_path.exists():
-                        results[nodeid]["run.log"] = runlog_path
+def augment_testreport(path: Path):
+    """Parse the given testfile into a list of "tests"""
 
-                for nodeid, result in results.items():
-                    if "failed" in result["outcome"]:
-                        result["status"] = "failed"
-                    elif "skipped" in result["outcome"]:
-                        result["status"] = "skipped"
-                    elif "passed" in result["outcome"]:
-                        result["status"] = "passed"
-                    else:
-                        result["status"] = "unknown"
+    results = {}
 
-                step["logs"][filename]["tests"] = results
-            else:
-                step["logs"][filename]["content"] = logfile.read()
+    logpath = path / "testreport.log"
+    if not logpath.exists():
+        return results
+
+    with logpath.open() as logfile:
+        for count, line in enumerate(logfile.readlines()):
+            result = json.loads(line)
+            if result["$report_type"] != "TestReport":
+                continue
+
+            nodeid = result["nodeid"]
+            if nodeid not in results:
+                results[nodeid] = {
+                    "count": count,
+                    "nodeid": nodeid,
+                    "duration": 0.0,
+                    "outcome": [],
+                    "runlog": {},
+                }
+            results[nodeid]["duration"] += result["duration"]
+            results[nodeid]["outcome"] += [result["outcome"]]
+
+            runlog = augment_runlog(path / result["nodeid"])
+            if runlog:
+                results[nodeid]["runlog"] = runlog
+
+    return results
 
 
 def worklet_entry(args, collector, cijoe, step):
@@ -75,8 +84,21 @@ def worklet_entry(args, collector, cijoe, step):
     h3()
 
     workflow_state = dict_from_yaml(args.output / "workflow.state")
+    for step in workflow_state["steps"]:
+        if "extras" not in step:
+            step["extras"] = {}
 
-    populate_logs(args, collector, cijoe, step, workflow_state)
+        step_path = args.output / step["id"]
+        if not step_path.exists():
+            continue
+
+        runlog = augment_runlog(step_path)
+        if runlog:
+            step["extras"]["runlog"] = runlog
+
+        testreport = augment_testreport(step_path)
+        if testreport:
+            step["extras"]["testreport"] = testreport
 
     template = jinja2.Environment(
         autoescape=True, loader=jinja2.FileSystemLoader(template_path.parent)
