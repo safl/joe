@@ -3,20 +3,15 @@
 doc: |
   This workflow demonstrates how to use qemu via cijoe, specifically by:
 
-  * building qemu
-  * installing qemu
-  * provisioning a guest
-  * starting a guest
-  * stoppping a guest
+  * Building qemu from source
+  * Installing qemu to /opt/qemu
+  * Provisioning a guest using a cloudinit image
+  * Starting a guest
+  * Stoppping a guest
 
-  This is done via worklets, which in turn are utilizing a qemu-wrapper
+  This is done via worklets, which in turn are utilizing helper-functions from core.qemu.wrapper
 
 steps:
-- name: info
-  run: |
-    cat /proc/cpuinfo
-    hostname
-
 - name: build
   uses: qemu.build_x86
 
