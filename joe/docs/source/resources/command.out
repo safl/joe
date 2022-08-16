@@ -37,4 +37,8 @@ worklets:
     path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/worklets/build_x86.py
   - ident: qemu.install
     path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/worklets/install.py
+  - ident: qemu.kill
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/worklets/kill.py
+  - ident: qemu.run
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/worklets/run.py
 
