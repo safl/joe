@@ -23,8 +23,8 @@ def cli_lint(args, collector):
     h3()
 
     yml = dict_from_yaml(args.workflow)
-
-    errors = Workflow.yaml_lint(yml, collector)  # Check the yaml-file
+    errors = Workflow.yaml_normalize(yml)           # Normalize it
+    errors += Workflow.yaml_lint(yml, collector)    # Check the yaml-file
     for error in errors:
         print(error)
     if errors:

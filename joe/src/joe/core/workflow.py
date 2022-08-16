@@ -35,6 +35,29 @@ class Workflow(Resource):
             yaml.dump(self.state, state_file)
 
     @staticmethod
+    def yaml_normalize(yml):
+        """Normalize the YAML, currently just a transformation of the 'run' shorthand"""
+
+        errors = []
+
+        if "steps" not in yml:
+            errors.append(f"Missing required top-level key: 'steps'")
+            return errors
+
+        for step in yml["steps"]:
+            if "run" not in step.keys():
+                continue
+
+            step["uses"] = "core.cmdrunner"
+            step["with"] = {
+                "commands": step["run"].splitlines()
+            }
+
+            del step["run"]
+
+        return errors
+
+    @staticmethod
     def yaml_lint(yml, collector=None):
         """Returns a list of integrity-errors for the given yml-file"""
 
@@ -48,39 +71,29 @@ class Workflow(Resource):
                 errors.append(f"Missing required top-level key: '{top}'")
                 return False
 
-        valid_keys = set(["name", "run", "uses", "with"])
+        valid = set(["name", "uses", "with"])
+        required = set(["name", "uses"])
 
-        for count, step in enumerate(yml["steps"]):
+        for count, step in enumerate(yml["steps"], 1):
             keys = set(step.keys())
 
-            if "name" not in keys:
-                errors.append(f"Invalid step({count}); missing key 'name'")
+            missing = required - keys
+            if missing:
+                errors.append(f"Invalid step({count}); required key(s): {missing}")
                 continue
+
             if not re.match("^([a-zA-Z][a-zA-Z0-9\.\-_]*)", step["name"]):
                 errors.append(f"Invalid step({count}); invalid chars in 'name'")
                 continue
 
-            if len(keys - valid_keys):
-                errors.append(f"Invalid step({count}); has unsupported keys({keys})")
-                continue
-
-            if len(keys & set(["run", "uses"])) == 2:
-                errors.append(f"Invalid step({count}); has both 'run' and 'uses'")
-                continue
-            if len(keys & set(["run", "uses"])) == 0:
-                errors.append(f"Invalid step({count}); has neither 'run' nor 'uses'")
-                continue
-
-            if "with" in keys and "uses" not in keys:
-                errors.append(f"Invalid step({count}); has 'with' missing 'uses'")
-                continue
-            if "with" in keys and "args" not in step["with"]:
-                errors.append(f"Invalid step({count}); has 'with' missing 'with:args'")
+            unsupported = keys - valid
+            if unsupported:
+                errors.append(f"Invalid step({count}); unsupported keys({unsupported})")
                 continue
 
             if collector is None:
                 continue
-            if "uses" in keys and step["uses"] not in collector.resources["worklets"]:
+            if step["uses"] not in collector.resources["worklets"]:
                 errors.append(
                     f"Invalid step({count}); unknown resource: worklet({step['uses']})"
                 )
@@ -99,6 +112,7 @@ class Workflow(Resource):
 
         # Substitute values in workflow-yaml with config entities
         jinja_env = jinja2.Environment(undefined=jinja2.StrictUndefined)
+        """
         for step in yml["steps"]:
             if "run" in step:
                 try:
@@ -110,6 +124,7 @@ class Workflow(Resource):
                     errors.append(f"Substitution-error: {exc}")
 
             # TODO: substitute in "uses"
+        """
 
         return errors
 
@@ -123,12 +138,19 @@ class Workflow(Resource):
 
         yml = dict_from_yaml(self.path)
 
+        errors = Workflow.yaml_normalize(yml)
+        if errors:
+            h3("workflow.yaml_normalize() : Failed; Check workflow with 'joe -l'")
+            return False
+
         errors = Workflow.yaml_lint(yml, collector)
         if errors:
+            h3("workflow.yaml_lint() : Failed; Check workflow with 'joe -l'")
             return False
 
         errors = Workflow.yaml_substitute(yml, config)
         if errors:
+            h3("workflow.yaml_substitute() : Failed; Check workflow with 'joe -l'")
             return False
 
         state = Workflow.STATE.copy()
@@ -152,7 +174,9 @@ class Workflow(Resource):
         config = dict_from_yaml(args.config) if args.config else {}
         cijoe = Cijoe(args.config, args.output)
 
-        self.load(self.collector, config)
+        if not self.load(self.collector, config):
+            print(f"workflow.load() : Failed; Check the workflow using 'joe -l'")
+            return 1
 
         nsteps = len(self.state["steps"])
 
@@ -169,24 +193,16 @@ class Workflow(Resource):
         self.state_dump(args.output / Workflow.STATE_FILENAME)
 
         for step in self.state["steps"]:
+
+            h3(f"step({step['name']})")
+
             begin = time.time()
 
             cijoe.set_output_ident(step["id"])
             os.makedirs(os.path.join(cijoe.output_path, step["id"]), exist_ok=True)
 
-            h3(f"step({step['name']})")
-
             if args.step and step["name"] not in args.step:
                 step["status"]["skipped"] = 1
-            elif "run" in step:
-                for cmd_count, cmd in enumerate(step["run"], 1):
-                    rcode, state = cijoe.run(cmd)
-
-                    step["status"]["failed" if rcode else "passed"] = 1
-                    if rcode:
-                        h3(f"step({step['name']}) : failed with rcode({rcode})")
-                    if rcode and fail_fast:
-                        break
             else:
                 worklet_ident = step["uses"]
 
@@ -198,7 +214,7 @@ class Workflow(Resource):
                 if step["status"]["failed"]:
                     h3(f"step({step['name']}) : failed worklet: {worklet_ident}")
 
-            for key in ["skipped", "failed", "passed"]:
+            for key in ["failed", "passed", "skipped"]:
                 self.state["status"][key] += step["status"][key]
 
             step["status"]["elapsed"] = time.time() - begin
