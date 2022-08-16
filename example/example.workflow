@@ -13,18 +13,20 @@ doc: |
 
 steps:
 - name: info
-  run: |
-    hostname
-    lsblk
-    lscpu
-    lsipc
-    lslocks
-    lslogins
-    lsmem
-    lsmod
-    lsns
-    lspci
-    lsusb
+  uses: core.cmdrunner
+  with:
+    commands:
+    - hostname
+    - lsblk
+    - lscpu
+    - sipc
+    - lslocks
+    - lslogins
+    - lsmem
+    - lsmod
+    - lsns
+    - lspci
+    - lsusb
 
 - name: test
   uses: core.testrunner

@@ -235,7 +235,7 @@ div.image {
             {% set cmd_style = "success" %}
             {% endif %}
             <ul class="list-group">
-              <li class="list-group-item list-group-item-success">
+              <li class="list-group-item list-group-item-{{ cmd_style }}">
                 <button class="btn btn-{{ cmd_style }}" type="button">
                   # {{ stem }}
                 </button>
@@ -277,7 +277,7 @@ div.image {
                   {% set testcase_style = "warning" %}
                 {% endif %}
 
-                <li class="list-group-item list-group-item-success">
+                <li class="list-group-item list-group-item--{{ testcase_style }}">
                   <button class="btn btn-{{ testcase_style }}" type="button">
                     <b>{{ testcase_text }}</b>: {{ nodeid }}
                   </button>
