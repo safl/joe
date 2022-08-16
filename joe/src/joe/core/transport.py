@@ -84,12 +84,18 @@ class SSH(Transport):
         self.ssh.set_missing_host_key_policy(paramiko.WarningPolicy())
 
         self.ssh.load_system_host_keys()
-        self.ssh.connect(**config.get("transport").get("ssh"))
+        self.scp = None
 
+    def __connect(self):
+
+        self.ssh.connect(**self.config.get("transport").get("ssh"))
         self.scp = SCPClient(self.ssh.get_transport())
 
     def run(self, cmd, cwd, evars, logfile):
         """Invoke the given command"""
+
+        if not self.scp:
+            self.__conect()
 
         if cwd:
             cmd = f"cd {cwd}; {cmd}"

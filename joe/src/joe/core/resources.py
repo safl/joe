@@ -4,10 +4,9 @@
 
     Except for the core library, then everything else is implemented as a dynamically
     collectable and loadable resources. That is, configuration-files, worklets,
-    workflows, and auxilaryfiles.
+    workflows, and auxilary files.
 
-    Resources are "collectable" from Python namespace-packages, as well as directly for
-    the current work directory, and recursively down one sub-directory.
+    The collection-logic is encapsulated in the joe.core.resources.Collector class
 """
 import ast
 import importlib
@@ -63,7 +62,11 @@ class Worklet(Resource):
     def content_has_worklet_func(self):
         """Checks whether the resource-content has the worklet entry-function"""
 
-        tree = ast.parse(self.content)
+        try:
+            tree = ast.parse(self.content)
+        except SyntaxError:
+            return False
+
         for node in [x for x in ast.walk(tree) if isinstance(x, ast.FunctionDef)]:
             if node.name != Worklet.NAMING_CONVENTION:
                 continue
@@ -112,6 +115,41 @@ class Collector(object):
 
     def __init__(self):
         self.resources = {category: {} for category, _ in Collector.RESOURCES}
+
+    @staticmethod
+    def dict_from_yamlfile(path : Path):
+        """Load the yaml-file, return {} on empty document."""
+
+        with path.open() as yamlfile:
+            return yaml.safe_load(yaml_file) or {}
+
+    @staticmethod
+    def dict_substitute(topic : dict, config={}, resources={}):
+        """Traverse the given 'topic', replacing {{ foo.bar }} entities with context-values"""
+
+        errors = []
+
+        context = {
+            "local": {
+                "env": os.environ,
+            },
+            "config": {},
+            "resources": {},
+        }
+
+        jinja_env = jinja2.Environment(undefined=jinja2.StrictUndefined)
+        for key, value in topic.items():
+            try:
+                if isinstance(value, str):
+                    topic[key] = jinja_env.from_string(value).render(context)
+                elif isinstance(value, list) and all(isinstance(line, str) for line in value):
+                    topic[key] = [jinja_env.from_string(line).render(context) for line in value]
+                elif isinstance(value, dict):
+                    errors += yaml_substitute(value)
+            except jinja2.exceptions.UndefinedError as exc:
+                        errors.append(f"Substitution-error: {exc}")
+
+        return errors
 
     def process_candidate(self, candidate: Path, category: str, pkg):
         """Inserts the given candidate"""

@@ -6,7 +6,8 @@ import os
 import time
 
 from joe.core import transport
-from joe.core.misc import ENCODING, dict_from_yaml
+from joe.core.misc import ENCODING
+from joe.core.resources import Collector
 
 
 def default_output_path():
@@ -25,9 +26,7 @@ class Cijoe(object):
         """Create a cijoe encapsulation defined by the given config_fpath"""
 
         self.config_fpath = os.path.abspath(config_fpath) if config_fpath else None
-        self.config = dict_from_yaml(self.config_fpath) if self.config_fpath else {}
-        if not self.config:
-            self.config = {}
+        self.config = Collector.dict_from_yamlfile(self.config_fpath) if self.config_fpath else {}
 
         self.run_count = 0
         self.output_path = output_path if output_path else default_output_path()

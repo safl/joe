@@ -1,11 +1,12 @@
 import argparse
+import errno
 import pprint
 import shutil
 from pathlib import Path
 
 import joe.core
 from joe.core.command import default_output_path
-from joe.core.misc import dict_from_yaml, h1, h2, h3
+from joe.core.misc import dict_from_yaml, yaml_substitute, h1, h2, h3
 from joe.core.resources import Collector
 from joe.core.workflow import Workflow
 
@@ -134,6 +135,10 @@ def cli_run(args, collector):
     print(f"output: {args.output}")
 
     config = dict_from_yaml(args.config.resolve())
+    errors = yaml_substitute(config, {}, collector.resources)
+    if errors:
+        h2("Run: 'yaml_substitute(config, ...)'; Failed")
+        return errno.EINVAL
 
     workflow = Workflow(args.workflow)
     if not workflow.load(collector, config):
