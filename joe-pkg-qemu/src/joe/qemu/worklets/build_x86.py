@@ -4,6 +4,8 @@
     enabling virtfs and debugging.
 """
 from pathlib import Path
+import errno
+from joe.core.misc import h4
 
 
 def worklet_entry(args, cijoe, step):
@@ -11,7 +13,8 @@ def worklet_entry(args, cijoe, step):
 
     conf = cijoe.config.options.get("qemu", None)
     if not conf:
-        return 0
+        h4("config is missing 'qemu' section")
+        return errno.EINVAL
 
     build_dir = Path(conf["repository"]["path"]) / "build"
 

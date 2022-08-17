@@ -123,19 +123,19 @@ class Workflow(Resource):
 
         errors += Workflow.dict_normalize(workflow_dict)
         if errors:
-            print(errors)
+            pprint.pprint(errors)
             h3("Workflow.normalize() : Failed; Check workflow with 'joe -l'")
             return errors
 
         errors += Workflow.dict_lint(workflow_dict)
         if errors:
-            print(errors)
+            pprint.pprint(errors)
             h3("Workflow.lint() : Failed; Check workflow with 'joe -l'")
             return errors
 
         errors += dict_substitute(workflow_dict, default_context(config))
         if errors:
-            print(errors)
+            pprint.pprint(errors)
             h3("dict_substitute() : Failed; Check workflow with 'joe -l'")
             return errors
 
@@ -161,17 +161,17 @@ class Workflow(Resource):
             if step_name in step_names:
                 continue
 
-            print(f"step({step_name}) not in workflow; Failed")
+            h4(f"step({step_name}) not in workflow; Failed")
             return errno.EINVAL
 
         config = Config.from_path(args.config)
         if not config:
-            print(f"Config.from_path({args.config}) : Failed; Check your .config")
-            return 1
+            h4(f"Config.from_path({args.config}) : Failed; Check your .config")
+            return errno.EINVAL
 
         if self.load(config):
-            print(f"workflow.load() : Failed; Check the workflow using 'joe -l'")
-            return 1
+            h4(f"workflow.load() : Failed; Check the workflow using 'joe -l'")
+            return errno.EINVAL
 
         # TODO: copy workflow and config to directory
         os.makedirs(args.output)
@@ -220,4 +220,4 @@ class Workflow(Resource):
                 h2(f"exiting, fail_fast({fail_fast})")
                 break
 
-        return 1 if self.state["status"]["failed"] else 0
+        return errno.EIO if self.state["status"]["failed"] else 0

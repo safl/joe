@@ -86,7 +86,7 @@ def worklet_entry(args, cijoe, step):
     print(f"report: {report_path}")
     h3()
 
-    workflow_state = dict_from_yaml(args.output / "workflow.state")
+    workflow_state = dict_from_yamlfile(args.output / "workflow.state")
     for step in workflow_state["steps"]:
         if "extras" not in step:
             step["extras"] = {}

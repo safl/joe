@@ -3,6 +3,7 @@
 """
 import webbrowser
 from pathlib import Path
+import errno
 
 
 def worklet_entry(args, cijoe, step):
@@ -14,6 +15,7 @@ def worklet_entry(args, cijoe, step):
 
     if isinstance(url, Path) and not url.exists():
         print(f"url: '{url}', does not exist, not opening.")
+        return errno.ENOENT
 
     webbrowser.open(str(url))
 
