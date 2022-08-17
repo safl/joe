@@ -5,11 +5,12 @@
     machine.
 """
 import os
+import shutil
 from pathlib import Path
 
 import psutil
 
-from joe.core.misc import h3
+from joe.core.misc import download, h3
 
 GUEST_NAME_DEFAULT = "emujoe"
 
@@ -36,10 +37,10 @@ class Guest(object):
 
         self.cijoe = cijoe
 
-        self.qemu_cfg = config.options.get("qemu", None)
-        self.guest_cfg = self.qemu_cfg["guests"]["emujoe"]
+        self.qemu_config = config.options.get("qemu", None)
+        self.guest_config = self.qemu_config["guests"]["emujoe"]
 
-        self.guest_path = (Path(self.guest_cfg["path"])).resolve()
+        self.guest_path = (Path(self.guest_config["path"])).resolve()
         self.boot_img = self.guest_path / "boot.img"
         self.cloudinit_img = self.guest_path / "cloudinit.img"
         self.pid = self.guest_path / "guest.pid"
@@ -75,7 +76,7 @@ class Guest(object):
     def start(self):
         """."""
 
-        args = [self.qemu_cfg["system_bin"]]
+        args = [self.qemu_config["system_bin"]]
 
         args += [
             "-machine",
@@ -138,16 +139,26 @@ class Guest(object):
     def provision(self):
         """Provision a guest"""
 
-        self.kill()         # In case it exists, ensure it is not running
+        self.kill()         # Ensure the guest is *not* running
+        self.initialize()   # Ensure the guest has a "home"
 
-        self.initialize()   # Ensure a "home" for the guest exists
+        if not self.cloudinit_img.exists():  # Retrieve the cloudinit-image
+            cloudinit_local = Path(self.guest_config["cloudinit"]["img"]).resolve()
+            if cloudinit_local.exists():
+                shutil.copyfile(str(cloudinit_local), self.cloudinit_img)
+            else:
+                err, path = download(
+                    self.guest_config["cloudinit"]["url"], selg.cloudinit_img
+                )
+                if err:
+                    print(
+                        f"download({self.guest_config['cloudinit']['url']}), {self.cloudinit_img}: failed"
+                    )
+                    return err
 
-        
-
-        # TODO: download cloud-img
         # TODO: construct meta-data by copying it from resources
         # TODO: construct user-data by copying it from resources and adding
         # ~/.ssh/id_rsa.pub
         # Then
 
-        # copy stuff and boot the machine
+        # boot the machine and wait for it to "settle"
