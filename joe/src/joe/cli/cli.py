@@ -7,7 +7,12 @@ from pathlib import Path
 import joe.core
 from joe.core.command import default_output_path
 from joe.core.misc import h2, h3
-from joe.core.resources import Collector, Config
+from joe.core.resources import (
+    Config,
+    dict_from_yamlfile,
+    dict_substitute,
+    get_resources,
+)
 from joe.core.workflow import Workflow
 
 
@@ -18,7 +23,7 @@ def print_errors(errors):
     h3()
 
 
-def cli_lint(args, collector):
+def cli_lint(args):
     """Lint a workflow"""
 
     h2("Lint")
@@ -30,14 +35,17 @@ def cli_lint(args, collector):
         return 1
     h3()
 
-    workflow_dict = Collector.dict_from_yamlfile(args.workflow.resolve())
+    workflow_dict = dict_from_yamlfile(args.workflow.resolve())
     errors = Workflow.dict_normalize(workflow_dict)  # Normalize it
-    errors += Workflow.dict_lint(workflow_dict, collector)  # Check the yaml-file
+    errors += Workflow.dict_lint(workflow_dict)  # Check the yaml-file
 
     if args.config:  # Check config/substitutions
-        config = Config(args.config)
-        errors += config.load()
-        errors += Workflow.dict_substitute(workflow_dict, config.options)
+        config = Config.from_path(args.config)
+        if not config:
+            h2("Lint: failed loading config")
+            return 1
+
+        errors += dict_substitute(workflow_dict, config.options)
 
     if errors:
         h2("Lint: 'see errors above'; Failed")
@@ -48,8 +56,10 @@ def cli_lint(args, collector):
     return 0
 
 
-def cli_resources(args, collector):
+def cli_resources(args):
     """List the reference configuration files provided with cijoe packages"""
+
+    resources = get_resources()
 
     h2("Resources")
     print("Resources collected by the CIJOE collector are listed below.")
@@ -64,10 +74,12 @@ def cli_resources(args, collector):
     return 0
 
 
-def cli_skeleton(args, collector):
+def cli_skeleton(args):
     """Create skeleton .config and .workflow"""
 
-    resource = collector.resources["configs"].get(f"{args.skeleton}.default", None)
+    resources = get_resources()
+
+    resource = resources["configs"].get(f"{args.skeleton}.default", None)
     if resource is None:
         print(f"'default.config' from '{args.skeleton}' is not available")
         return 1
@@ -110,7 +122,7 @@ def cli_skeleton(args, collector):
     return 0
 
 
-def cli_version(args, collector):
+def cli_version(args):
     """Print version and exit"""
 
     print(f"joe {joe.core.__version__}")
@@ -119,7 +131,7 @@ def cli_version(args, collector):
 
 
 # TODO: add stats on workflow / progress
-def cli_run(args, collector):
+def cli_run(args):
     """Run stuff"""
 
     h2("Run")
@@ -143,7 +155,7 @@ def cli_run(args, collector):
         return errno.EINVAL
 
     workflow = Workflow(args.workflow)
-    errors = workflow.load(collector, config.options)
+    errors = workflow.load(config)
     if errors:
         h2("Run: 'workflow.load()'; Failed")
         return 1
@@ -231,19 +243,16 @@ def main():
 
     args = parse_args()
 
-    collector = Collector()
-    collector.collect()
-
     if args.lint:
-        return cli_lint(args, collector)
+        return cli_lint(args)
 
     if args.resources:
-        return cli_resources(args, collector)
+        return cli_resources(args)
 
     if args.skeleton:
-        return cli_skeleton(args, collector)
+        return cli_skeleton(args)
 
     if args.version:
-        return cli_version(args, collector)
+        return cli_version(args)
 
-    return cli_run(args, collector)
+    return cli_run(args)

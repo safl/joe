@@ -13,6 +13,7 @@ from joe.core.resources import (
     default_context,
     dict_from_yamlfile,
     dict_substitute,
+    get_resources,
 )
 
 
@@ -64,8 +65,7 @@ class Workflow(Resource):
     def dict_lint(topic: dict):
         """Returns a list of integrity-errors for the given workflow-dict(topic)"""
 
-        collector = Collector()
-        collector.collect()
+        resources = get_resources()
 
         errors = []
 
@@ -97,7 +97,7 @@ class Workflow(Resource):
                 errors.append(f"Invalid step({count}); unsupported keys({unsupported})")
                 continue
 
-            if step["uses"] not in collector.resources["worklets"]:
+            if step["uses"] not in resources["worklets"]:
                 errors.append(
                     f"Invalid step({count}); unknown resource: worklet({step['uses']})"
                 )
@@ -116,8 +116,7 @@ class Workflow(Resource):
         if self.state:
             return errors
 
-        collector = Collector()
-        collector.collect()
+        resources = get_resources()
 
         workflow_dict = dict_from_yamlfile(self.path)
 
@@ -127,7 +126,7 @@ class Workflow(Resource):
             h3("Workflow.normalize() : Failed; Check workflow with 'joe -l'")
             return errors
 
-        errors += Workflow.dict_lint(workflow_dict, collector)
+        errors += Workflow.dict_lint(workflow_dict)
         if errors:
             print(errors)
             h3("Workflow.lint() : Failed; Check workflow with 'joe -l'")
@@ -156,20 +155,17 @@ class Workflow(Resource):
     def run(self, args):
         """Run the workflow using the given configuration(args.config)"""
 
-        cfg = Config.from_path(args.config)
-        if not cfg:
+        config = Config.from_path(args.config)
+        if not config:
             print(f"Config.from_path() : Failed;")
             return 1
 
-        collector = Collector()
-        collector.collect()
-
-        cijoe = Cijoe(args.config, args.output)
-
-        if not self.load(cfg.state):
+        resources = get_resources()
+        if not self.load(config):
             print(f"workflow.load() : Failed; Check the workflow using 'joe -l'")
             return 1
 
+        cijoe = Cijoe(config, args.output)
         nsteps = len(self.state["steps"])
 
         fail_fast = False
@@ -198,10 +194,8 @@ class Workflow(Resource):
             else:
                 worklet_ident = step["uses"]
 
-                collector.resources["worklets"][worklet_ident].load()
-                err = collector.resources["worklets"][worklet_ident].func(
-                    args, cijoe, step
-                )
+                resources["worklets"][worklet_ident].load()
+                err = resources["worklets"][worklet_ident].func(args, cijoe, step)
                 step["status"]["failed" if err else "passed"] = 1
                 if step["status"]["failed"]:
                     h3(f"step({step['name']}) : failed worklet: {worklet_ident}")
