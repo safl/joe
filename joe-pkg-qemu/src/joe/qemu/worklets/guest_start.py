@@ -9,7 +9,7 @@ from joe.qemu.wrapper import Guest
 
 
 def worklet_entry(args, cijoe, step):
-    """Build qemu"""
+    """Start a qemu guest"""
 
     guest = Guest(cijoe, cijoe.config)
 

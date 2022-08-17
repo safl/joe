@@ -4,7 +4,8 @@ from pathlib import Path
 
 import jinja2
 
-from joe.core.misc import dict_from_yaml, h2, h3
+from joe.core.misc import h2, h3
+from joe.core.resources import dict_from_yamlfile, get_resources
 
 
 def augment_runlog(path: Path):
@@ -34,7 +35,7 @@ def augment_runlog(path: Path):
             with run[stem][f"{suffix}_path"].open() as content:
                 run[stem][f"{suffix}"] = content.read()
         elif suffix == "state":
-            run[stem][f"{suffix}"] = dict_from_yaml(run[stem][f"{suffix}_path"])
+            run[stem][f"{suffix}"] = dict_from_yamlfile(run[stem][f"{suffix}_path"])
 
     return run
 
@@ -76,7 +77,9 @@ def augment_testreport(path: Path):
 def worklet_entry(args, cijoe, step):
     """Produce a HTML report of the 'workflow.state' file in 'args.output'"""
 
-    template_path = collector.resources["templates"]["core.report-workflow"].path
+    resources = get_resources()
+
+    template_path = resources["templates"]["core.report-workflow"].path
     report_path = args.output / "report.html"
 
     print(f"template: {template_path}")

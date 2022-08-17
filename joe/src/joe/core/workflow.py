@@ -1,4 +1,5 @@
 import os
+import errno
 import pprint
 import re
 import time
@@ -6,7 +7,7 @@ import time
 import yaml
 
 from joe.core.command import Cijoe
-from joe.core.misc import h3
+from joe.core.misc import h3, h4
 from joe.core.resources import (
     Config,
     Resource,
@@ -80,26 +81,26 @@ class Workflow(Resource):
         valid = set(["name", "uses", "with"])
         required = set(["name", "uses"])
 
-        for count, step in enumerate(topic["steps"], 1):
+        for nr, step in enumerate(topic["steps"], 1):
             keys = set(step.keys())
 
             missing = required - keys
             if missing:
-                errors.append(f"Invalid step({count}); required key(s): {missing}")
+                errors.append(f"Invalid step({nr}); required key(s): {missing}")
                 continue
 
             if not re.match("^([a-zA-Z][a-zA-Z0-9\.\-_]*)", step["name"]):
-                errors.append(f"Invalid step({count}); invalid chars in 'name'")
+                errors.append(f"Invalid step({nr}); invalid chars in 'name'")
                 continue
 
             unsupported = keys - valid
             if unsupported:
-                errors.append(f"Invalid step({count}); unsupported keys({unsupported})")
+                errors.append(f"Invalid step({nr}); unsupported keys({unsupported})")
                 continue
 
             if step["uses"] not in resources["worklets"]:
                 errors.append(
-                    f"Invalid step({count}); unknown resource: worklet({step['uses']})"
+                    f"Invalid step({nr}); unknown resource: worklet({step['uses']})"
                 )
                 continue
 
@@ -141,10 +142,10 @@ class Workflow(Resource):
         state = Workflow.STATE.copy()
         state["doc"] = workflow_dict.get("doc")
         state["config"] = workflow_dict.get("config", {})
-        for count, step in enumerate(workflow_dict["steps"], 1):
-            step["count"] = count
+        for nr, step in enumerate(workflow_dict["steps"], 1):
+            step["nr"] = nr
             step["status"] = {"skipped": 0, "passed": 0, "failed": 0, "elapsed": 0.0}
-            step["id"] = f"{count}_{step['name']}"
+            step["id"] = f"{nr}_{step['name']}"
 
             state["steps"].append(step)
 
@@ -155,32 +156,31 @@ class Workflow(Resource):
     def run(self, args):
         """Run the workflow using the given configuration(args.config)"""
 
+        step_names = [step["name"] for step in self.state["steps"]]
+        for step_name in args.step:
+            if step_name in step_names:
+                continue
+
+            print(f"step({step_name}) not in workflow; Failed")
+            return errno.EINVAL
+
         config = Config.from_path(args.config)
         if not config:
-            print(f"Config.from_path() : Failed;")
+            print(f"Config.from_path({args.config}) : Failed; Check your .config")
             return 1
 
         if self.load(config):
             print(f"workflow.load() : Failed; Check the workflow using 'joe -l'")
             return 1
 
+        # TODO: copy workflow and config to directory
+        os.makedirs(args.output)
+        self.state_dump(args.output / Workflow.STATE_FILENAME)
+
+        fail_fast = False
         resources = get_resources()
 
         cijoe = Cijoe(config, args.output)
-        nsteps = len(self.state["steps"])
-
-        fail_fast = False
-
-        step_names = [step["name"] for step in self.state["steps"]]
-        for step_name in args.step:
-            if step_name in step_names:
-                continue
-
-            print(f"step: '{step_name}' not in workflow; Failed")
-            return 1
-
-        self.state_dump(args.output / Workflow.STATE_FILENAME)
-
         for step in self.state["steps"]:
 
             h3(f"step({step['name']})")
@@ -195,19 +195,15 @@ class Workflow(Resource):
             else:
                 worklet_ident = step["uses"]
 
-                resources["worklets"][worklet_ident].load()
                 try:
+                    resources["worklets"][worklet_ident].load()
                     err = resources["worklets"][worklet_ident].func(args, cijoe, step)
+                    if err:
+                        h4(f"worklet({worklet_ident}) : err({err})")
                     step["status"]["failed" if err else "passed"] = 1
-                except TypeError as exc:
-                    h3(f"step({step['name']}) : TypeError worklet: {worklet_ident}")
-                    step["status"]["failed"] = 1
                 except Exception as exc:
                     step["status"]["failed"] = 1
-                    h3(f"step({step['name']}) : worklet: {worklet_ident}; threw({exc})")
-
-                if step["status"]["failed"]:
-                    h3(f"step({step['name']}) : failed worklet: {worklet_ident}")
+                    h4(f"worklet({worklet_ident}) : threw({exc})")
 
             for key in ["failed", "passed", "skipped"]:
                 self.state["status"][key] += step["status"][key]
@@ -216,8 +212,12 @@ class Workflow(Resource):
             self.state["status"]["elapsed"] += step["status"]["elapsed"]
             self.state_dump(args.output / Workflow.STATE_FILENAME)
 
+            for text, status in step["status"].items():
+                if text != "elapsed" and status:
+                    h3(f"step({step['name']}) : {text}")
+
             if step["status"]["failed"] and fail_fast:
-                h3(f"step({step['name']}) : exiting because ('fail_fast: True')")
+                h2(f"exiting, fail_fast({fail_fast})")
                 break
 
         return 1 if self.state["status"]["failed"] else 0

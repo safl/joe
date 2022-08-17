@@ -8,13 +8,17 @@ GUEST_NAME_DEFAULT = "emujoe"
 def qemu_img(cijoe, args=[]):
     """Helper function wrapping around 'qemu_img'"""
 
-    return cijoe.run_local(f"{cijoe.config.options['qemu']['img_bin']} " + " ".join(args))
+    return cijoe.run_local(
+        f"{cijoe.config.options['qemu']['img_bin']} " + " ".join(args)
+    )
 
 
 def qemu_system(cijoe, args=[]):
     """Wrapping the qemu system binary"""
 
-    return cijoe.run_local(f"{cijoe.config.options['qemu']['system_bin']}" + " ".join(args))
+    return cijoe.run_local(
+        f"{cijoe.config.options['qemu']['system_bin']}" + " ".join(args)
+    )
 
 
 def guest_init(cijoe, guest_name=None):
