@@ -96,9 +96,48 @@ class Resource(object):
             self.content = resource_file.read()
 
 
+class Config(Resource):
+    """Encapsulation of a CIJOE config-file, e.g. 'default.config'"""
+
+    SUFFIX = ".config"
+
+    def __init__(self, path: Path, pkg=None):
+        super().__init__(path, pkg)
+
+        self.options = {}
+
+    def load(self):
+        """Populates self.options on success. Returns a list of errors otherwise"""
+
+        config_dict = dict_from_yamlfile(self.path)
+
+        errors = dict_substitute(config_dict, default_context())
+        if errors:
+            return errors
+
+        self.options = config_dict
+        return []
+
+    @staticmethod
+    def from_path(path, pkg=None):
+        """Instantiate a Config from path, returning None on error"""
+
+        path = Path(path).resolve()
+        if not path.exists():
+            return None
+
+        config = Config(path, pkg)
+        errors = config.load()
+        if errors:
+            return None
+
+        return config
+
+
 class Worklet(Resource):
     """Worklet representation and encapsulation"""
 
+    SUFFIX = ".py"
     NAMING_CONVENTION = "worklet_entry"
 
     def __init__(self, path, pkg=None):
@@ -147,128 +186,3 @@ class Worklet(Resource):
             return []
 
         return ["Missing worklet_entry() function in loaded module"]
-
-
-class Config(Resource):
-    """Encapsulation of a CIJOE config-file, e.g. 'default.config'"""
-
-    def __init__(self, path: Path, pkg=None):
-        super().__init__(path, pkg)
-
-        self.options = {}
-
-    def load(self):
-        """Populates self.options on success. Returns a list of errors otherwise"""
-
-        config_dict = dict_from_yamlfile(self.path)
-
-        errors = dict_substitute(config_dict, default_context())
-        if errors:
-            return errors
-
-        self.options = config_dict
-        return []
-
-    @staticmethod
-    def from_path(path, pkg=None):
-        """Instantiate a Config from path, returning None on error"""
-
-        path = Path(path).resolve()
-        if not path.exists():
-            return None
-
-        config = Config(path, pkg)
-        errors = config.load()
-        if errors:
-            return None
-
-        return config
-
-
-class Collector(object):
-    """Collects resources from installed packages and the current working directory"""
-
-    RESOURCES = [
-        ("configs", ".config"),
-        ("perf_reqs", ".perfreq"),
-        ("templates", ".html"),
-        ("workflows", ".workflow"),
-        ("worklets", ".py"),
-        ("auxilary", ".*"),
-    ]
-    IGNORE = ["__init__.py", "__pycache__", "setup.py"]
-
-    def __new__(cls):
-        if not hasattr(cls, "instance"):
-            cls.instance = super(Collector, cls).__new__(cls)
-        return cls.instance
-
-    def __init__(self):
-        self.resources = {category: {} for category, _ in Collector.RESOURCES}
-        self.is_done = False
-
-    def __process_candidate(self, candidate: Path, category: str, pkg):
-        """Inserts the given candidate"""
-
-        if category == "worklets":
-            resource = Worklet(candidate, pkg)
-            resource.content_from_file()
-
-            if not resource.content_has_worklet_func():
-                category = "auxilary"
-        else:
-            resource = Resource(candidate, pkg)
-
-        self.resources[category][resource.ident] = resource
-
-    def collect_from_path(self, path=None, max_depth=2):
-        """Collects non-packaged worklets from the given 'path'"""
-
-        path = Path(path).resolve() if path else Path.cwd().resolve()
-
-        base = len(str(path).split(os.sep))
-
-        for candidate in list(path.glob("*")) + list(path.glob("*/*")):
-            level = len(str(candidate).split(os.sep))
-            if max_depth and level > base + max_depth:
-                continue
-
-            for category, suffix in Collector.RESOURCES:
-                if candidate.name in Collector.IGNORE:
-                    continue
-                if candidate.suffix != suffix:
-                    continue
-
-                self.__process_candidate(candidate, category, None)
-
-    def collect_from_packages(self, path=None, prefix=None):
-        """Collect resources from CIJOE packages at the given 'path'"""
-
-        if prefix is None:
-            prefix = ""
-
-        for pkg in pkgutil.walk_packages(path, prefix):
-            comp = pkg.name.split(".")[1:]  # drop the 'joe.' prefix
-            if not (
-                pkg.ispkg
-                and any(cat in comp for cat, _ in Collector.RESOURCES)
-                and len(comp) == 2
-            ):  # skip non-resource packages
-                continue
-
-            _, category = comp
-            for candidate in importlib.resources.files(f"{pkg.name}").iterdir():
-                if candidate.name in Collector.IGNORE:
-                    continue
-
-                self.__process_candidate(candidate, category, pkg)
-
-    def collect(self):
-        """Collect from all implemented resource "sources" """
-
-        if self.is_done:
-            return
-
-        self.collect_from_packages(joe.__path__, "joe.")
-        self.collect_from_path()
-        self.is_done = True

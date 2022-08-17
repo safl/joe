@@ -31,7 +31,6 @@ class Workflow(Resource):
         super().__init__(path, pkg)
 
         self.state = None
-        self.collector = None
         self.config = None
 
     def state_dump(self, path):
@@ -62,8 +61,11 @@ class Workflow(Resource):
         return errors
 
     @staticmethod
-    def dict_lint(topic: dict, collector=None):
+    def dict_lint(topic: dict):
         """Returns a list of integrity-errors for the given workflow-dict(topic)"""
+
+        collector = Collector()
+        collector.collect()
 
         errors = []
 
@@ -95,8 +97,6 @@ class Workflow(Resource):
                 errors.append(f"Invalid step({count}); unsupported keys({unsupported})")
                 continue
 
-            if collector is None:
-                continue
             if step["uses"] not in collector.resources["worklets"]:
                 errors.append(
                     f"Invalid step({count}); unknown resource: worklet({step['uses']})"
@@ -105,7 +105,7 @@ class Workflow(Resource):
 
         return errors
 
-    def load(self, collector, config):
+    def load(self, config: Config):
         """
         Load the workflow-yamlfile, normalize it, lint it, substitute, then construct
         the object properties
@@ -116,7 +116,8 @@ class Workflow(Resource):
         if self.state:
             return errors
 
-        self.collector = collector
+        collector = Collector()
+        collector.collect()
 
         workflow_dict = dict_from_yamlfile(self.path)
 
@@ -160,12 +161,12 @@ class Workflow(Resource):
             print(f"Config.from_path() : Failed;")
             return 1
 
-        pprint.pprint(cfg.state)
-        pprint.pprint(args.config)
+        collector = Collector()
+        collector.collect()
 
         cijoe = Cijoe(args.config, args.output)
 
-        if not self.load(self.collector, cfg.state):
+        if not self.load(cfg.state):
             print(f"workflow.load() : Failed; Check the workflow using 'joe -l'")
             return 1
 
@@ -197,9 +198,9 @@ class Workflow(Resource):
             else:
                 worklet_ident = step["uses"]
 
-                self.collector.resources["worklets"][worklet_ident].load()
-                err = self.collector.resources["worklets"][worklet_ident].func(
-                    args, self.collector, cijoe, step
+                collector.resources["worklets"][worklet_ident].load()
+                err = collector.resources["worklets"][worklet_ident].func(
+                    args, cijoe, step
                 )
                 step["status"]["failed" if err else "passed"] = 1
                 if step["status"]["failed"]:
