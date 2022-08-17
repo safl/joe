@@ -10,6 +10,7 @@
 """
 import os
 import shutil
+import pprint
 from pathlib import Path
 
 import psutil
@@ -34,13 +35,16 @@ def qemu_system(cijoe, args=[]):
 
 
 class Guest(object):
-    def __init__(self, cijoe, config):
+    def __init__(self, cijoe, config, name=None):
         """."""
 
         self.cijoe = cijoe
 
         self.qemu_config = config.options.get("qemu", None)
-        self.guest_config = self.qemu_config["guests"]["emujoe"]
+        if not name:
+            name = sorted(self.qemu_config["guests"].keys())[0]
+
+        self.guest_config = self.qemu_config["guests"][name]
 
         self.guest_path = (Path(self.guest_config["path"])).resolve()
         self.boot_img = self.guest_path / "boot.img"
@@ -80,19 +84,13 @@ class Guest(object):
 
         args = [self.qemu_config["system_bin"]]
 
-        args += [
-            "-machine",
-            "type=q35,kernel_irqchip=split,accel=kvm",
-            "-cpu",
-            "host",
-            "-smp",
-            "4",
-            "-m",
-            "6G",
-        ]
-
-        # magic-option, enable intel-iommu
-        args += ["-device", "intel-iommu,pt=on,intremap=on"]
+        # Create qemu-system args
+        for key, value in self.guest_config["system_args"].items():
+            args.append(f"-{key}")
+            if isinstance(value, dict):
+                args.append(next((f"{opt}={val}" for opt, val in value.items())))
+            else:
+                args.append(str(value))
 
         # magic-option, when 'boot.img' exists, add it is as boot-drive
         if self.boot_img.exists():
@@ -102,9 +100,19 @@ class Guest(object):
             ]
             args += ["-device", "virtio-blk-pci,drive=boot"]
 
+        pprint.pprint(args)
         # TCP host-forward
-        args += ["-netdev", "user,id=n1,ipv6=off,hostfwd=tcp::2022-:22"]
-        args += ["-device", "virtio-net-pci,netdev=n1"]
+        ports = self.guest_config["fancy"].get("tcp_forward", None)
+        if ports:
+            args += [
+                "-netdev",
+                f"user,id=n1,ipv6=off,hostfwd=tcp::{ports['host']}-:{ports['guest']}",
+            ]
+            args += ["-device", "virtio-net-pci,netdev=n1"]
+
+        pprint.pprint(args)
+
+        # TODO: add host_share option
 
         # Management stuff
         args += ["-pidfile", str(self.pid)]
@@ -173,17 +181,19 @@ class Guest(object):
         )
         with Path(self.guest_config["cloudinit"]["pubkey"]).resolve().open() as kfile:
             pubkey = kfile.read()
-        with userdata_path.open('w') as userdatafile:
+        with userdata_path.open("w") as userdatafile:
             userdatafile.write("ssh_authorized_key:\n")
             userdatafile.write(f"- {pubkey}\n")
 
-        cloud_cmd = " ".join([
-            "cloud-localds",
-            "-v",
-            str(self.seed_img),
-            str(userdata_path),
-            str(metadata_path),
-        ])
+        cloud_cmd = " ".join(
+            [
+                "cloud-localds",
+                "-v",
+                str(self.seed_img),
+                str(userdata_path),
+                str(metadata_path),
+            ]
+        )
         rcode, _ = self.cijoe.run_local(cloud_cmd)
 
         # Additional args to pass to the guest when starting it

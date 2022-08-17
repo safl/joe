@@ -1,4 +1,5 @@
 import os
+import socket
 import shutil
 import subprocess
 from abc import ABC, abstractmethod
@@ -106,8 +107,14 @@ class SSH(Transport):
 
             logfile.write(stdout.read().decode(ENCODING))
             logfile.write(stderr.read().decode(ENCODING))
+        except socket.error:
+            return errno.EREMOTEIO
+        except socket.timeout:
+            return errno.EREMOTEIO
+        except paramiko.ssh_exception.SSHException:
+            return errno.EREMOTEIO
         except paramiko.ssh_exception.NoValidConnectionsError:
-            return 1
+            return errno.EREMOTEIO
 
         return stdout.channel.recv_exit_status()
 

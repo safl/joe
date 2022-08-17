@@ -21,6 +21,10 @@ steps:
 - name: provision
   uses: qemu.guest_provision
 
+- name: check
+  run: |
+    hostname
+
 - name: start
   uses: qemu.guest_start
 
