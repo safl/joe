@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 """
-    Builds qemu system(x86_64-softmmu), disabling most graphics related features, and
-    enabling virtfs and debugging.
+    Installs qemu
 """
 import errno
 from pathlib import Path
 
 
 def worklet_entry(args, cijoe, step):
-    """Build qemu"""
+    """Install qemu"""
 
     conf = cijoe.config.options.get("qemu", None)
     if not conf:

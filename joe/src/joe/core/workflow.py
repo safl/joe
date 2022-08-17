@@ -201,6 +201,9 @@ class Workflow(Resource):
                     if err:
                         h4(f"worklet({worklet_ident}) : err({err})")
                     step["status"]["failed" if err else "passed"] = 1
+                except KeyboardInterrupt as exc:
+                    step["status"]["failed"] = 1
+                    h4(f"worklet({worklet_ident}) : KeyboardInterrupt({exc})")
                 except Exception as exc:
                     step["status"]["failed"] = 1
                     h4(f"worklet({worklet_ident}) : threw({exc})")
