@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from joe.core.misc import h3
+
 GUEST_NAME_DEFAULT = "emujoe"
 
 
@@ -48,7 +50,9 @@ class Guest(object):
         """..."""
 
         with self.pid.open() as pidfile:
-            foo = pidfile.read()
+            pid = pidfile.read()
+
+        h3(f"pid: {pid}")
 
         return True
 
@@ -97,7 +101,7 @@ class Guest(object):
         args += ["-netdev", "user,id=n1,ipv6=off,hostfwd=tcp::2022-:22"]
         args += ["-device", "virtio-net-pci,netdev=n1"]
 
-        ## Management stuff
+        # Management stuff
         args += ["-pidfile", str(self.pid)]
 
         args += ["-monitor", f"unix:{self.monitor},server,nowait"]

@@ -34,7 +34,7 @@ def dict_from_yamlfile(path: Path):
         return yaml.safe_load(yamlfile) or {}
 
 
-def default_context(config = None, collector=None):
+def default_context(config=None, collector=None):
     """Return a default context for dict-substitution"""
 
     return {
@@ -152,7 +152,7 @@ class Worklet(Resource):
 class Config(Resource):
     """Encapsulation of a CIJOE config-file, e.g. 'default.config'"""
 
-    def __init__(self, path : Path, pkg=None):
+    def __init__(self, path: Path, pkg=None):
         super().__init__(path, pkg)
 
         self.options = {}
@@ -199,7 +199,7 @@ class Collector(object):
     IGNORE = ["__init__.py", "__pycache__", "setup.py"]
 
     def __new__(cls):
-        if not hasattr(cls, 'instance'):
+        if not hasattr(cls, "instance"):
             cls.instance = super(Collector, cls).__new__(cls)
         return cls.instance
 

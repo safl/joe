@@ -1,17 +1,16 @@
 import os
+import pprint
 import re
 import time
-import pprint
 
-import jinja2
 import yaml
 
 from joe.core.command import Cijoe
 from joe.core.misc import h3
 from joe.core.resources import (
-    Collector,
-    Resource,
     Config,
+    Resource,
+    default_context,
     dict_from_yamlfile,
     dict_substitute,
 )
@@ -48,7 +47,7 @@ class Workflow(Resource):
         errors = []
 
         if "steps" not in topic:
-            errors.append(f"Missing required top-level key: 'steps'")
+            errors.append("Missing required top-level key: 'steps'")
             return errors
 
         for step in topic["steps"]:
@@ -136,7 +135,7 @@ class Workflow(Resource):
         errors += dict_substitute(workflow_dict, default_context(config))
         if errors:
             print(errors)
-            h3("Collector.dict_substitute() : Failed; Check workflow with 'joe -l'")
+            h3("dict_substitute() : Failed; Check workflow with 'joe -l'")
             return errors
 
         state = Workflow.STATE.copy()
@@ -156,11 +155,9 @@ class Workflow(Resource):
     def run(self, args):
         """Run the workflow using the given configuration(args.config)"""
 
-        resources = self.collector.resources
-        cfg = Config(args.config)
-        errors = cfg.load()
-        if errors:
-            print(f"cfg.load() : Failed; Check the workflow using 'joe -l'")
+        cfg = Config.from_path(args.config)
+        if not cfg:
+            print(f"Config.from_path() : Failed;")
             return 1
 
         pprint.pprint(cfg.state)

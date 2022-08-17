@@ -6,15 +6,17 @@ from pathlib import Path
 
 import joe.core
 from joe.core.command import default_output_path
-from joe.core.misc import h1, h2, h3
+from joe.core.misc import h2, h3
 from joe.core.resources import Collector, Config
 from joe.core.workflow import Workflow
+
 
 def print_errors(errors):
     h3("errors")
     for error in errors:
         print(errors)
     h3()
+
 
 def cli_lint(args, collector):
     """Lint a workflow"""
@@ -29,7 +31,7 @@ def cli_lint(args, collector):
     h3()
 
     workflow_dict = Collector.dict_from_yamlfile(args.workflow.resolve())
-    errors = Workflow.dict_normalize(workflow_dict)         # Normalize it
+    errors = Workflow.dict_normalize(workflow_dict)  # Normalize it
     errors += Workflow.dict_lint(workflow_dict, collector)  # Check the yaml-file
 
     if args.config:  # Check config/substitutions

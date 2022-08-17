@@ -1,8 +1,8 @@
 import os
-from pathlib import Path
 import shutil
 import subprocess
 from abc import ABC, abstractmethod
+from pathlib import Path
 
 import paramiko
 from scp import SCPClient
@@ -28,7 +28,7 @@ class Transport(ABC):
 class Local(Transport):
     """Provide cmd/push/pull locally"""
 
-    def __init__(self, config : Config, output_path : Path):
+    def __init__(self, config: Config, output_path: Path):
         self.config = config
         self.output_path = output_path
         self.output_ident = "aux"

@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 from joe.core.command import Cijoe, default_output_path
-from joe.core.resources import Config, Collector
+from joe.core.resources import Collector, Config
 
 JOE = None
 

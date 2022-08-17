@@ -1,13 +1,13 @@
 """
 
 """
-import logging
 import os
 import time
+from pathlib import Path
 
 from joe.core import transport
 from joe.core.misc import ENCODING
-from joe.core.resources import Collector, Config
+from joe.core.resources import Config
 
 
 def default_output_path():
@@ -22,7 +22,7 @@ def default_output_path():
 class Cijoe(object):
     """CIJOE providing retargetable command-line expressions and data-transfers"""
 
-    def __init__(self, config : Config, output_path):
+    def __init__(self, config: Config, output_path: Path):
         """Create a cijoe encapsulation defined by the given config_fpath"""
 
         self.config = config
@@ -40,7 +40,7 @@ class Cijoe(object):
         if ssh:
             self.transport = transport.SSH(self.config, self.output_path)
 
-    def set_output_ident(self, output_ident):
+    def set_output_ident(self, output_ident: str):
         """
         This sets the output-identifier which is used in order to provide a subfolder
         for artifacts, command-output etc. Additionally, then it reset the command
