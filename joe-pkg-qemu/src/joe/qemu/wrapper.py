@@ -31,7 +31,6 @@ def qemu_system(cijoe, args=[]):
 
 
 class Guest(object):
-
     def __init__(self, cijoe, config):
         """."""
 
@@ -73,7 +72,7 @@ class Guest(object):
 
         os.makedirs(self.guest_path, exist_ok=True)
 
-    def run(self):
+    def start(self):
         """."""
 
         args = [self.qemu_cfg["system_bin"]]
@@ -141,12 +140,10 @@ class Guest(object):
 
         self.initialize()
 
-
-
         # TODO: download cloud-img
         # TODO: construct meta-data by copying it from resources
         # TODO: construct user-data by copying it from resources and adding
         # ~/.ssh/id_rsa.pub
-        # Then 
+        # Then
 
         # copy stuff and boot the machine

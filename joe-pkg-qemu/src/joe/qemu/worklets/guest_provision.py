@@ -13,6 +13,4 @@ def worklet_entry(args, cijoe, step):
 
     guest = Guest(cijoe, cijoe.config)
 
-    guest.provision()
-
-    return guest.run()
+    return guest.provision()

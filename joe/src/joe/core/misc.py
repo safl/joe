@@ -1,6 +1,9 @@
+import errno
 import os
+from pathlib import Path
 
 import jinja2
+import requests
 import yaml
 
 ENCODING = "UTF-8"
@@ -44,3 +47,21 @@ def h3(title=""):
 
 def h4(title=""):
     line(title, " ")
+
+
+def download(url: str, path: Path):
+    """Downloads a file over http(s), returns (err, path)."""
+
+    path = Path(path).resolve()
+    if path.is_dir():
+        path = path / url.split("/")[-1]
+    if not (path.parent.is_dir() and path.parent.exists()):
+        return errno.EINVAL, path
+
+    with requests.get(url, stream=True) as request:
+        request.raise_for_status()
+        with path.open("wb") as local:
+            for chunk in request.iter_content(chunk_size=8192):
+                local.write(chunk)
+
+    return 0, path
