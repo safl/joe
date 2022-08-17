@@ -6,7 +6,11 @@
     collectable and loadable resources. That is, configuration-files, worklets,
     workflows, and auxilary files.
 
-    The collection-logic is encapsulated in the joe.core.resources.Collector class
+    The collection-logic is encapsulated in the joe.core.resources.Collector class,
+    which is implemented as a singleton. It is a singleton, since it is used everywhere
+    for looking up resources and the relative "heavy" task of collecting resources
+    should only be done once. So, instead of parsing it around, checking for collection
+    and re-collecting... then it has a single state to maintain.
 """
 import ast
 import importlib
@@ -23,26 +27,23 @@ import yaml
 import joe
 
 
-def default_context(config={}, resources={}):
+def dict_from_yamlfile(path: Path):
+    """Returns content of yamlfile at 'path' as dict and {} on empty document."""
+
+    with path.open() as yamlfile:
+        return yaml.safe_load(yamlfile) or {}
+
+
+def default_context(config = None, collector=None):
     """Return a default context for dict-substitution"""
 
     return {
         "local": {
             "env": os.environ,
         },
-        "config": config,
-        "resources": resources,
+        "config": config.options if config else {},
+        "resources": collector.resources if collector else {},
     }
-
-
-def dict_from_yamlfile(path: Path):
-    """Returns content of yamlfile at 'path' as dict and {} on empty document."""
-
-    if not path:
-        return {}
-
-    with path.open() as yamlfile:
-        return yaml.safe_load(yamlfile) or {}
 
 
 def dict_substitute(topic: dict, context: dict) -> list:
@@ -149,20 +150,39 @@ class Worklet(Resource):
 
 
 class Config(Resource):
-    def __init__(self, path, pkg=None):
+    """Encapsulation of a CIJOE config-file, e.g. 'default.config'"""
+
+    def __init__(self, path : Path, pkg=None):
         super().__init__(path, pkg)
 
-        self.state = {}
+        self.options = {}
 
     def load(self):
+        """Populates self.options on success. Returns a list of errors otherwise"""
 
         config_dict = dict_from_yamlfile(self.path)
+
         errors = dict_substitute(config_dict, default_context())
         if errors:
             return errors
 
-        self.state = config_dict
+        self.options = config_dict
         return []
+
+    @staticmethod
+    def from_path(path, pkg=None):
+        """Instantiate a Config from path, returning None on error"""
+
+        path = Path(path).resolve()
+        if not path.exists():
+            return None
+
+        config = Config(path, pkg)
+        errors = config.load()
+        if errors:
+            return None
+
+        return config
 
 
 class Collector(object):
@@ -178,10 +198,16 @@ class Collector(object):
     ]
     IGNORE = ["__init__.py", "__pycache__", "setup.py"]
 
+    def __new__(cls):
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(Collector, cls).__new__(cls)
+        return cls.instance
+
     def __init__(self):
         self.resources = {category: {} for category, _ in Collector.RESOURCES}
+        self.is_done = False
 
-    def process_candidate(self, candidate: Path, category: str, pkg):
+    def __process_candidate(self, candidate: Path, category: str, pkg):
         """Inserts the given candidate"""
 
         if category == "worklets":
@@ -213,7 +239,7 @@ class Collector(object):
                 if candidate.suffix != suffix:
                     continue
 
-                self.process_candidate(candidate, category, None)
+                self.__process_candidate(candidate, category, None)
 
     def collect_from_packages(self, path=None, prefix=None):
         """Collect resources from CIJOE packages at the given 'path'"""
@@ -235,10 +261,14 @@ class Collector(object):
                 if candidate.name in Collector.IGNORE:
                     continue
 
-                self.process_candidate(candidate, category, pkg)
+                self.__process_candidate(candidate, category, pkg)
 
     def collect(self):
         """Collect from all implemented resource "sources" """
 
+        if self.is_done:
+            return
+
         self.collect_from_packages(joe.__path__, "joe.")
         self.collect_from_path()
+        self.is_done = True

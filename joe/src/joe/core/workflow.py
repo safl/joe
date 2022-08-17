@@ -133,7 +133,7 @@ class Workflow(Resource):
             h3("Workflow.lint() : Failed; Check workflow with 'joe -l'")
             return errors
 
-        errors += dict_substitute(workflow_dict, config)
+        errors += dict_substitute(workflow_dict, default_context(config))
         if errors:
             print(errors)
             h3("Collector.dict_substitute() : Failed; Check workflow with 'joe -l'")

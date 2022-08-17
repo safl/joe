@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import shutil
 import subprocess
 from abc import ABC, abstractmethod
@@ -7,6 +8,7 @@ import paramiko
 from scp import SCPClient
 
 from joe.core.misc import ENCODING
+from joe.core.resources import Config
 
 
 class Transport(ABC):
@@ -26,7 +28,7 @@ class Transport(ABC):
 class Local(Transport):
     """Provide cmd/push/pull locally"""
 
-    def __init__(self, config, output_path):
+    def __init__(self, config : Config, output_path : Path):
         self.config = config
         self.output_path = output_path
         self.output_ident = "aux"
@@ -88,7 +90,7 @@ class SSH(Transport):
 
     def __connect(self):
 
-        self.ssh.connect(**self.config.get("transport").get("ssh"))
+        self.ssh.connect(**self.config.options.get("transport").get("ssh"))
         self.scp = SCPClient(self.ssh.get_transport())
 
     def run(self, cmd, cwd, evars, logfile):

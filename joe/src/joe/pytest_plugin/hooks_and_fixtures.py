@@ -3,17 +3,22 @@ from pathlib import Path
 import pytest
 
 from joe.core.command import Cijoe, default_output_path
+from joe.core.resources import Config, Collector
 
 JOE = None
 
 
 def pytest_addoption(parser):
+
+    collector = Collector()
+    collector.collect()
+
     parser.addoption(
         "--config",
         action="store",
         type=Path,
         help="Path to CIJOE Environment Definition",
-        default=None,
+        default=collector.resources["configs"]["core.default"],
     )
     parser.addoption(
         "--output",
@@ -51,8 +56,12 @@ def cijoe(request, capsys):
         JOE.set_output_ident(request.node.nodeid)
         return JOE
 
+    config = Config.from_path(request.config.getoption("--config"))
+    if config is None:
+        return None
+
     JOE = Cijoe(
-        request.config.getoption("--config"),
+        config,
         request.config.getoption("--output"),
     )
     JOE.set_output_ident(request.node.nodeid)

@@ -22,16 +22,10 @@ def default_output_path():
 class Cijoe(object):
     """CIJOE providing retargetable command-line expressions and data-transfers"""
 
-    def __init__(self, config_fpath=None, output_path=None):
+    def __init__(self, config : Config, output_path):
         """Create a cijoe encapsulation defined by the given config_fpath"""
 
-        self.config = {}
-        self.config_fpath = config_fpath
-
-        if self.config_fpath:
-            config = Config(config_fpath)
-            config.load()
-            self.config = config.state
+        self.config = config
 
         self.run_count = 0
         self.output_path = output_path if output_path else default_output_path()
@@ -39,31 +33,12 @@ class Cijoe(object):
 
         os.makedirs(os.path.join(self.output_path, self.output_ident), exist_ok=True)
 
-        # Setup a logging object for misc. errors and information
-        self.__filehandler = logging.FileHandler(
-            os.path.join(self.output_path, "cijoe.log")
-        )
-        self.__filehandler.setLevel(logging.INFO)
-        self.log = logging.getLogger()
-        self.log.addHandler(self.__filehandler)
-
         self.transport_local = transport.Local(self.config, self.output_path)
+        self.transport = self.transport_local
 
-        ssh = self.config.get("transport", {}).get("ssh", None)
+        ssh = self.config.options.get("transport", {}).get("ssh", None)
         if ssh:
             self.transport = transport.SSH(self.config, self.output_path)
-        else:
-            self.transport = self.transport_local
-
-    def get_config(self, subject=None):
-        """Return the environment configuration"""
-
-        return self.config.get(subject, None)
-
-    def get_config_fpath(self):
-        """Return the environment configuration filepath, None when default is used."""
-
-        return self.config_fpath
 
     def set_output_ident(self, output_ident):
         """

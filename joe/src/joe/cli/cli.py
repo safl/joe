@@ -10,6 +10,11 @@ from joe.core.misc import h1, h2, h3
 from joe.core.resources import Collector, Config
 from joe.core.workflow import Workflow
 
+def print_errors(errors):
+    h3("errors")
+    for error in errors:
+        print(errors)
+    h3()
 
 def cli_lint(args, collector):
     """Lint a workflow"""
@@ -24,14 +29,13 @@ def cli_lint(args, collector):
     h3()
 
     workflow_dict = Collector.dict_from_yamlfile(args.workflow.resolve())
-    errors = Workflow.dict_normalize(workflow_dict)  # Normalize it
+    errors = Workflow.dict_normalize(workflow_dict)         # Normalize it
     errors += Workflow.dict_lint(workflow_dict, collector)  # Check the yaml-file
 
     if args.config:  # Check config/substitutions
-        config = Collector.dict_from_yamlfile(args.config.resolve())
-        errors = Workflow.dict_substitute(workflow_dict, config)
-        for error in errors:
-            print(error)
+        config = Config(args.config)
+        errors += config.load()
+        errors += Workflow.dict_substitute(workflow_dict, config.options)
 
     if errors:
         h2("Lint: 'see errors above'; Failed")
@@ -137,7 +141,8 @@ def cli_run(args, collector):
         return errno.EINVAL
 
     workflow = Workflow(args.workflow)
-    if not workflow.load(collector, config.state):
+    errors = workflow.load(collector, config.options)
+    if errors:
         h2("Run: 'workflow.load()'; Failed")
         return 1
 
