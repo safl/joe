@@ -64,10 +64,10 @@ def cli_resources(args):
     h2("Resources")
     print("Resources collected by the CIJOE collector are listed below.")
     h3()
-    for category, resources in sorted(collector.resources.items()):
-        print(f"{category}:" + ("" if resources.items() else " ~"))
+    for category, category_resources in sorted(resources.items()):
+        print(f"{category}:" + ("" if category_resources.items() else " ~"))
 
-        for ident, path in sorted(resources.items()):
+        for ident, path in sorted(category_resources.items()):
             print(f"  - ident: {ident}")
             print(f"    path: {path}")
 

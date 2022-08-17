@@ -8,10 +8,11 @@ setup(
     url="https://github.com/safl/joe-pkg-qemu/",
     install_requires=[
         "joe",
+        "psutil",
     ],
     include_package_data=True,
     package_data={
-        "": ["*.html", "*.config", "*.perfreq", "*.workflow"],
+        "": ["*.html", "*.config", "*.perfreq", "*.workflow", "*.user", "*.meta"],
     },
     package_dir={"": "src"},
     packages=find_namespace_packages(where="src", include=["joe.*"]),

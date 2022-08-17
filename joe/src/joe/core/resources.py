@@ -36,15 +36,18 @@ def dict_from_yamlfile(path: Path):
         return yaml.safe_load(yamlfile) or {}
 
 
-def default_context(config=None, collector=None):
+def default_context(config=None, resources=None):
     """Return a default context for dict-substitution"""
+
+    if resources is None:
+        resources = get_resources()
 
     return {
         "local": {
             "env": os.environ,
         },
         "config": config.options if config else {},
-        "resources": collector.resources if collector else {},
+        "resources": resources,
     }
 
 

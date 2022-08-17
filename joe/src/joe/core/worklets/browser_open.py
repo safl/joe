@@ -1,9 +1,9 @@
 """
     Open generated report, if it exists.
 """
+import errno
 import webbrowser
 from pathlib import Path
-import errno
 
 
 def worklet_entry(args, cijoe, step):

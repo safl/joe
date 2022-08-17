@@ -18,6 +18,9 @@ steps:
 - name: install
   uses: qemu.install
 
+- name: provision
+  uses: qemu.guest_provision
+
 - name: start
   uses: qemu.guest_start
 
