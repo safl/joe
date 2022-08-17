@@ -1,8 +1,12 @@
 """
-    A wrapper around qemu_system, qemu_img with helpers for controlling a guest
+    Wraps qemu binaries: system, qemu_img + provides "guest-control"
 
-    Note that this is a 'local-only' wrapper, it **cannot** be retargeted onto a remote
-    machine.
+    NOTE: this wrapper is "local-only". That is, changing transport does not retarget
+    the functionality provided here. Most of the code is utilizing Python modules such
+    as shutil, pathlib, psutil, download/requests. To make this re-targetable these
+    things must be done via command-line utilities. It is certainly doable, however,
+    currently not a priority as the intent is to utilize qemu to produce a virtual
+    machine to serve as a 'target' for tests.
 """
 import os
 import shutil
@@ -130,7 +134,7 @@ class Guest(object):
 
         rcode = 0
 
-        pid = sel.get_pid()
+        pid = self.get_pid()
         if pid:
             rcode, _ = self.cijoe.run_local(f"kill {pid}")
 
@@ -139,8 +143,8 @@ class Guest(object):
     def provision(self):
         """Provision a guest"""
 
-        self.kill()         # Ensure the guest is *not* running
-        self.initialize()   # Ensure the guest has a "home"
+        self.kill()  # Ensure the guest is *not* running
+        self.initialize()  # Ensure the guest has a "home"
 
         if not self.cloudinit_img.exists():  # Retrieve the cloudinit-image
             cloudinit_local = Path(self.guest_config["cloudinit"]["img"]).resolve()
@@ -148,7 +152,7 @@ class Guest(object):
                 shutil.copyfile(str(cloudinit_local), self.cloudinit_img)
             else:
                 err, path = download(
-                    self.guest_config["cloudinit"]["url"], selg.cloudinit_img
+                    self.guest_config["cloudinit"]["url"], self.cloudinit_img
                 )
                 if err:
                     print(
@@ -156,8 +160,17 @@ class Guest(object):
                     )
                     return err
 
-        # TODO: construct meta-data by copying it from resources
-        # TODO: construct user-data by copying it from resources and adding
+        shutil.copyfile(self.guest_config["cloudinit"]["user"], self.guest_path /
+        "user-data")
+        shutil.copyfile(self.guest_config["cloudinit"]["meta"], self.guest_path /
+        "meta-data")
+
+        # TODO: add the ssh-key to the meta
+
+        # Boot the "installation"
+
+        return 0
+
         # ~/.ssh/id_rsa.pub
         # Then
 
