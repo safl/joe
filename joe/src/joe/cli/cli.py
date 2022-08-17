@@ -85,7 +85,7 @@ def cli_skeleton(args):
         return 1
     src_config = resource.path
 
-    resource = collector.resources["workflows"].get(f"{args.skeleton}.example", None)
+    resource = resources["workflows"].get(f"{args.skeleton}.example", None)
     if resource is None:
         print(f"'example.workflow' from '{args.skeleton}' is not available")
         return 1

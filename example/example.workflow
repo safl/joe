@@ -24,11 +24,6 @@ steps:
 - name: start
   uses: qemu.guest_start
 
-- name: check
-  run: |
-    hostname
-    lscpu
-
 - name: kill
   uses: qemu.guest_kill
 
