@@ -40,8 +40,8 @@ class Guest(object):
         self.guest_cfg = self.qemu_cfg["guests"]["emujoe"]
 
         self.guest_path = (Path(self.guest_cfg["path"])).resolve()
-        self.boot_iso = self.guest_path / "boot.iso"
         self.boot_img = self.guest_path / "boot.img"
+        self.cloudinit_img = self.guest_path / "cloudinit.img"
         self.pid = self.guest_path / "guest.pid"
         self.monitor = self.guest_path / "monitor.sock"
         self.serial = self.guest_path / "serial.sock"
@@ -138,7 +138,11 @@ class Guest(object):
     def provision(self):
         """Provision a guest"""
 
-        self.initialize()
+        self.kill()         # In case it exists, ensure it is not running
+
+        self.initialize()   # Ensure a "home" for the guest exists
+
+        
 
         # TODO: download cloud-img
         # TODO: construct meta-data by copying it from resources
