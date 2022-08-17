@@ -6,10 +6,10 @@
 from pathlib import Path
 
 
-def worklet_entry(args, collector, cijoe, step):
+def worklet_entry(args, cijoe, step):
     """Build qemu"""
 
-    conf = cijoe.config.get("qemu", None)
+    conf = cijoe.config.options.get("qemu", None)
     if not conf:
         return 0
 

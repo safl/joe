@@ -16,7 +16,7 @@
 """
 
 
-def worklet_entry(args, collector, cijoe, step):
+def worklet_entry(args, cijoe, step):
     """Invoke test-runner"""
 
     pytest_cmd = ["python3", "-m", "pytest"]

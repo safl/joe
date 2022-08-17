@@ -8,7 +8,7 @@ from pathlib import Path
 from joe.qemu.wrapper import Guest
 
 
-def worklet_entry(args, collector, cijoe, step):
+def worklet_entry(args, cijoe, step):
     """Build qemu"""
 
     guest = Guest(cijoe, cijoe.config)

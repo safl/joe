@@ -160,10 +160,11 @@ class Workflow(Resource):
             print(f"Config.from_path() : Failed;")
             return 1
 
-        resources = get_resources()
-        if not self.load(config):
+        if self.load(config):
             print(f"workflow.load() : Failed; Check the workflow using 'joe -l'")
             return 1
+
+        resources = get_resources()
 
         cijoe = Cijoe(config, args.output)
         nsteps = len(self.state["steps"])
@@ -195,8 +196,16 @@ class Workflow(Resource):
                 worklet_ident = step["uses"]
 
                 resources["worklets"][worklet_ident].load()
-                err = resources["worklets"][worklet_ident].func(args, cijoe, step)
-                step["status"]["failed" if err else "passed"] = 1
+                try:
+                    err = resources["worklets"][worklet_ident].func(args, cijoe, step)
+                    step["status"]["failed" if err else "passed"] = 1
+                except TypeError as exc:
+                    h3(f"step({step['name']}) : TypeError worklet: {worklet_ident}")
+                    step["status"]["failed"] = 1
+                except Exception as exc:
+                    step["status"]["failed"] = 1
+                    h3(f"step({step['name']}) : worklet: {worklet_ident}; threw({exc})")
+
                 if step["status"]["failed"]:
                     h3(f"step({step['name']}) : failed worklet: {worklet_ident}")
 

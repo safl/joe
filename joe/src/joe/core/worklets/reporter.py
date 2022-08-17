@@ -73,7 +73,7 @@ def augment_testreport(path: Path):
     return results
 
 
-def worklet_entry(args, collector, cijoe, step):
+def worklet_entry(args, cijoe, step):
     """Produce a HTML report of the 'workflow.state' file in 'args.output'"""
 
     template_path = collector.resources["templates"]["core.report-workflow"].path

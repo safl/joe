@@ -96,16 +96,18 @@ class SSH(Transport):
     def run(self, cmd, cwd, evars, logfile):
         """Invoke the given command"""
 
-        if not self.scp:
-            self.__connect()
-
         if cwd:
             cmd = f"cd {cwd}; {cmd}"
 
-        stdin, stdout, stderr = self.ssh.exec_command(cmd, environment=evars)
+        try:
+            if not self.scp:
+                self.__connect()
+            stdin, stdout, stderr = self.ssh.exec_command(cmd, environment=evars)
 
-        logfile.write(stdout.read().decode(ENCODING))
-        logfile.write(stderr.read().decode(ENCODING))
+            logfile.write(stdout.read().decode(ENCODING))
+            logfile.write(stderr.read().decode(ENCODING))
+        except paramiko.ssh_exception.NoValidConnectionsError:
+            return 1
 
         return stdout.channel.recv_exit_status()
 

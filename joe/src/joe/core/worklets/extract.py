@@ -1,4 +1,4 @@
-def worklet_entry(args, collector, cijoe, step):
+def worklet_entry(args, cijoe, step):
     """Extract metrics from workflow output"""
 
     print("extractor")

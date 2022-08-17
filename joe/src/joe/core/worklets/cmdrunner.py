@@ -1,7 +1,7 @@
 import errno
 
 
-def worklet_entry(args, collector, cijoe, step):
+def worklet_entry(args, cijoe, step):
     """Run commands one at a time via cijoe.run()"""
 
     rcode = 0
