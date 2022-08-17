@@ -16,8 +16,6 @@ import psutil
 
 from joe.core.misc import download, h3
 
-GUEST_NAME_DEFAULT = "emujoe"
-
 
 def qemu_img(cijoe, args=[]):
     """Helper function wrapping around 'qemu_img'"""
@@ -46,7 +44,7 @@ class Guest(object):
 
         self.guest_path = (Path(self.guest_config["path"])).resolve()
         self.boot_img = self.guest_path / "boot.img"
-        self.cloudinit_img = self.guest_path / "cloudinit.img"
+        self.seed_img = self.guest_path / "seed.img"
         self.pid = self.guest_path / "guest.pid"
         self.monitor = self.guest_path / "monitor.sock"
         self.serial = self.guest_path / "serial.sock"
@@ -68,7 +66,7 @@ class Guest(object):
             return 0
 
         with self.pid.open() as pidfile:
-            pid = pidfile.read().strip()
+            pid = int(pidfile.read().strip())
 
         return pid
 
@@ -77,7 +75,7 @@ class Guest(object):
 
         os.makedirs(self.guest_path, exist_ok=True)
 
-    def start(self):
+    def start(self, extra_args=[]):
         """."""
 
         args = [self.qemu_config["system_bin"]]
@@ -95,10 +93,6 @@ class Guest(object):
 
         # magic-option, enable intel-iommu
         args += ["-device", "intel-iommu,pt=on,intremap=on"]
-
-        # magic-option, when 'boot.iso' exists, then add the -boot arg
-        if self.boot_iso.exists():
-            args += ["-boot", "d", "-cdrom", str(self.boot_iso)]
 
         # magic-option, when 'boot.img' exists, add it is as boot-drive
         if self.boot_img.exists():
@@ -125,6 +119,8 @@ class Guest(object):
             args += ["-nographic"]
             args += ["-serial", "mon:stdio"]
 
+        args += extra_args
+
         rcode, _ = self.cijoe.run_local(" ".join(args))
 
         return rcode
@@ -136,42 +132,71 @@ class Guest(object):
 
         pid = self.get_pid()
         if pid:
-            rcode, _ = self.cijoe.run_local(f"kill {pid}")
+            qemu_proc = psutil.Process(pid)
+            qemu_proc.terminate()
+
+            gone, alive = psutil.wait_procs([qemu_proc], timeout=3)
+            for proc in alive:
+                p.kill()
 
         return rcode
 
     def provision(self):
         """Provision a guest"""
 
-        self.kill()  # Ensure the guest is *not* running
-        self.initialize()  # Ensure the guest has a "home"
+        # Ensure the guest is *not* running
+        self.kill()
 
-        if not self.cloudinit_img.exists():  # Retrieve the cloudinit-image
-            cloudinit_local = Path(self.guest_config["cloudinit"]["img"]).resolve()
-            if cloudinit_local.exists():
-                shutil.copyfile(str(cloudinit_local), self.cloudinit_img)
-            else:
-                err, path = download(
-                    self.guest_config["cloudinit"]["url"], self.cloudinit_img
-                )
-                if err:
-                    print(
-                        f"download({self.guest_config['cloudinit']['url']}), {self.cloudinit_img}: failed"
-                    )
-                    return err
+        # Ensure the guest has a "home"
+        self.initialize()
 
-        shutil.copyfile(self.guest_config["cloudinit"]["user"], self.guest_path /
-        "user-data")
-        shutil.copyfile(self.guest_config["cloudinit"]["meta"], self.guest_path /
-        "meta-data")
+        # Ensure the guest has a cloudinit-image available for "installation"
+        url = self.guest_config["cloudinit"]["url"]
+        cloudinit_img = Path(self.guest_config["cloudinit"]["img"]).resolve()
+        if not cloudinit_img.exists():
+            os.makedirs(cloudinit_img.parent, exist_ok=True)
+            err, path = download(url, cloudinit_img)
+            if err:
+                print(f"download({url}), {cloudinit_img}: failed")
+                return err
+
+        # Create the boot.img based on cloudinit_img
+        shutil.copyfile(str(cloudinit_img), str(self.boot_img))
+        self.cijoe.run_local(f"qemu-img resize {self.boot_img} 10G")
+
+        # Create seed.img, with data and meta embedded
+        metadata_path = shutil.copyfile(
+            self.guest_config["cloudinit"]["meta"], self.guest_path / "meta-data"
+        )
+        userdata_path = shutil.copyfile(
+            self.guest_config["cloudinit"]["user"], self.guest_path / "user-data"
+        )
+        with Path(self.guest_config["cloudinit"]["pubkey"]).resolve().open() as kfile:
+            pubkey = kfile.read()
+        with userdata_path.open('w') as userdatafile:
+            userdatafile.write("ssh_authorized_key:\n")
+            userdatafile.write(f"- {pubkey}\n")
+
+        cloud_cmd = " ".join([
+            "cloud-localds",
+            "-v",
+            str(self.seed_img),
+            str(userdata_path),
+            str(metadata_path),
+        ])
+        rcode, _ = self.cijoe.run_local(cloud_cmd)
+
+        # Additional args to pass to the guest when starting it
+        system_args = []
+        system_args += ["-drive", f"file={self.seed_img},if=virtio,format=raw"]
+
+        rcode = self.start(system_args)
+        if rcode:
+            print("failed starting...")
+            return rcode
 
         # TODO: add the ssh-key to the meta
 
         # Boot the "installation"
 
         return 0
-
-        # ~/.ssh/id_rsa.pub
-        # Then
-
-        # boot the machine and wait for it to "settle"
