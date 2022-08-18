@@ -2,9 +2,7 @@ import errno
 import os
 from pathlib import Path
 
-import jinja2
 import requests
-import yaml
 
 ENCODING = "UTF-8"
 HEADER_MIN = 60

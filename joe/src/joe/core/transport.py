@@ -1,6 +1,6 @@
 import os
-import socket
 import shutil
+import socket
 import subprocess
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -84,10 +84,12 @@ class SSH(Transport):
         self.output_path = output_path
 
         self.ssh = paramiko.SSHClient()
-        self.ssh.set_missing_host_key_policy(paramiko.WarningPolicy())
+        self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
         self.ssh.load_system_host_keys()
         self.scp = None
+
+        paramiko.util.log_to_file("/tmp/paramiko.log", level="WARN")
 
     def __connect(self):
 
@@ -100,21 +102,12 @@ class SSH(Transport):
         if cwd:
             cmd = f"cd {cwd}; {cmd}"
 
-        try:
-            if not self.scp:
-                self.__connect()
-            stdin, stdout, stderr = self.ssh.exec_command(cmd, environment=evars)
+        if not self.scp:
+            self.__connect()
+        stdin, stdout, stderr = self.ssh.exec_command(cmd, environment=evars)
 
-            logfile.write(stdout.read().decode(ENCODING))
-            logfile.write(stderr.read().decode(ENCODING))
-        except socket.error:
-            return errno.EREMOTEIO
-        except socket.timeout:
-            return errno.EREMOTEIO
-        except paramiko.ssh_exception.SSHException:
-            return errno.EREMOTEIO
-        except paramiko.ssh_exception.NoValidConnectionsError:
-            return errno.EREMOTEIO
+        logfile.write(stdout.read().decode(ENCODING))
+        logfile.write(stderr.read().decode(ENCODING))
 
         return stdout.channel.recv_exit_status()
 

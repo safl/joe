@@ -1,6 +1,7 @@
 """
 
 """
+import errno
 import os
 import time
 from pathlib import Path
@@ -65,7 +66,20 @@ class Cijoe(object):
 
         with open(cmd_output_fpath, "a", encoding=ENCODING) as logfile:
             begin = time.time()
-            rcode = transport.run(cmd, cwd, evars, logfile)
+
+            try:
+                rcode = transport.run(cmd, cwd, evars, logfile)
+            except Exception as exc:
+                if (
+                    hasattr(exc, "errno")
+                    and isinstance(exc.errno, int)
+                    and exc.errno > 0
+                ):
+                    rcode = exc.errno
+                else:
+                    rcode = errno.EIO
+                logfile.write(f"# transport.run(); raised({exc})\n")
+
             end = time.time()
 
             state = {

@@ -1,5 +1,5 @@
 """
-    Wraps qemu binaries: system, qemu_img + provides "guest-control"
+    Wraps qemu binaries: system, qemu_img and provides "guest-control"
 
     NOTE: this wrapper is "local-only". That is, changing transport does not retarget
     the functionality provided here. Most of the code is utilizing Python modules such
@@ -10,12 +10,11 @@
 """
 import os
 import shutil
-import pprint
 from pathlib import Path
 
 import psutil
 
-from joe.core.misc import download, h3
+from joe.core.misc import download
 
 
 def qemu_img(cijoe, args=[]):
@@ -61,7 +60,9 @@ class Guest(object):
     def is_running(self):
         """Check whether the guest is running"""
 
-        return self.get_pid() and psutil.pid_exists(pid)
+        pid = self.get_pid()
+
+        return pid and psutil.pid_exists(pid)
 
     def get_pid(self):
         """Returns pid from 'guest.pid', returns 0 when 'guest.pid' is not found"""
@@ -100,7 +101,6 @@ class Guest(object):
             ]
             args += ["-device", "virtio-blk-pci,drive=boot"]
 
-        pprint.pprint(args)
         # TCP host-forward
         ports = self.guest_config["fancy"].get("tcp_forward", None)
         if ports:
@@ -109,8 +109,6 @@ class Guest(object):
                 f"user,id=n1,ipv6=off,hostfwd=tcp::{ports['host']}-:{ports['guest']}",
             ]
             args += ["-device", "virtio-net-pci,netdev=n1"]
-
-        pprint.pprint(args)
 
         # TODO: add host_share option
 
@@ -181,7 +179,7 @@ class Guest(object):
         )
         with Path(self.guest_config["cloudinit"]["pubkey"]).resolve().open() as kfile:
             pubkey = kfile.read()
-        with userdata_path.open("w") as userdatafile:
+        with userdata_path.open("a") as userdatafile:
             userdatafile.write("ssh_authorized_key:\n")
             userdatafile.write(f"- {pubkey}\n")
 

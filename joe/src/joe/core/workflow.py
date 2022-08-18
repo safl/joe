@@ -7,7 +7,7 @@ import time
 import yaml
 
 from joe.core.command import Cijoe
-from joe.core.misc import h3, h4
+from joe.core.misc import h2, h3, h4
 from joe.core.resources import (
     Config,
     Resource,
@@ -117,26 +117,24 @@ class Workflow(Resource):
         if self.state:
             return errors
 
-        resources = get_resources()
-
         workflow_dict = dict_from_yamlfile(self.path)
 
         errors += Workflow.dict_normalize(workflow_dict)
         if errors:
             pprint.pprint(errors)
-            h3("Workflow.normalize() : Failed; Check workflow with 'joe -l'")
+            h3("Workflow.normalize() : failed; Check workflow with 'joe -l'")
             return errors
 
         errors += Workflow.dict_lint(workflow_dict)
         if errors:
             pprint.pprint(errors)
-            h3("Workflow.lint() : Failed; Check workflow with 'joe -l'")
+            h3("Workflow.lint() : failed; Check workflow with 'joe -l'")
             return errors
 
         errors += dict_substitute(workflow_dict, default_context(config))
         if errors:
             pprint.pprint(errors)
-            h3("dict_substitute() : Failed; Check workflow with 'joe -l'")
+            h3("dict_substitute() : failed; Check workflow with 'joe -l'")
             return errors
 
         state = Workflow.STATE.copy()
@@ -161,16 +159,19 @@ class Workflow(Resource):
             if step_name in step_names:
                 continue
 
-            h4(f"step({step_name}) not in workflow; Failed")
+            h4(f"step({step_name}) not in workflow; failed")
             return errno.EINVAL
 
         config = Config.from_path(args.config)
         if not config:
-            h4(f"Config.from_path({args.config}) : Failed; Check your .config")
+            h4(f"Config.from_path({args.config}) : failed; Check your .config")
             return errno.EINVAL
 
-        if self.load(config):
-            h4(f"workflow.load() : Failed; Check the workflow using 'joe -l'")
+        errors = self.load(config)
+        if errors:
+            for error in errors:
+                h4(error)
+            h4("workflow.load(): failed; see above or by run 'joe -l'")
             return errno.EINVAL
 
         # TODO: copy workflow and config to directory
