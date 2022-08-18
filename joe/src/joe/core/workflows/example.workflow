@@ -32,3 +32,5 @@ steps:
 
 - name: report
   uses: core.reporter
+  with:
+    report_open: true

@@ -77,7 +77,7 @@ def augment_testreport(path: Path):
 def worklet_entry(args, cijoe, step):
     """Produce a HTML report of the 'workflow.state' file in 'args.output'"""
 
-    open_report = step.get("with", {"open_report": True}.get("open_report", True))
+    report_open = step.get("with", {"report_open": True}.get("report_open", True))
 
     resources = get_resources()
 
@@ -112,7 +112,7 @@ def worklet_entry(args, cijoe, step):
     with (report_path).open("w") as report:
         report.write(template.render(workflow_state))
 
-    if open_report:
+    if report_open:
         webbrowser.open(str(report_path))
 
     return 0
