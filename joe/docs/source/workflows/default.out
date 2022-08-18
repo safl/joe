@@ -1,9 +1,8 @@
-Namespace(step=[], workflow=PosixPath('/home/safl/git/joe/joe/docs/source/workflows/example.workflow'), config=PosixPath('/home/safl/git/joe/joe/docs/source/workflows/default.config'), output=PosixPath('/home/safl/git/joe/joe/docs/source/workflows/cijoe-output-20220816-055239'), lint=False, resources=False, skeleton='core', version=False)
-== Skeleton ================================================
+== Example =================================================
 config: /home/safl/git/joe/joe/docs/source/workflows/default.config
 workflow: /home/safl/git/joe/joe/docs/source/workflows/example.workflow
 ------------------------------------------------------------
 skipping config(/home/safl/git/joe/joe/docs/source/workflows/default.config); already exists
 skipping workflow(/home/safl/git/joe/joe/docs/source/workflows/example.workflow); already exists
-== Skeleton; Done ==========================================
+== Example; Done ===========================================
 

@@ -6,11 +6,21 @@ auxilary:
     path: /home/safl/git/joe/joe/docs/source/conf.py
   - ident: core.example
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/auxilary/example.perfreq
+  - ident: qemu.cloudinit-debian-bullseye-meta
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/auxilary/cloudinit-debian-bullseye-meta.meta
+  - ident: qemu.cloudinit-debian-bullseye-user
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/auxilary/cloudinit-debian-bullseye-user.user
+  - ident: qemu.cloudinit-freebsd-13-meta
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/auxilary/cloudinit-freebsd-13-meta.meta
+  - ident: qemu.cloudinit-freebsd-13-user
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/auxilary/cloudinit-freebsd-13-user.user
 configs:
   - ident: core.default
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/configs/default.config
   - ident: core.transport-ssh
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/configs/transport-ssh.config
+  - ident: linux.default
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/linux/configs/default.config
   - ident: qemu.default
     path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/configs/default.config
 perf_reqs: ~
@@ -20,11 +30,15 @@ templates:
 workflows:
   - ident: core.example
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/workflows/example.workflow
+  - ident: linux.example
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/linux/workflows/example.workflow
   - ident: qemu.example
     path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/workflows/example.workflow
 worklets:
   - ident: core.browser_open
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/worklets/browser_open.py
+  - ident: core.cmdrunner
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/core/worklets/cmdrunner.py
   - ident: core.dump_metrics
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/worklets/dump_metrics.py
   - ident: core.extract
@@ -33,12 +47,18 @@ worklets:
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/worklets/reporter.py
   - ident: core.testrunner
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/worklets/testrunner.py
+  - ident: linux.null_blk
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/linux/worklets/null_blk.py
+  - ident: linux.sysinfo
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/linux/worklets/sysinfo.py
   - ident: qemu.build_x86
     path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/worklets/build_x86.py
+  - ident: qemu.guest_kill
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/worklets/guest_kill.py
+  - ident: qemu.guest_provision
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/worklets/guest_provision.py
+  - ident: qemu.guest_start
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/worklets/guest_start.py
   - ident: qemu.install
     path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/worklets/install.py
-  - ident: qemu.kill
-    path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/worklets/kill.py
-  - ident: qemu.run
-    path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/worklets/run.py
 

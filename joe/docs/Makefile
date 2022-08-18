@@ -23,7 +23,6 @@ endef
 .PHONY: apidoc
 apidoc:
 	@echo "## apidoc"
-	rm -rf ${SPHINX_SOURCEDIR}/api
 	${PY_ENV_ACTIVATE} && sphinx-apidoc --implicit-namespaces -e -H "API" -M -f --tocfile index -o ${SPHINX_SOURCEDIR}/api ../src/joe
 
 define kmdo-help
@@ -32,7 +31,6 @@ endef
 .PHONY: kmdo
 kmdo:
 	@echo "## kmdo"
-	rm -rf ${SPHINX_SOURCEDIR}/api
 	kmdo source
 
 define build-help

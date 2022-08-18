@@ -1,5 +1,5 @@
-usage: joe [-h] [-w WORKFLOW] [-c CONFIG] [-o OUTPUT] [-l] [-r]
-           [-s [SKELETON]] [-v]
+usage: joe [-h] [-w WORKFLOW] [-c CONFIG] [-o OUTPUT] [-l] [-r] [-e [EXAMPLE]]
+           [-v]
            [step ...]
 
 positional arguments:
@@ -15,7 +15,7 @@ optional arguments:
                         Path to output directory.
   -l, --lint            Check integrity of workflow and exit.
   -r, --resources       List collected resources and exit.
-  -s [SKELETON], --skeleton [SKELETON]
+  -e [EXAMPLE], --example [EXAMPLE]
                         Create a 'default.config' and 'example.workflow' in
                         `pwd` then exit.
   -v, --version         Print the version number of 'joe' and exit.
