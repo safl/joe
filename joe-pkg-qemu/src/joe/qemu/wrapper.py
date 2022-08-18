@@ -80,7 +80,7 @@ class Guest(object):
 
         os.makedirs(self.guest_path, exist_ok=True)
 
-    def start(self, extra_args=[]):
+    def start(self, daemonize=True, extra_args=[]):
         """."""
 
         args = [self.qemu_config["system_bin"]]
@@ -117,7 +117,7 @@ class Guest(object):
 
         args += ["-monitor", f"unix:{self.monitor},server,nowait"]
 
-        if True:
+        if daemonize:
             args += ["-display", "none"]
             args += ["-serial", f"file:{self.serial},server,nowait"]
             args += ["-daemonize"]
@@ -198,13 +198,9 @@ class Guest(object):
         system_args = []
         system_args += ["-drive", f"file={self.seed_img},if=virtio,format=raw"]
 
-        rcode = self.start(system_args)
+        rcode = self.start(daemonize=False, extra_args=system_args)
         if rcode:
             print("failed starting...")
             return rcode
-
-        # TODO: add the ssh-key to the meta
-
-        # Boot the "installation"
 
         return 0
