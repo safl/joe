@@ -127,7 +127,17 @@ class Guest(object):
             ]
             args += ["-device", "virtio-blk-pci,drive=boot"]
 
-        # TCP host-forward
+        #
+        # Fancy-args
+        #
+        host_share = self.guest_config["fancy"].get("host_share", None)
+        if host_share:
+            host_share = Path(host_share).resolve()
+            args += [
+                "-virtfs",
+                f"fsdriver=local,id=fsdev0,security_model=mapped,mount_tag=hostshare,path={host_share}"
+            ]
+
         ports = self.guest_config["fancy"].get("tcp_forward", None)
         if ports:
             args += [
@@ -136,11 +146,8 @@ class Guest(object):
             ]
             args += ["-device", "virtio-net-pci,netdev=n1"]
 
-        # TODO: add host_share option
-
         # Management stuff
         args += ["-pidfile", str(self.pid)]
-
         args += ["-monitor", f"unix:{self.monitor},server,nowait"]
 
         if daemonize:
