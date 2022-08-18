@@ -2,7 +2,7 @@
 # This Makefile serves as convenient command-line auto-completion
 #
 PROJECT_NAME=joe-pkg-linux
-CONFIGS=src/joe/linux/configs/linux-selftest.config
+CONFIGS=src/joe/linux/configs/default.config
 
 define default-help
 # invoke: 'make uninstall', 'make install'

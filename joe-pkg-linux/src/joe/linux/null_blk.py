@@ -24,7 +24,7 @@ def insert(cijoe, config=None):
     """Load the 'null_blk' kernel module using parameters defined in the config"""
 
     if config is None:
-        config = cijoe.get_config("null_blk")
+        config = cijoe.config.options.get("null_blk")
 
     nullblk_params = (
         " ".join([f"{k}={v}" for k, v in config.items()])

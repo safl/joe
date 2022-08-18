@@ -4,7 +4,7 @@ import joe.linux.null_blk as null_blk
 def test_insert(cijoe):
     """Test the creation of null_block via module-load"""
 
-    config = cijoe.get_config("null_blk")
+    config = cijoe.config.options.get("null_blk", None)
     assert config, "Invalid environment configuration"
 
     nr_devices = int(config.get("nr_devices"))
