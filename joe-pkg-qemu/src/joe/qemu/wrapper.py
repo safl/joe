@@ -80,6 +80,32 @@ class Guest(object):
 
         os.makedirs(self.guest_path, exist_ok=True)
 
+    def is_up(self, timeout=120):
+        """Wait at most 'timeout' seconds for the guest to print 'login' to serial"""
+
+        if not self.is_running():
+            return False
+
+        began = time.time()
+        while True:
+            enter = time.time()
+            try:
+                with self.serial.open() as serialfile:
+                    serialoutput = serialfile.read()
+                    if "login:" in serialout:
+                        return true
+            except Exception as exc:
+                print(f"{exc}")
+
+            now = time.time()
+            elapsed_iter = now - enter
+            elapsed_total = now - began
+
+            if elapsed_iter < 2.0:
+                sleep(2.0 - elapsed_iter)
+            if elapsed_total > timeout:
+                return False
+
     def start(self, daemonize=True, extra_args=[]):
         """."""
 
