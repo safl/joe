@@ -180,7 +180,7 @@ class Guest(object):
         with Path(self.guest_config["cloudinit"]["pubkey"]).resolve().open() as kfile:
             pubkey = kfile.read()
         with userdata_path.open("a") as userdatafile:
-            userdatafile.write("ssh_authorized_key:\n")
+            userdatafile.write("ssh_authorized_keys:\n")
             userdatafile.write(f"- {pubkey}\n")
 
         cloud_cmd = " ".join(
