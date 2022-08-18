@@ -1,10 +1,9 @@
 import json
-import pprint
 from pathlib import Path
 
 import jinja2
 
-from joe.core.misc import h2, h3
+from joe.core.misc import h3
 from joe.core.resources import dict_from_yamlfile, get_resources
 
 

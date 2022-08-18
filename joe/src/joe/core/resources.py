@@ -310,20 +310,14 @@ class Workflow(Resource):
 
         errors += Workflow.dict_normalize(workflow_dict)
         if errors:
-            pprint.pprint(errors)
-            h3("Workflow.normalize() : failed; Check workflow with 'joe -l'")
             return errors
 
         errors += Workflow.dict_lint(workflow_dict)
         if errors:
-            pprint.pprint(errors)
-            h3("Workflow.lint() : failed; Check workflow with 'joe -l'")
             return errors
 
         errors += dict_substitute(workflow_dict, default_context(config))
         if errors:
-            pprint.pprint(errors)
-            h3("dict_substitute() : failed; Check workflow with 'joe -l'")
             return errors
 
         state = Workflow.STATE.copy()

@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 """
-    Run a qemu guest
+    Kill a qemu guest
 """
-import errno
-from pathlib import Path
-
 from joe.qemu.wrapper import Guest
 
 
 def worklet_entry(args, cijoe, step):
-    """Build qemu"""
+    """Kill a qemu guest"""
 
     guest = Guest(cijoe, cijoe.config)
 

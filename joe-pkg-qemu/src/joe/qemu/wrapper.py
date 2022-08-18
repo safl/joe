@@ -10,6 +10,7 @@
 """
 import os
 import shutil
+import time
 from pathlib import Path
 
 import psutil
@@ -91,9 +92,8 @@ class Guest(object):
             enter = time.time()
             try:
                 with self.serial.open() as serialfile:
-                    serialoutput = serialfile.read()
-                    if "login:" in serialout:
-                        return true
+                    if "login:" in serialfile.read():
+                        return True
             except Exception as exc:
                 print(f"{exc}")
 
@@ -101,8 +101,8 @@ class Guest(object):
             elapsed_iter = now - enter
             elapsed_total = now - began
 
-            if elapsed_iter < 2.0:
-                sleep(2.0 - elapsed_iter)
+            if elapsed_iter < 5.0:
+                time.sleep(5.0 - elapsed_iter)
             if elapsed_total > timeout:
                 return False
 
@@ -169,7 +169,7 @@ class Guest(object):
 
             gone, alive = psutil.wait_procs([qemu_proc], timeout=3)
             for proc in alive:
-                p.kill()
+                proc.kill()
 
         return rcode
 
