@@ -50,7 +50,7 @@ class Guest(object):
         self.seed_img = self.guest_path / "seed.img"
         self.pid = self.guest_path / "guest.pid"
         self.monitor = self.guest_path / "monitor.sock"
-        self.serial = self.guest_path / "serial.sock"
+        self.serial = self.guest_path / "serial.output"
 
     def is_initialized(self):
         """Check that the guest is initialized"""
@@ -119,7 +119,7 @@ class Guest(object):
 
         if daemonize:
             args += ["-display", "none"]
-            args += ["-serial", f"file:{self.serial},server,nowait"]
+            args += ["-serial", f"file:{self.serial}"]
             args += ["-daemonize"]
         else:
             args += ["-nographic"]
