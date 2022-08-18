@@ -1,24 +1,28 @@
 """
-    A helper-function to collecting Linux system information
-
-    TODO
-    ----
-
-    Store the collected information as auxilary files
+    Simple worklet collection Linux system information
 """
 
-
-def collect(cijoe):
+def worklet_entry(args, cijoe, step):
     """Collect Linux system information"""
 
     commands = [
-        ("cpuinfo", "cat /proc/cpuinfo"),
-        ("memory", "free -m"),
-        ("uname", "uname -a"),
-        ("os-release", "cat /etc/os-release"),
-        ("lshw", "lshw"),
-        ("evars", "( set -o posix ; set )"),
+        "lsb_release --all || cat /etc/os-release",
+        "uname -a",
+        "set",
+        "lsblk",
+        "lscpu",
+        "lslocks",
+        "lslogins",
+        "lsmem",
+        "lsmod",
+        "lspci",
+        "lsusb",
     ]
 
+    rcode = 0
     for label, cmd in commands:
-        rcode, state = cijoe.run(cmd)
+        err, state = cijoe.run(cmd)
+        if err:
+            rcode = err
+
+    return rcode
