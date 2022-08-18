@@ -24,6 +24,10 @@ steps:
 - name: start
   uses: qemu.guest_start
 
+- name: check
+  run: |
+    hostname
+
 - name: kill
   uses: qemu.guest_kill
 
