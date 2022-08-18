@@ -6,8 +6,10 @@ def worklet_entry(args, cijoe, step):
     """Collect Linux system information"""
 
     commands = [
+        "hostname",
         "lsb_release --all || cat /etc/os-release",
         "uname -a",
+        "cat /boot/config-$(uname -r)",
         "set",
         "lsblk",
         "lscpu",

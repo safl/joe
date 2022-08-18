@@ -4,6 +4,8 @@
     For details on kmemleak, have a look at the Linux Kernel Documentation at
 
     https://www.kernel.org/doc/html/latest/dev-tools/kmemleak.html
+
+    retargetable: True
 """
 
 

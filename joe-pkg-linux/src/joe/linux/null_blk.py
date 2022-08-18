@@ -13,6 +13,8 @@
       different device instances instead of N instances with the same configuration.
       For example, one can instantiate a regular block-device as well as a zoned
       block-device.
+
+    retargetable: True
 """
 NULLBLK_MODULE_NAME = "null_blk"
 NULLBLK_SYSPATH = "/sys/kernel/config/nullb"
