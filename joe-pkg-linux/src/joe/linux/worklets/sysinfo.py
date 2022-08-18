@@ -1,5 +1,5 @@
 """
-    Simple worklet collection Linux system information
+    Simple worklet collecting Linux system information
 """
 
 
@@ -23,7 +23,7 @@ def worklet_entry(args, cijoe, step):
     ]
 
     rcode = 0
-    for label, cmd in commands:
+    for cmd in commands:
         err, state = cijoe.run(cmd)
         if err:
             rcode = err

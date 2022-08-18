@@ -49,6 +49,8 @@ def cli_lint(args):
         errors += dict_substitute(workflow_dict, config.options)
 
     if errors:
+        for error in errors:
+            h4(error)
         h2("Lint: 'see errors above'; Failed")
         return 1
 
