@@ -1,14 +1,18 @@
-from joe.core.resources import Collector
-from joe.core.workflow import Workflow
+from joe.core.resources import get_resources
 
 
 def test_workflow_load():
-    collector = Collector()
-    collector.collect()
 
-    res = collector.resources["workflows"]["core.example"]
+    resources = get_resources()
 
-    workflow = Workflow(res.path, res.pkg)
+    config = resources["configs"]["core.default"]
+    assert config
+
+    errors = config.load()
+    assert not errors
+
+    workflow = resources["workflows"]["core.example"]
     assert workflow
 
-    # assert workflow.load(collector, {})
+    errors = workflow.load(config)
+    assert not errors

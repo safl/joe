@@ -19,6 +19,7 @@ import importlib
 import inspect
 import os
 import pkgutil
+import re
 from importlib.machinery import SourceFileLoader
 from pathlib import Path
 
@@ -193,6 +194,140 @@ class Worklet(Resource):
         return ["Missing worklet_entry() function in loaded module"]
 
 
+class Workflow(Resource):
+
+    SUFFIX = ".workflow"
+    STATE_FILENAME = "workflow.state"
+    STATE = {
+        "doc": "",
+        "config": {},
+        "steps": [],
+        "status": {"skipped": 0, "failed": 0, "passed": 0, "elapsed": 0.0},
+    }
+
+    def __init__(self, path, pkg=None):
+        super().__init__(path, pkg)
+
+        self.state = None
+        self.config = None
+
+    def state_dump(self, path):
+        """Dump the current workflow-state to yaml-file"""
+
+        with path.open("w+") as state_file:
+            yaml.dump(self.state, state_file)
+
+    @staticmethod
+    def dict_normalize(topic: dict):
+        """Normalize the workflow-dict, transformation of the 'run' shorthand"""
+
+        errors = []
+
+        if "steps" not in topic:
+            errors.append("Missing required top-level key: 'steps'")
+            return errors
+
+        for step in topic["steps"]:
+            if "run" not in step.keys():
+                continue
+
+            step["uses"] = "core.cmdrunner"
+            step["with"] = {"commands": step["run"].splitlines()}
+
+            del step["run"]
+
+        return errors
+
+    @staticmethod
+    def dict_lint(topic: dict):
+        """Returns a list of integrity-errors for the given workflow-dict(topic)"""
+
+        resources = get_resources()
+
+        errors = []
+
+        for top in set(topic.keys()) - set(["doc", "config", "steps"]):
+            errors.append(f"Unsupported top-level key: '{top}'")
+            return False
+        for top in ["doc", "steps"]:
+            if top not in topic:
+                errors.append(f"Missing required top-level key: '{top}'")
+                return False
+
+        valid = set(["name", "uses", "with"])
+        required = set(["name", "uses"])
+
+        for nr, step in enumerate(topic["steps"], 1):
+            keys = set(step.keys())
+
+            missing = required - keys
+            if missing:
+                errors.append(f"Invalid step({nr}); required key(s): {missing}")
+                continue
+
+            if not re.match("^([a-zA-Z][a-zA-Z0-9\.\-_]*)", step["name"]):
+                errors.append(f"Invalid step({nr}); invalid chars in 'name'")
+                continue
+
+            unsupported = keys - valid
+            if unsupported:
+                errors.append(f"Invalid step({nr}); unsupported keys({unsupported})")
+                continue
+
+            if step["uses"] not in resources["worklets"]:
+                errors.append(
+                    f"Invalid step({nr}); unknown resource: worklet({step['uses']})"
+                )
+                continue
+
+        return errors
+
+    def load(self, config: Config):
+        """
+        Load the workflow-yamlfile, normalize it, lint it, substitute, then construct
+        the object properties
+        """
+
+        errors = []
+
+        if self.state:
+            return errors
+
+        workflow_dict = dict_from_yamlfile(self.path)
+
+        errors += Workflow.dict_normalize(workflow_dict)
+        if errors:
+            pprint.pprint(errors)
+            h3("Workflow.normalize() : failed; Check workflow with 'joe -l'")
+            return errors
+
+        errors += Workflow.dict_lint(workflow_dict)
+        if errors:
+            pprint.pprint(errors)
+            h3("Workflow.lint() : failed; Check workflow with 'joe -l'")
+            return errors
+
+        errors += dict_substitute(workflow_dict, default_context(config))
+        if errors:
+            pprint.pprint(errors)
+            h3("dict_substitute() : failed; Check workflow with 'joe -l'")
+            return errors
+
+        state = Workflow.STATE.copy()
+        state["doc"] = workflow_dict.get("doc")
+        state["config"] = workflow_dict.get("config", {})
+        for nr, step in enumerate(workflow_dict["steps"], 1):
+            step["nr"] = nr
+            step["status"] = {"skipped": 0, "passed": 0, "failed": 0, "elapsed": 0.0}
+            step["id"] = f"{nr}_{step['name']}"
+
+            state["steps"].append(step)
+
+        self.state = state
+
+        return errors
+
+
 class Collector(object):
     """Collects resources from installed packages and the current working directory"""
 
@@ -224,6 +359,10 @@ class Collector(object):
 
             if not resource.content_has_worklet_func():
                 category = "auxilary"
+        elif category == "configs":
+            resource = Config(candidate, pkg)
+        elif category == "workflows":
+            resource = Workflow(candidate, pkg)
         else:
             resource = Resource(candidate, pkg)
 

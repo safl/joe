@@ -1,19 +1,20 @@
 import argparse
 import errno
-import pprint
+import os
 import shutil
+import time
 from pathlib import Path
 
 import joe.core
-from joe.core.command import default_output_path
-from joe.core.misc import h2, h3
+from joe.core.command import Cijoe, default_output_path
+from joe.core.misc import h2, h3, h4
 from joe.core.resources import (
     Config,
+    Workflow,
     dict_from_yamlfile,
     dict_substitute,
     get_resources,
 )
-from joe.core.workflow import Workflow
 
 
 def print_errors(errors):
@@ -150,7 +151,9 @@ def cli_run(args):
     config = Config(args.config.resolve())
     errors = config.load()
     if errors:
-        pprint.pprint(errors)
+        for error in errors:
+            print(error)
+
         h2("Run: 'Config(args.config).load()'; Failed")
         return errno.EINVAL
 
@@ -160,14 +163,79 @@ def cli_run(args):
         h2("Run: 'workflow.load()'; Failed")
         return 1
 
-    err = workflow.run(args)
-    if err:
-        h2("Run: 'workflow.run()'; Failed")
-        return err
+    step_names = [step["name"] for step in workflow.state["steps"]]
+    for step_name in args.step:
+        if step_name in step_names:
+            continue
 
-    h2("Run: 'no errors detected'; Success")
+        h4(f"step({step_name}) not in workflow; failed")
+        return errno.EINVAL
 
-    return 0
+    errors = workflow.load(config)
+    if errors:
+        for error in errors:
+            h4(error)
+        h4("workflow.load(): failed; see above or by run 'joe -l'")
+        return errno.EINVAL
+
+    # TODO: copy workflow and config to directory
+    os.makedirs(args.output)
+    workflow.state_dump(args.output / Workflow.STATE_FILENAME)
+
+    fail_fast = False
+    resources = get_resources()
+
+    cijoe = Cijoe(config, args.output)
+    for step in workflow.state["steps"]:
+
+        h3(f"step({step['name']})")
+
+        begin = time.time()
+
+        cijoe.set_output_ident(step["id"])
+        os.makedirs(os.path.join(cijoe.output_path, step["id"]), exist_ok=True)
+
+        if args.step and step["name"] not in args.step:
+            step["status"]["skipped"] = 1
+        else:
+            worklet_ident = step["uses"]
+
+            try:
+                resources["worklets"][worklet_ident].load()
+                err = resources["worklets"][worklet_ident].func(args, cijoe, step)
+                if err:
+                    h4(f"worklet({worklet_ident}) : err({err})")
+                step["status"]["failed" if err else "passed"] = 1
+            except KeyboardInterrupt as exc:
+                step["status"]["failed"] = 1
+                h4(f"worklet({worklet_ident}) : KeyboardInterrupt({exc})")
+            except Exception as exc:
+                step["status"]["failed"] = 1
+                h4(f"worklet({worklet_ident}) : threw({exc})")
+
+        for key in ["failed", "passed", "skipped"]:
+            workflow.state["status"][key] += step["status"][key]
+
+        step["status"]["elapsed"] = time.time() - begin
+        workflow.state["status"]["elapsed"] += step["status"]["elapsed"]
+        workflow.state_dump(args.output / Workflow.STATE_FILENAME)
+
+        for text, status in step["status"].items():
+            if text != "elapsed" and status:
+                h3(f"step({step['name']}) : {text}")
+
+        if step["status"]["failed"] and fail_fast:
+            h2(f"exiting, fail_fast({fail_fast})")
+            break
+
+    rcode = errno.EIO if workflow.state["status"]["failed"] else 0
+
+    if rcode:
+        h2("Run: failed(one or more steps failed)")
+    else:
+        h2("Run: success")
+
+    return rcode
 
 
 def parse_args():
