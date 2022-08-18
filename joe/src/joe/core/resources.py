@@ -2,16 +2,29 @@
 """
     CIJOE Resources
 
-    Except for the core library, then everything else is implemented as a dynamically
-    collectable and loadable resources. That is, configuration-files, worklets,
-    workflows, and auxilary files.
+    The following constitutes the base-logic of CIJOE:
 
-    The collection-logic is encapsulated in the joe.core.resources.Collector class,
-    which is implemented as a singleton. It is a singleton, since it is used everywhere
-    for looking up resources and the relative "heavy" task of collecting resources
-    should only be done once. Intended usage:
+    * joe.core.command (Cijoe)
+    * joe.core.transport (Transport, Local, SSH)
+    * jore.core.misc (As the name suggests; various helper-functions)
+    * joe.cli (Command-Line Tool and utilization of the above for workflow execution)
 
-        from joe.core.resources import collect_resources
+    Everything else, literally everything, is implemented as a dynamically collectable
+    and loadable resources. That is, configuration-files, worklets, workflows,
+    templates, and auxilary files.
+
+    The base-representation of these resources is the joe.core.resources.Resource class,
+    with content-specific subclasses (Config, Worklet, and Workflow).
+
+    These resources are collected from installed and locally available Packages, as well
+    as for path by the joe.core.resources.Collector.
+
+    The Collector is a SingleTon, since it is used extensively everywhere and the tasks
+    of doing collection can be somewhat time-consuming.
+
+    Intended usage:
+
+        from joe.core.resources import get_resources
         resources = get_resources()
 """
 import ast
