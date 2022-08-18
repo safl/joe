@@ -96,7 +96,7 @@ def cli_example(args):
     dst_config = Path.cwd().joinpath(src_config.name)
     dst_workflow = Path.cwd().joinpath(src_workflow.name)
 
-    h2("Skeleton")
+    h2("Example")
     print(f"config: {dst_config}")
     print(f"workflow: {dst_workflow}")
     h3("")
@@ -118,7 +118,7 @@ def cli_example(args):
     else:
         shutil.copyfile(src_workflow, dst_workflow)
 
-    h2("Skeleton; Done")
+    h2("Example; Done")
 
     return 0
 
