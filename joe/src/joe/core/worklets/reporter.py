@@ -1,4 +1,5 @@
 import json
+import webbrowser
 from pathlib import Path
 
 import jinja2
@@ -76,6 +77,8 @@ def augment_testreport(path: Path):
 def worklet_entry(args, cijoe, step):
     """Produce a HTML report of the 'workflow.state' file in 'args.output'"""
 
+    open_report = step.get("with", {"open_report": True}.get("open_report", True))
+
     resources = get_resources()
 
     template_path = resources["templates"]["core.report-workflow"].path
@@ -108,5 +111,8 @@ def worklet_entry(args, cijoe, step):
 
     with (report_path).open("w") as report:
         report.write(template.render(workflow_state))
+
+    if open_report:
+        webbrowser.open(str(report_path))
 
     return 0

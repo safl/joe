@@ -6,6 +6,7 @@
     * with.do = insert|remove
 """
 import errno
+
 import joe.linux.null_blk as null_blk
 
 
@@ -18,6 +19,6 @@ def worklet_entry(args, cijoe, step):
     elif do == "remove":
         rcode, _ = null_blk.remove(cijoe)
     else:
-        rcode = errno.EINVAL;
+        rcode = errno.EINVAL
 
     return rcode
