@@ -135,7 +135,7 @@ class Guest(object):
             host_share = Path(host_share).resolve()
             args += [
                 "-virtfs",
-                f"fsdriver=local,id=fsdev0,security_model=mapped,mount_tag=hostshare,path={host_share}"
+                f"fsdriver=local,id=fsdev0,security_model=mapped,mount_tag=hostshare,path={host_share}",
             ]
 
         ports = self.guest_config["fancy"].get("tcp_forward", None)
