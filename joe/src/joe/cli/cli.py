@@ -75,20 +75,20 @@ def cli_resources(args):
     return 0
 
 
-def cli_skeleton(args):
-    """Create skeleton .config and .workflow"""
+def cli_example(args):
+    """Create example .config and .workflow"""
 
     resources = get_resources()
 
-    resource = resources["configs"].get(f"{args.skeleton}.default", None)
+    resource = resources["configs"].get(f"{args.example}.default", None)
     if resource is None:
-        print(f"'default.config' from '{args.skeleton}' is not available")
+        print(f"'default.config' from '{args.example}' is not available")
         return 1
     src_config = resource.path
 
-    resource = resources["workflows"].get(f"{args.skeleton}.example", None)
+    resource = resources["workflows"].get(f"{args.example}.example", None)
     if resource is None:
-        print(f"'example.workflow' from '{args.skeleton}' is not available")
+        print(f"'example.workflow' from '{args.example}' is not available")
         return 1
 
     src_workflow = resource.path
@@ -102,10 +102,10 @@ def cli_skeleton(args):
     h3("")
 
     if not src_config.exists():
-        print(f"'default.config' from '{args.skeleton}' is not available")
+        print(f"'default.config' from '{args.example}' is not available")
         return 1
     if not src_workflow.exists():
-        print(f"example.workflow' from '{args.skeleton}' is not available")
+        print(f"example.workflow' from '{args.example}' is not available")
         return 1
 
     if dst_config.exists():
@@ -287,8 +287,8 @@ def parse_args():
         help="List collected resources and exit.",
     )
     parser.add_argument(
-        "-s",
-        "--skeleton",
+        "-e",
+        "--example",
         action="store",
         const="core",
         type=str,
@@ -317,8 +317,8 @@ def main():
     if args.resources:
         return cli_resources(args)
 
-    if args.skeleton:
-        return cli_skeleton(args)
+    if args.example:
+        return cli_example(args)
 
     if args.version:
         return cli_version(args)
