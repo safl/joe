@@ -211,7 +211,7 @@ def cli_run(args):
                 h4(f"worklet({worklet_ident}) : KeyboardInterrupt({exc})")
             except Exception as exc:
                 step["status"]["failed"] = 1
-                h4(f"worklet({worklet_ident}) : threw({exc})")
+                h4(f"worklet({worklet_ident}) : Raised Exception({exc})")
 
         for key in ["failed", "passed", "skipped"]:
             workflow.state["status"][key] += step["status"][key]
