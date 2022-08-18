@@ -83,8 +83,13 @@ class SSH(Transport):
         self.output_path = output_path
 
         self.ssh = paramiko.SSHClient()
-        # self.ssh.set_missing_host_key_policy(paramiko.WarningPolicy)
-        # self.ssh.load_system_host_keys()
+
+        # Using the 'AutoAddPolicy()' *without* load_system_host_keys(), by doing so,
+        # then Paramiko does not know any hosts, and simply adds them first time they
+        # are connected to.
+        # It was attempted to use load_system_host_keys() with WarningPolicy(), however,
+        # when a host changed, e.g. re-provisioned virtual machine, then the host-key
+        # changes and Paramiko cannot connect.
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
         self.scp = None
