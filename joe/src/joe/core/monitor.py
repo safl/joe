@@ -1,6 +1,7 @@
+from pathlib import Path
+
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
-from pathlib import Path
 
 
 class Handler(FileSystemEventHandler):
@@ -21,8 +22,8 @@ class Handler(FileSystemEventHandler):
         if self.do_print:
             print(f"{path}")
 
-class WorkflowMonitor(object):
 
+class WorkflowMonitor(object):
     def __init__(self, path):
         self.path = path
         self.cmdlogs = []
@@ -44,4 +45,3 @@ class WorkflowMonitor(object):
     def stop(self):
         self.observer.stop()
         self.observer.join()
-
