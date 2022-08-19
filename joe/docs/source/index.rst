@@ -12,16 +12,26 @@ and **reproducible** workflow.
 Quickstart
 ==========
 
-.. code-block:: bash
+First, install **cijoe**:
 
-  # Install CIJOE
-  python3 -m pip install --user cijoe
+.. literalinclude:: 000_install.cmd
+   :language: bash
 
-  # Create a default configuration and workflow
-  joe -s
+Then, produce an default configuration file and a workflow example:
 
-  # Run the example workflow, locally
-  joe
+.. literalinclude:: 100_example.cmd
+   :language: bash
+
+.. literalinclude:: 100_example.out
+   :language: bash
+
+Then go ahead and run it:
+
+.. literalinclude:: 200_run.cmd
+   :language: bash
+
+.. literalinclude:: 200_run.out
+   :language: bash
 
 For a thorough description, the rest of the documentation is provided with the
 :ref:`sec-introduction` serving as the starting point.

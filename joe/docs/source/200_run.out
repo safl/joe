@@ -1,0 +1,10 @@
+== Run =====================================================
+workflow: /home/safl/git/joe/joe/docs/example.workflow
+config: /home/safl/git/joe/joe/docs/default.config
+output: /home/safl/git/joe/joe/docs/cijoe-output-20220819-154607
+-- step(info) ----------------------------------------------
+-- step(info) : passed -------------------------------------
+-- step(test) ----------------------------------------------
+-- step(test) : passed -------------------------------------
+== Run: success ============================================
+

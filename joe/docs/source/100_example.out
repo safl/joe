@@ -1,0 +1,8 @@
+== Example =================================================
+config: /home/safl/git/joe/joe/docs/default.config
+workflow: /home/safl/git/joe/joe/docs/example.workflow
+------------------------------------------------------------
+skipping config(/home/safl/git/joe/joe/docs/default.config); already exists
+skipping workflow(/home/safl/git/joe/joe/docs/example.workflow); already exists
+== Example; Done ===========================================
+

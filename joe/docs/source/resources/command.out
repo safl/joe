@@ -19,6 +19,8 @@ configs:
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/configs/default.config
   - ident: core.transport-ssh
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/configs/transport-ssh.config
+  - ident: default
+    path: /home/safl/git/joe/joe/docs/default.config
   - ident: linux.default
     path: /home/safl/.local/lib/python3.9/site-packages/joe/linux/configs/default.config
   - ident: qemu.default
@@ -30,6 +32,8 @@ templates:
 workflows:
   - ident: core.example
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/workflows/example.workflow
+  - ident: example
+    path: /home/safl/git/joe/joe/docs/example.workflow
   - ident: linux.example
     path: /home/safl/.local/lib/python3.9/site-packages/joe/linux/workflows/example.workflow
   - ident: linux.example-worklets
