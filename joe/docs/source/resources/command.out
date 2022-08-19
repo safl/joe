@@ -35,8 +35,6 @@ workflows:
   - ident: qemu.example
     path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/workflows/example.workflow
 worklets:
-  - ident: core.browser_open
-    path: /home/safl/.local/lib/python3.9/site-packages/joe/core/worklets/browser_open.py
   - ident: core.cmdrunner
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/worklets/cmdrunner.py
   - ident: core.dump_metrics

@@ -1,5 +1,5 @@
-usage: joe [-h] [-w WORKFLOW] [-c CONFIG] [-o OUTPUT] [-l] [-r] [-e [EXAMPLE]]
-           [-v]
+usage: joe [-h] [-w WORKFLOW] [-c CONFIG] [-o OUTPUT] [-i] [-l] [-r]
+           [-e [EXAMPLE]] [-v]
            [step ...]
 
 positional arguments:
@@ -13,6 +13,9 @@ optional arguments:
                         Path to the Configuration file.
   -o OUTPUT, --output OUTPUT
                         Path to output directory.
+  -i, --invoke-reporter
+                        Invokes the 'core.reporter' worklet by the end of the
+                        workflow
   -l, --lint            Check integrity of workflow and exit.
   -r, --resources       List collected resources and exit.
   -e [EXAMPLE], --example [EXAMPLE]
