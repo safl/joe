@@ -29,8 +29,3 @@ steps:
   uses: core.testrunner
   with:
     args: "--pyargs joe.core.selftest"
-
-- name: report
-  uses: core.reporter
-  with:
-    report_open: true
