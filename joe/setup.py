@@ -13,6 +13,7 @@ setup(
         "pytest-reportlog",
         "pyyaml",
         "requests",
+        "watchdog",
         "scp",
         "setuptools",
     ],

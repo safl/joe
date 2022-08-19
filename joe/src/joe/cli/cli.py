@@ -1,5 +1,6 @@
 import argparse
 import errno
+
 import os
 import shutil
 import time
@@ -8,6 +9,7 @@ from pathlib import Path
 import joe.core
 from joe.core.command import Cijoe, default_output_path
 from joe.core.misc import h2, h3, h4
+from joe.core.monitor import WorkflowMonitor
 from joe.core.resources import (
     Config,
     Workflow,
@@ -181,6 +183,11 @@ def cli_run(args):
 
     workflow.state_dump(args.output / Workflow.STATE_FILENAME)
 
+    monitor = None
+    if args.print_cmd_logs:
+        monitor = WorkflowMonitor(str(args.output))
+        monitor.start()
+
     fail_fast = False
     resources = get_resources()
 
@@ -244,6 +251,9 @@ def cli_run(args):
     else:
         h2("Run: success")
 
+    if monitor:
+        monitor.stop()
+
     return rcode
 
 
@@ -281,6 +291,12 @@ def parse_args():
         type=Path,
         default=default_output_path(),
         help="Path to output directory.",
+    )
+    parser.add_argument(
+        "-p",
+        "--print-cmd-logs",
+        action="store_true",
+        help="Prints 'cmd*.output' paths as they are created",
     )
     parser.add_argument(
         "-i",
