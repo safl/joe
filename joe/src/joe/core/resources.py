@@ -295,7 +295,7 @@ class Workflow(Resource):
 
         return errors
 
-    def load(self, config: Config):
+    def load(self, config: Config, extra_steps : list):
         """
         Load the workflow-yamlfile, normalize it, lint it, substitute, then construct
         the object properties
@@ -307,6 +307,7 @@ class Workflow(Resource):
             return errors
 
         workflow_dict = dict_from_yamlfile(self.path)
+        workflow_dict["steps"] += extra_steps
 
         errors += Workflow.dict_normalize(workflow_dict)
         if errors:

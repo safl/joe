@@ -133,9 +133,8 @@ def cli_version(args):
     return 0
 
 
-# TODO: add stats on workflow / progress
 def cli_run(args):
-    """Run stuff"""
+    """Process workflow"""
 
     h2("Run")
 
@@ -173,15 +172,27 @@ def cli_run(args):
         h4(f"step({step_name}) not in workflow; failed")
         return errno.EINVAL
 
-    errors = workflow.load(config)
+    extra_steps = []
+    if args.i:
+        extra_steps.append({
+            "name": "report",
+            "uses": "core.reporter",
+            "with": {
+                "report_open": True
+            }
+        })
+
+    errors = workflow.load(config, extra_steps)
     if errors:
         for error in errors:
             h4(error)
         h4("workflow.load(): failed; see above or by run 'joe -l'")
         return errno.EINVAL
 
-    # TODO: copy workflow and config to directory
     os.makedirs(args.output)
+    shutil.copyfile(args.config, args.output / "config.orig")
+    shutil.copyfile(args.workflow, args.output / "workflow.orig")
+
     workflow.state_dump(args.output / Workflow.STATE_FILENAME)
 
     fail_fast = False
@@ -274,6 +285,12 @@ def parse_args():
         type=Path,
         default=default_output_path(),
         help="Path to output directory.",
+    )
+    parser.add_argument(
+        "-i",
+        "--inject-report",
+        action="store_true",
+        help="Add 'core.reporter' to end of workflow as 'name: report'",
     )
 
     parser.add_argument(
