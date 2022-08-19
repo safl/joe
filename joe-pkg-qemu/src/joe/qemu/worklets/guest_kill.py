@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """
     Kill a qemu guest
+
+    Retargetable: false
+    -------------------
 """
 from joe.qemu.wrapper import Guest
 

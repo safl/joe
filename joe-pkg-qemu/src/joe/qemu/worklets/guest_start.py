@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """
     Start a qemu-guest
+
+    Retargetable: false
+    -------------------
 """
 import errno
 
