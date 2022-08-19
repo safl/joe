@@ -15,6 +15,8 @@
 
     None
 """
+from pathlib import Path
+
 
 def worklet_entry(args, cijoe, step):
     """Configure, build and collect the build-artifacts"""
@@ -34,7 +36,7 @@ def worklet_entry(args, cijoe, step):
         "/usr/bin/time make -j$(nproc) bindeb-pkg",
     ]
     for cmd in commands:
-        rcode, _ cijoe.run(cmd, cwd=str(repos), evars={"LOCALVERSION": localversion)
+        rcode, _ = cijoe.run(cmd, cwd=str(repos), evars={"LOCALVERSION": localversion})
         if rcode:
             return rcode
 

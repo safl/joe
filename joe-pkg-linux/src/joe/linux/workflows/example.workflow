@@ -8,4 +8,4 @@ steps:
   uses: linux.sysinfo
 
 - name: build
-  uses: linux.build_custom
+  uses: linux.build_deb
