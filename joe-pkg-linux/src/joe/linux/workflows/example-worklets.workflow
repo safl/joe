@@ -7,8 +7,13 @@ steps:
 - name: sysinfo
   uses: linux.sysinfo
 
+- name: null_blk_insert
+  uses: linux.null_blk
 
-- name: report
-  uses: core.reporter
+- name: list
+  run: lsblk
+
+- name: null_blk_remove
+  uses: linux.null_blk
   with:
-    report_open: true
+    do: remove
