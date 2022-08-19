@@ -160,17 +160,7 @@ def cli_run(args):
 
     workflow = Workflow(args.workflow)
 
-    extra_steps = []
-    if args.inject_report:
-        extra_steps.append({
-            "name": "report",
-            "uses": "core.reporter",
-            "with": {
-                "report_open": True
-            }
-        })
-
-    errors = workflow.load(config, extra_steps)
+    errors = workflow.load(config)
     if errors:
         for error in errors:
             h4(error)
@@ -237,8 +227,18 @@ def cli_run(args):
             h2(f"exiting, fail_fast({fail_fast})")
             break
 
-    rcode = errno.EIO if workflow.state["status"]["failed"] else 0
+    if args.invoke_reporter:
+        reporter = resources["worklets"]["core.reporter"]
+        if reporter.func is None:
+            reporter.load()
 
+        reporter.func(
+            args,
+            cijoe,
+            {"name": "report", "uses": "core.reporter", "with": {"report_open": True}},
+        )
+
+    rcode = errno.EIO if workflow.state["status"]["failed"] else 0
     if rcode:
         h2("Run: failed(one or more steps failed)")
     else:
@@ -284,9 +284,9 @@ def parse_args():
     )
     parser.add_argument(
         "-i",
-        "--inject-report",
+        "--invoke-reporter",
         action="store_true",
-        help="Add 'core.reporter' to end of workflow as 'name: report'",
+        help="Invokes the 'core.reporter' worklet by the end of the workflow",
     )
 
     parser.add_argument(

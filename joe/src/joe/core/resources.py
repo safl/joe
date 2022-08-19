@@ -295,7 +295,7 @@ class Workflow(Resource):
 
         return errors
 
-    def load(self, config: Config, extra_steps : list):
+    def load(self, config: Config, extra_steps: list = []):
         """
         Load the workflow-yamlfile, normalize it, lint it, substitute, then construct
         the object properties
