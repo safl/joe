@@ -14,5 +14,5 @@ def test_workflow_load():
     workflow = resources["workflows"]["core.example"]
     assert workflow
 
-    errors = workflow.load(config)
+    errors = workflow.load(config, [])
     assert not errors

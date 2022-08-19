@@ -7,7 +7,7 @@ CORE_RESOURCE_COUNTS = {
     "configs": 2,
     "templates": 1,
     "auxilary": 1,
-    "worklets": 6,
+    "worklets": 5,
 }
 
 

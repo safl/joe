@@ -159,21 +159,9 @@ def cli_run(args):
         return errno.EINVAL
 
     workflow = Workflow(args.workflow)
-    errors = workflow.load(config)
-    if errors:
-        h2("Run: 'workflow.load()'; Failed")
-        return 1
-
-    step_names = [step["name"] for step in workflow.state["steps"]]
-    for step_name in args.step:
-        if step_name in step_names:
-            continue
-
-        h4(f"step({step_name}) not in workflow; failed")
-        return errno.EINVAL
 
     extra_steps = []
-    if args.i:
+    if args.inject_report:
         extra_steps.append({
             "name": "report",
             "uses": "core.reporter",
@@ -187,6 +175,14 @@ def cli_run(args):
         for error in errors:
             h4(error)
         h4("workflow.load(): failed; see above or by run 'joe -l'")
+        return errno.EINVAL
+
+    step_names = [step["name"] for step in workflow.state["steps"]]
+    for step_name in args.step:
+        if step_name in step_names:
+            continue
+
+        h4(f"step({step_name}) not in workflow; failed")
         return errno.EINVAL
 
     os.makedirs(args.output)
