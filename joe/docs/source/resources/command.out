@@ -32,6 +32,8 @@ workflows:
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/workflows/example.workflow
   - ident: linux.example
     path: /home/safl/.local/lib/python3.9/site-packages/joe/linux/workflows/example.workflow
+  - ident: linux.example-worklets
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/linux/workflows/example-worklets.workflow
   - ident: qemu.example
     path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/workflows/example.workflow
 worklets:
@@ -45,6 +47,8 @@ worklets:
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/worklets/reporter.py
   - ident: core.testrunner
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/worklets/testrunner.py
+  - ident: linux.build_deb
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/linux/worklets/build_deb.py
   - ident: linux.null_blk
     path: /home/safl/.local/lib/python3.9/site-packages/joe/linux/worklets/null_blk.py
   - ident: linux.sysinfo

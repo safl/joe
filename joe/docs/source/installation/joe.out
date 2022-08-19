@@ -1,4 +1,4 @@
-usage: joe [-h] [-w WORKFLOW] [-c CONFIG] [-o OUTPUT] [-i] [-l] [-r]
+usage: joe [-h] [-w WORKFLOW] [-c CONFIG] [-o OUTPUT] [-p] [-i] [-l] [-r]
            [-e [EXAMPLE]] [-v]
            [step ...]
 
@@ -13,6 +13,7 @@ optional arguments:
                         Path to the Configuration file.
   -o OUTPUT, --output OUTPUT
                         Path to output directory.
+  -p, --print-cmd-logs  Prints 'cmd*.output' paths as they are created
   -i, --invoke-reporter
                         Invokes the 'core.reporter' worklet by the end of the
                         workflow

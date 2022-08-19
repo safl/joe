@@ -9,6 +9,16 @@
 commonly used during systems development in order to obtain an **automated**
 and **reproducible** workflow.
 
+Jazzer
+======
+
+.. automodule:: joe.qemu.worklets.guest_provision
+
+Foobar
+======
+
+.. automodule:: joe.core.worklets.reporter
+
 Quickstart
 ==========
 

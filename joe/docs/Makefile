@@ -62,3 +62,6 @@ venv-setup:
 	@${PY_ENV} -m pip install -r requirements.txt
 	@echo "## venv-setup: installing cijoe (for sphinx autodoc)"
 	@${PY_ENV} -m pip install ..
+	@${PY_ENV} -m pip install ../../joe-pkg-qemu
+	@${PY_ENV} -m pip install ../../joe-pkg-linux
+	@${PY_ENV} -m pip install ../../joe-pkg-fio
