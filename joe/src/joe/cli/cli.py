@@ -50,8 +50,7 @@ def cli_lint(args):
         errors += dict_substitute(workflow_dict, config.options)
 
     if errors:
-        for error in errors:
-            h4(error)
+        print_errors(errors)
         h2("Lint: 'see errors above'; Failed")
         return 1
 
@@ -153,9 +152,7 @@ def cli_run(args):
     config = Config(args.config.resolve())
     errors = config.load()
     if errors:
-        for error in errors:
-            print(error)
-
+        print_errors(errors)
         h2("Run: 'Config(args.config).load()'; Failed")
         return errno.EINVAL
 
@@ -163,8 +160,7 @@ def cli_run(args):
 
     errors = workflow.load(config)
     if errors:
-        for error in errors:
-            h4(error)
+        print_errors(errors)
         h4("workflow.load(): failed; see above or by run 'joe -l'")
         return errno.EINVAL
 
@@ -183,7 +179,7 @@ def cli_run(args):
     workflow.state_dump(args.output / Workflow.STATE_FILENAME)
 
     monitor = None
-    if args.print_cmd_logs:
+    if args.print_level:
         monitor = WorkflowMonitor(str(args.output))
         monitor.start()
 
@@ -292,11 +288,13 @@ def parse_args():
         help="Path to output directory.",
     )
     parser.add_argument(
+        "--print-level",
         "-p",
-        "--print-cmd-logs",
-        action="store_true",
-        help="Prints 'cmd*.output' paths as they are created",
+        action="append_const",
+        const=-1,
+        help="Increase log-printing",
     )
+
     parser.add_argument(
         "-i",
         "--invoke-reporter",

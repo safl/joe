@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 from watchdog.events import FileSystemEventHandler
@@ -7,7 +8,7 @@ from watchdog.observers import Observer
 class Handler(FileSystemEventHandler):
     """Monitor workflow for creation of 'cmd*.output files"""
 
-    def __init__(self, cmdlogs, match="cmd", do_print=True):
+    def __init__(self, cmdlogs, match="cmd\d+\.output", do_print=True):
         self.cmdlogs = cmdlogs
         self.match = match
         self.do_print = do_print
@@ -15,7 +16,7 @@ class Handler(FileSystemEventHandler):
     def on_created(self, event):
 
         path = Path(event.src_path).resolve()
-        if path.is_dir() or not str(path.name).startswith(self.match):
+        if path.is_dir() or not re.match(self.match, str(path.name)):
             return
 
         self.cmdlogs.append(path)
