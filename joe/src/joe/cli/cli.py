@@ -4,6 +4,7 @@ import os
 import shutil
 import time
 from pathlib import Path
+import logging
 
 import joe.core
 from joe.core.command import Cijoe, default_output_path
@@ -340,6 +341,8 @@ def main():
     args = parse_args()
     # Convert log-level args from list of ones to integer
     args.log_level = sum(args.log_level) if args.log_level else 0
+
+    logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
     if args.lint:
         return cli_lint(args)
