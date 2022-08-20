@@ -8,27 +8,29 @@ from watchdog.observers import Observer
 class Handler(FileSystemEventHandler):
     """Monitor workflow for creation of 'cmd*.output files"""
 
-    def __init__(self, cmdlogs, match="cmd\d+\.output", do_print=True):
+    def __init__(self, cmdlogs, match, print_level):
         self.cmdlogs = cmdlogs
         self.match = match
-        self.do_print = do_print
+        self.print_level = print_level
 
     def on_created(self, event):
 
         path = Path(event.src_path).resolve()
-        if path.is_dir() or not re.match(self.match, str(path.name)):
+        if not re.match(self.match, str(path.name)):
             return
 
         self.cmdlogs.append(path)
-        if self.do_print:
-            print(f"{path}")
+        if not self.print_level:
+            return
+
+        print(f"{path}")
 
 
 class WorkflowMonitor(object):
-    def __init__(self, path):
+    def __init__(self, path, print_level):
         self.path = path
         self.cmdlogs = []
-        self.handler = Handler(self.cmdlogs, "cmd")
+        self.handler = Handler(self.cmdlogs, "cmd_\d+\.output", print_level)
         self.observer = Observer()
 
     def latest_cmdlog(self):

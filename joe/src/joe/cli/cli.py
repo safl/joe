@@ -180,7 +180,7 @@ def cli_run(args):
 
     monitor = None
     if args.print_level:
-        monitor = WorkflowMonitor(str(args.output))
+        monitor = WorkflowMonitor(str(args.output), print_level=args.print_level)
         monitor.start()
 
     fail_fast = False
@@ -291,7 +291,7 @@ def parse_args():
         "--print-level",
         "-p",
         action="append_const",
-        const=-1,
+        const=1,
         help="Increase log-printing",
     )
 
@@ -338,6 +338,8 @@ def main():
     """Main entry point for the CLI"""
 
     args = parse_args()
+    # Convert print-level args from list of ones to integer
+    args.print_level = sum(args.print_level) if args.print_level else 0
 
     if args.lint:
         return cli_lint(args)
