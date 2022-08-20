@@ -282,15 +282,15 @@ def parse_args():
     )
 
     parser.add_argument(
-        "-i",
+        "-p",
         "--invoke-reporter",
         action="store_true",
         help="Invokes the 'core.reporter' worklet by the end of the workflow",
     )
 
     parser.add_argument(
-        "-l",
-        "--lint",
+        "-i",
+        "--integrity-check",
         action="store_true",
         help="Check integrity of workflow and exit.",
     )
@@ -329,7 +329,7 @@ def main():
 
     log.basicConfig(format="%(message)s", level=log.DEBUG)
 
-    if args.lint:
+    if args.integrity_check:
         return cli_lint(args)
 
     if args.resources:

@@ -19,11 +19,11 @@
 """
 import json
 import webbrowser
+import logging as log
 from pathlib import Path
 
 import jinja2
 
-from joe.core.misc import h3
 from joe.core.resources import dict_from_yamlfile, get_resources
 
 
@@ -103,9 +103,8 @@ def worklet_entry(args, cijoe, step):
     template_path = resources["templates"]["core.report-workflow"].path
     report_path = args.output / "report.html"
 
-    print(f"template: {template_path}")
-    print(f"report: {report_path}")
-    h3()
+    log.info(f"template: {template_path}")
+    log.info(f"report: {report_path}")
 
     workflow_state = dict_from_yamlfile(args.output / "workflow.state")
     for step in workflow_state["steps"]:
