@@ -32,7 +32,7 @@ def cli_lint(args):
 
     if args.workflow is None:
         log.error("'failed: missing workflow'")
-        return 1
+        return errno.EINVAL
 
     workflow_dict = dict_from_yamlfile(args.workflow.resolve())
     errors = Workflow.dict_normalize(workflow_dict)  # Normalize it
@@ -42,14 +42,14 @@ def cli_lint(args):
         config = Config.from_path(args.config)
         if not config:
             log.error(f"failed: Config.from_path({args.config})")
-            return 1
+            return errno.EINVAL
 
         errors += dict_substitute(workflow_dict, config.options)
 
     if errors:
         log_errors(errors)
         log.error("failed: 'see errors above'; Failed")
-        return 1
+        return errno.EINVAL
 
     return 0
 
@@ -75,19 +75,20 @@ def cli_example(args):
     """Create example .config and .workflow"""
 
     log.info("cli: examples")
+    rcode = 0
 
     resources = get_resources()
 
     resource = resources["configs"].get(f"{args.example}.default", None)
     if resource is None:
         log.error(f"'default.config' from '{args.example}' is not available")
-        return 1
+        return errno.EINVAL
     src_config = resource.path
 
     resource = resources["workflows"].get(f"{args.example}.example", None)
     if resource is None:
         log.error(f"'example.workflow' from '{args.example}' is not available")
-        return 1
+        return errno.EINVAL
 
     src_workflow = resource.path
 
@@ -99,22 +100,24 @@ def cli_example(args):
 
     if not src_config.exists():
         log.error(f"'default.config' from '{args.example}' is not available")
-        return 1
+        return errno.EINVAL
     if not src_workflow.exists():
         log.error(f"example.workflow' from '{args.example}' is not available")
-        return 1
+        return errno.EINVAL
 
     if dst_config.exists():
-        log.info(f"skipping config({dst_config}); already exists")
+        rcode = errno.EEXIST
+        log.error(f"skipping config({dst_config}); already exists")
     else:
         shutil.copyfile(src_config, dst_config)
 
     if dst_workflow.exists():
-        log.info(f"skipping workflow({dst_workflow}); already exists")
+        rcode = errno.EEXIST
+        log.error(f"skipping workflow({dst_workflow}); already exists")
     else:
         shutil.copyfile(src_workflow, dst_workflow)
 
-    return 0
+    return rcode
 
 
 def cli_version(args):
@@ -125,17 +128,17 @@ def cli_version(args):
     return 0
 
 
-def cli_run(args):
+def cli_workflow(args):
     """Process workflow"""
 
     log.info("cli: run")
 
     if args.workflow is None:
         log.error("missing workflow")
-        return 1
+        return errno.EINVAL
     if args.config is None:
-        log.error("missing")
-        return 1
+        log.error("missing config")
+        return errno.EINVAL
 
     log.info(f"workflow: {args.workflow}")
     log.info(f"config: {args.config}")
@@ -153,7 +156,7 @@ def cli_run(args):
     errors = workflow.load(config)
     if errors:
         log_errors(errors)
-        log.error("workflow.load(): see errors above or run 'joe -l'")
+        log.error("workflow.load(): see errors above or run 'joe -i'")
         return errno.EINVAL
 
     step_names = [step["name"] for step in workflow.state["steps"]]
@@ -181,7 +184,7 @@ def cli_run(args):
     cijoe = Cijoe(config, args.output)
     for step in workflow.state["steps"]:
 
-        log.info(f"step({step['name']})")
+        log.info(f"step({step['name']}) - begin")
 
         begin = time.time()
 
@@ -218,7 +221,7 @@ def cli_run(args):
                 log.info(f"step({step['name']}) : {text}")
 
         if step["status"]["failed"] and fail_fast:
-            log.info(f"exiting, fail_fast({fail_fast})")
+            log.error(f"exiting, fail_fast({fail_fast})")
             break
 
     if args.invoke_reporter:
@@ -289,7 +292,7 @@ def parse_args():
         "-p",
         "--invoke-reporter",
         action="store_true",
-        help="Invokes the 'core.reporter' worklet by the end of the workflow",
+        help="Invoke the 'core.reporter' when workflow is done",
     )
 
     parser.add_argument(
@@ -330,7 +333,7 @@ def main():
     args = parse_args()
 
     log.basicConfig(
-        format="%(levelname)s: %(message)s",
+        format="%(levelname)s:%(module)s: %(message)s",
         level=[log.ERROR, log.INFO, log.DEBUG][
             sum(args.log_level) if args.log_level else 0
         ],
@@ -348,4 +351,4 @@ def main():
     if args.version:
         return cli_version(args)
 
-    return cli_run(args)
+    return cli_workflow(args)
