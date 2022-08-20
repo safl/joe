@@ -1,14 +1,13 @@
 import argparse
 import errno
+import logging as log
 import os
 import shutil
 import time
 from pathlib import Path
-import logging
 
 import joe.core
 from joe.core.command import Cijoe, default_output_path
-from joe.core.misc import h2, h3, h4
 from joe.core.monitor import WorkflowMonitor
 from joe.core.resources import (
     Config,
@@ -20,23 +19,19 @@ from joe.core.resources import (
 
 
 def print_errors(errors):
-    h3("errors")
     for error in errors:
-        print(errors)
-    h3()
+        log.error(error)
 
 
 def cli_lint(args):
     """Lint a workflow"""
 
-    h2("Lint")
-    print(f"workflow: '{args.workflow}'")
-    print(f"config: '{args.config}'")
+    log.info(f"workflow: '{args.workflow}'")
+    log.info(f"config: '{args.config}'")
 
     if args.workflow is None:
-        h2("Lint: 'missing workflow'; Failed")
+        log.error("'failed: missing workflow'")
         return 1
-    h3()
 
     workflow_dict = dict_from_yamlfile(args.workflow.resolve())
     errors = Workflow.dict_normalize(workflow_dict)  # Normalize it
@@ -45,17 +40,15 @@ def cli_lint(args):
     if args.config:  # Check config/substitutions
         config = Config.from_path(args.config)
         if not config:
-            h2("Lint: failed loading config")
+            log.error(f"failed: Config.from_path({args.config})")
             return 1
 
         errors += dict_substitute(workflow_dict, config.options)
 
     if errors:
         print_errors(errors)
-        h2("Lint: 'see errors above'; Failed")
+        log.error("failed: 'see errors above'; Failed")
         return 1
-
-    h2("Lint: 'no errors'; Success")
 
     return 0
 
@@ -65,9 +58,7 @@ def cli_resources(args):
 
     resources = get_resources()
 
-    h2("Resources")
     print("Resources collected by the CIJOE collector are listed below.")
-    h3()
     for category, category_resources in sorted(resources.items()):
         print(f"{category}:" + ("" if category_resources.items() else " ~"))
 
@@ -85,13 +76,13 @@ def cli_example(args):
 
     resource = resources["configs"].get(f"{args.example}.default", None)
     if resource is None:
-        print(f"'default.config' from '{args.example}' is not available")
+        log.error(f"'default.config' from '{args.example}' is not available")
         return 1
     src_config = resource.path
 
     resource = resources["workflows"].get(f"{args.example}.example", None)
     if resource is None:
-        print(f"'example.workflow' from '{args.example}' is not available")
+        log.error(f"'example.workflow' from '{args.example}' is not available")
         return 1
 
     src_workflow = resource.path
@@ -99,29 +90,25 @@ def cli_example(args):
     dst_config = Path.cwd().joinpath(src_config.name)
     dst_workflow = Path.cwd().joinpath(src_workflow.name)
 
-    h2("Example")
-    print(f"config: {dst_config}")
-    print(f"workflow: {dst_workflow}")
-    h3("")
+    log.info(f"config: {dst_config}")
+    log.info(f"workflow: {dst_workflow}")
 
     if not src_config.exists():
-        print(f"'default.config' from '{args.example}' is not available")
+        log.error(f"'default.config' from '{args.example}' is not available")
         return 1
     if not src_workflow.exists():
-        print(f"example.workflow' from '{args.example}' is not available")
+        log.error(f"example.workflow' from '{args.example}' is not available")
         return 1
 
     if dst_config.exists():
-        print(f"skipping config({dst_config}); already exists")
+        log.info(f"skipping config({dst_config}); already exists")
     else:
         shutil.copyfile(src_config, dst_config)
 
     if dst_workflow.exists():
-        print(f"skipping workflow({dst_workflow}); already exists")
+        log.info(f"skipping workflow({dst_workflow}); already exists")
     else:
         shutil.copyfile(src_workflow, dst_workflow)
-
-    h2("Example; Done")
 
     return 0
 
@@ -137,24 +124,22 @@ def cli_version(args):
 def cli_run(args):
     """Process workflow"""
 
-    h2("Run")
-
     if args.workflow is None:
-        h2("Run: 'missing workflow'; Failed")
+        log.error("missing workflow")
         return 1
     if args.config is None:
-        h2("Run: 'missing config'; Failed")
+        log.error("missing")
         return 1
 
-    print(f"workflow: {args.workflow}")
-    print(f"config: {args.config}")
-    print(f"output: {args.output}")
+    log.info(f"workflow: {args.workflow}")
+    log.info(f"config: {args.config}")
+    log.info(f"output: {args.output}")
 
     config = Config(args.config.resolve())
     errors = config.load()
     if errors:
         print_errors(errors)
-        h2("Run: 'Config(args.config).load()'; Failed")
+        log.error("failed: Config(args.config).load()")
         return errno.EINVAL
 
     workflow = Workflow(args.workflow)
@@ -162,7 +147,7 @@ def cli_run(args):
     errors = workflow.load(config)
     if errors:
         print_errors(errors)
-        h4("workflow.load(): failed; see above or by run 'joe -l'")
+        log.error("workflow.load(): see errors above or run 'joe -l'")
         return errno.EINVAL
 
     step_names = [step["name"] for step in workflow.state["steps"]]
@@ -170,7 +155,7 @@ def cli_run(args):
         if step_name in step_names:
             continue
 
-        h4(f"step({step_name}) not in workflow; failed")
+        log.error(f"step({step_name}) not in workflow")
         return errno.EINVAL
 
     os.makedirs(args.output)
@@ -190,7 +175,7 @@ def cli_run(args):
     cijoe = Cijoe(config, args.output)
     for step in workflow.state["steps"]:
 
-        h3(f"step({step['name']})")
+        log.info(f"step({step['name']})")
 
         begin = time.time()
 
@@ -206,14 +191,14 @@ def cli_run(args):
                 resources["worklets"][worklet_ident].load()
                 err = resources["worklets"][worklet_ident].func(args, cijoe, step)
                 if err:
-                    h4(f"worklet({worklet_ident}) : err({err})")
+                    log.error(f"worklet({worklet_ident}) : err({err})")
                 step["status"]["failed" if err else "passed"] = 1
             except KeyboardInterrupt as exc:
                 step["status"]["failed"] = 1
-                h4(f"worklet({worklet_ident}) : KeyboardInterrupt({exc})")
+                log.error(f"worklet({worklet_ident}) : KeyboardInterrupt({exc})")
             except Exception as exc:
                 step["status"]["failed"] = 1
-                h4(f"worklet({worklet_ident}) : Raised Exception({exc})")
+                log.error(f"worklet({worklet_ident}) : Raised Exception({exc})")
 
         for key in ["failed", "passed", "skipped"]:
             workflow.state["status"][key] += step["status"][key]
@@ -224,10 +209,10 @@ def cli_run(args):
 
         for text, status in step["status"].items():
             if text != "elapsed" and status:
-                h3(f"step({step['name']}) : {text}")
+                log.info(f"step({step['name']}) : {text}")
 
         if step["status"]["failed"] and fail_fast:
-            h2(f"exiting, fail_fast({fail_fast})")
+            log.info(f"exiting, fail_fast({fail_fast})")
             break
 
     if args.invoke_reporter:
@@ -243,9 +228,9 @@ def cli_run(args):
 
     rcode = errno.EIO if workflow.state["status"]["failed"] else 0
     if rcode:
-        h2("Run: failed(one or more steps failed)")
+        log.error("one or more steps failed")
     else:
-        h2("Run: success")
+        log.info("Run: success")
 
     if monitor:
         monitor.stop()
@@ -342,7 +327,7 @@ def main():
     # Convert log-level args from list of ones to integer
     args.log_level = sum(args.log_level) if args.log_level else 0
 
-    logging.basicConfig(format='%(message)s', level=logging.DEBUG)
+    log.basicConfig(format="%(message)s", level=log.DEBUG)
 
     if args.lint:
         return cli_lint(args)

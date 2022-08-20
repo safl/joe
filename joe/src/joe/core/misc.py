@@ -1,10 +1,10 @@
 import errno
-import os
 from pathlib import Path
 
 import requests
 
 ENCODING = "UTF-8"
+
 
 def download(url: str, path: Path):
     """Downloads a file over http(s), returns (err, path)."""
