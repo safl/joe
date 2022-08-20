@@ -8,10 +8,10 @@ from watchdog.observers import Observer
 class Handler(FileSystemEventHandler):
     """Monitor workflow for creation of 'cmd*.output files"""
 
-    def __init__(self, cmdlogs, match, print_level):
+    def __init__(self, cmdlogs, match, log_level):
         self.cmdlogs = cmdlogs
         self.match = match
-        self.print_level = print_level
+        self.log_level = log_level
 
     def on_created(self, event):
 
@@ -20,17 +20,17 @@ class Handler(FileSystemEventHandler):
             return
 
         self.cmdlogs.append(path)
-        if not self.print_level:
+        if not self.log_level:
             return
 
         print(f"{path}")
 
 
 class WorkflowMonitor(object):
-    def __init__(self, path, print_level):
+    def __init__(self, path, log_level):
         self.path = path
         self.cmdlogs = []
-        self.handler = Handler(self.cmdlogs, "cmd_\d+\.output", print_level)
+        self.handler = Handler(self.cmdlogs, "cmd_\d+\.output", log_level)
         self.observer = Observer()
 
     def latest_cmdlog(self):
