@@ -3,6 +3,7 @@ from pathlib import Path
 
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
+import logging as log
 
 
 class Handler(FileSystemEventHandler):
@@ -23,7 +24,7 @@ class Handler(FileSystemEventHandler):
         if not self.log_level:
             return
 
-        print(f"{path}")
+        log.info(f"cmd.output: {path}")
 
 
 class WorkflowMonitor(object):

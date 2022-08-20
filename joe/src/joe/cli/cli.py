@@ -18,7 +18,7 @@ from joe.core.resources import (
 )
 
 
-def print_errors(errors):
+def log_errors(errors):
     for error in errors:
         log.error(error)
 
@@ -26,6 +26,7 @@ def print_errors(errors):
 def cli_lint(args):
     """Lint a workflow"""
 
+    log.info("cli: lint")
     log.info(f"workflow: '{args.workflow}'")
     log.info(f"config: '{args.config}'")
 
@@ -46,7 +47,7 @@ def cli_lint(args):
         errors += dict_substitute(workflow_dict, config.options)
 
     if errors:
-        print_errors(errors)
+        log_errors(errors)
         log.error("failed: 'see errors above'; Failed")
         return 1
 
@@ -56,6 +57,7 @@ def cli_lint(args):
 def cli_resources(args):
     """List the reference configuration files provided with cijoe packages"""
 
+    log.info("cli: resources")
     resources = get_resources()
 
     print("Resources collected by the CIJOE collector are listed below.")
@@ -71,6 +73,8 @@ def cli_resources(args):
 
 def cli_example(args):
     """Create example .config and .workflow"""
+
+    log.info("cli: examples")
 
     resources = get_resources()
 
@@ -124,6 +128,8 @@ def cli_version(args):
 def cli_run(args):
     """Process workflow"""
 
+    log.info("cli: run")
+
     if args.workflow is None:
         log.error("missing workflow")
         return 1
@@ -138,7 +144,7 @@ def cli_run(args):
     config = Config(args.config.resolve())
     errors = config.load()
     if errors:
-        print_errors(errors)
+        log_errors(errors)
         log.error("failed: Config(args.config).load()")
         return errno.EINVAL
 
@@ -146,7 +152,7 @@ def cli_run(args):
 
     errors = workflow.load(config)
     if errors:
-        print_errors(errors)
+        log_errors(errors)
         log.error("workflow.load(): see errors above or run 'joe -l'")
         return errno.EINVAL
 
@@ -229,8 +235,6 @@ def cli_run(args):
     rcode = errno.EIO if workflow.state["status"]["failed"] else 0
     if rcode:
         log.error("one or more steps failed")
-    else:
-        log.info("Run: success")
 
     if monitor:
         monitor.stop()
