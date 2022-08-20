@@ -324,10 +324,13 @@ def main():
     """Main entry point for the CLI"""
 
     args = parse_args()
-    # Convert log-level args from list of ones to integer
-    args.log_level = sum(args.log_level) if args.log_level else 0
 
-    log.basicConfig(format="%(message)s", level=log.DEBUG)
+    log.basicConfig(
+        format="%(levelname)s: %(message)s",
+        level=[log.ERROR, log.INFO, log.DEBUG][
+            sum(args.log_level) if args.log_level else 0
+        ],
+    )
 
     if args.integrity_check:
         return cli_lint(args)

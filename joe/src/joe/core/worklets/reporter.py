@@ -18,8 +18,8 @@
     report_open: true|false
 """
 import json
-import webbrowser
 import logging as log
+import webbrowser
 from pathlib import Path
 
 import jinja2
