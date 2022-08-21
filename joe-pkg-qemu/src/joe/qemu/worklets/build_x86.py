@@ -15,12 +15,13 @@
 import errno
 from pathlib import Path
 
+
 def worklet_entry(args, cijoe, step):
     """Build qemu"""
 
     conf = cijoe.config.options.get("qemu", None)
     if not conf:
-        log.info("config is missing 'qemu' section")
+        log.error("config is missing 'qemu' section")
         return errno.EINVAL
 
     build_dir = Path(conf["repository"]["path"]) / "build"

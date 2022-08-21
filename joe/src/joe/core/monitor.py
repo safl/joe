@@ -1,9 +1,9 @@
+import logging as log
 import re
 from pathlib import Path
 
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
-import logging as log
 
 
 class Handler(FileSystemEventHandler):

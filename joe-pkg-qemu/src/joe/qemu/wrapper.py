@@ -8,6 +8,7 @@
     currently not a priority as the intent is to utilize qemu to produce a virtual
     machine to serve as a 'target' for tests.
 """
+import logging as log
 import os
 import shutil
 import time
@@ -95,7 +96,7 @@ class Guest(object):
                     if "login:" in serialfile.read():
                         return True
             except Exception as exc:
-                print(f"{exc}")
+                logging.error(f"{exc}")
 
             now = time.time()
             elapsed_iter = now - enter
@@ -196,7 +197,7 @@ class Guest(object):
             os.makedirs(cloudinit_img.parent, exist_ok=True)
             err, path = download(url, cloudinit_img)
             if err:
-                print(f"download({url}), {cloudinit_img}: failed")
+                logging.error(f"download({url}), {cloudinit_img}: failed")
                 return err
 
         # Create the boot.img based on cloudinit_img
@@ -233,7 +234,7 @@ class Guest(object):
 
         rcode = self.start(daemonize=False, extra_args=system_args)
         if rcode:
-            print("failed starting...")
+            logging.error("failed starting...")
             return rcode
 
         return 0
