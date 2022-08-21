@@ -6,15 +6,13 @@
     builds it as a Debian package. The generated .deb packages are stored in
     cijoe.output_path.
 
-    Build a custom Linux kernel using olddefconfig
-
     Retagetable: true
     -----------------
 
     Worklet arguments
     -----------------
 
-    None
+    with.localversion
 """
 from pathlib import Path
 
@@ -31,7 +29,7 @@ def worklet_entry(args, cijoe, step):
 
     commands = [
         "[ -f .config ] && rm .config || true",
-        'yes '' | make olddefconfig',
+        "yes " " | make olddefconfig",
         "./scripts/config --disable CONFIG_DEBUG_INFO",
         "./scripts/config --disable SYSTEM_TRUSTED_KEYS",
         "./scripts/config --disable SYSTEM_REVOCATION_KEYS",

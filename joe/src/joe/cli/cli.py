@@ -78,6 +78,14 @@ def cli_produce_report(args):
         log.error("no workflow.state, nothing to produce a report for")
         return errno.EINVAL
 
+    if args.config:  # Check config/substitutions
+        config = Config.from_path(args.output / "config.orig")
+        if not config:
+            log.error(f"failed: Config.from_path({args.config})")
+            return errno.EINVAL
+
+    cijoe = Cijoe(config, args.output)
+
     resources = get_resources()
 
     reporter = resources["worklets"]["core.reporter"]
@@ -86,7 +94,7 @@ def cli_produce_report(args):
 
     return reporter.func(
         args,
-        None,
+        cijoe,
         {"name": "report", "uses": "core.reporter", "with": {"report_open": True}},
     )
 

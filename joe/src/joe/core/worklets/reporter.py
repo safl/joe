@@ -107,6 +107,8 @@ def worklet_entry(args, cijoe, step):
     log.info(f"report: {report_path}")
 
     workflow_state = dict_from_yamlfile(args.output / "workflow.state")
+    workflow_state["config"] = cijoe.config.options
+
     for step in workflow_state["steps"]:
         if "extras" not in step:
             step["extras"] = {}

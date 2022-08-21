@@ -1,3 +1,8 @@
+"""
+    Monitor
+
+    ...
+"""
 import logging as log
 import re
 from pathlib import Path
