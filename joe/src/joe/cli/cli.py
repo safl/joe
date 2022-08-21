@@ -269,18 +269,18 @@ def parse_args():
     parser.add_argument("step", nargs="*", help="One or more workflow steps to run.")
 
     parser.add_argument(
-        "-w",
-        "--workflow",
-        type=Path,
-        default=wfiles[0] if wfiles else None,
-        help="Path to Workflow file.",
-    )
-    parser.add_argument(
         "-c",
         "--config",
         type=Path,
         default=cfiles[0] if cfiles else None,
         help="Path to the Configuration file.",
+    )
+    parser.add_argument(
+        "-w",
+        "--workflow",
+        type=Path,
+        default=wfiles[0] if wfiles else None,
+        help="Path to Workflow file.",
     )
     parser.add_argument(
         "-o",
@@ -294,7 +294,7 @@ def parse_args():
         "-l",
         action="append_const",
         const=1,
-        help="Increase log-printing",
+        help="Increase log-level",
     )
 
     parser.add_argument(
@@ -302,9 +302,8 @@ def parse_args():
         "--produce-report",
         action="append_const",
         const=1,
-        help="Invoke the 'core.reporter' when workflow is done",
+        help="Produce report for workflow in '-o / --output' directory and exit.",
     )
-
     parser.add_argument(
         "-i",
         "--integrity-check",
