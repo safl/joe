@@ -71,6 +71,26 @@ def cli_resources(args):
     return 0
 
 
+def cli_produce_report(args):
+    """Produce workflow-report"""
+
+    if not (args.output / "workflow.state").exists():
+        log.error("no workflow.state, nothing to produce a report for")
+        return errno.EINVAL
+
+    resources = get_resources()
+
+    reporter = resources["worklets"]["core.reporter"]
+    if reporter.func is None:
+        reporter.load()
+
+    return reporter.func(
+        args,
+        None,
+        {"name": "report", "uses": "core.reporter", "with": {"report_open": True}},
+    )
+
+
 def cli_example(args):
     """Create example .config and .workflow"""
 
@@ -224,17 +244,6 @@ def cli_workflow(args):
             log.error(f"exiting, fail_fast({fail_fast})")
             break
 
-    if args.invoke_reporter:
-        reporter = resources["worklets"]["core.reporter"]
-        if reporter.func is None:
-            reporter.load()
-
-        reporter.func(
-            args,
-            cijoe,
-            {"name": "report", "uses": "core.reporter", "with": {"report_open": True}},
-        )
-
     rcode = errno.EIO if workflow.state["status"]["failed"] else 0
     if rcode:
         log.error("one or more steps failed")
@@ -290,8 +299,9 @@ def parse_args():
 
     parser.add_argument(
         "-p",
-        "--invoke-reporter",
-        action="store_true",
+        "--produce-report",
+        action="append_const",
+        const=1,
         help="Invoke the 'core.reporter' when workflow is done",
     )
 
@@ -341,6 +351,9 @@ def main():
 
     if args.integrity_check:
         return cli_lint(args)
+
+    if args.produce_report:
+        return cli_produce_report(args)
 
     if args.resources:
         return cli_resources(args)
