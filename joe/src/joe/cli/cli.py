@@ -283,7 +283,7 @@ def parse_args():
         "-w",
         type=Path,
         default=wfiles[0] if wfiles else None,
-        help="Path to Workflow file.",
+        help="Path to workflow file.",
     )
     parser.add_argument(
         "--output",
@@ -303,7 +303,7 @@ def parse_args():
         "--monitor",
         "-m",
         action="store_true",
-        help="Monitor workflow-output",
+        help="Monitor workflow-output at '-o / --output'.",
     )
 
     parser.add_argument(
@@ -311,13 +311,13 @@ def parse_args():
         "-p",
         action="append_const",
         const=1,
-        help="Produce report for workflow in '-o / --output' and exit.",
+        help="Produce report for workflow-output at '-o / --output' and exit.",
     )
     parser.add_argument(
         "--integrity-check",
         "-i",
         action="store_true",
-        help="Check integrity of workflow and exit.",
+        help="Check integrity of workflow at '-w / --workflow' and exit.",
     )
     parser.add_argument(
         "--resources",
@@ -333,7 +333,7 @@ def parse_args():
         type=str,
         nargs="?",
         default=None,
-        help="Create 'default.config' and 'example.workflow' then exit.",
+        help="Create 'default.config' and 'example.workflow' and exit.",
     )
     parser.add_argument(
         "--version",

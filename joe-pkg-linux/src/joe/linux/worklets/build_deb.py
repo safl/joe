@@ -29,11 +29,12 @@ def worklet_entry(args, cijoe, step):
     localversion = "custom"
 
     commands = [
+        "[ -f .config ] && rm .config",
         'yes "" | make olddefconfig',
         "./scripts/config --disable CONFIG_DEBUG_INFO",
         "./scripts/config --disable SYSTEM_TRUSTED_KEYS",
         "./scripts/config --disable SYSTEM_REVOCATION_KEYS",
-        f"make -j$(nproc) bindeb-pkg LOCALVERSION={localversion}",
+        f"yes "" | make -j$(nproc) bindeb-pkg LOCALVERSION={localversion}",
         "mkdir -p artifacts",
         "mv ../*.deb artifacts/",
     ]
