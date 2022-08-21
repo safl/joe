@@ -17,10 +17,12 @@ def worklet_entry(args, cijoe, step):
 
     rcode = guest.start()
     if rcode:
+        log.error(f"guest.start() : rcode({rcode})")
         return rcode
 
     started = guest.is_up()
     if not started:
+        log.error("guest.is_up() : False")
         return errno.EAGAIN
 
     return 0
