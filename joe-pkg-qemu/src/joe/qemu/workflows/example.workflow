@@ -30,9 +30,3 @@ steps:
 
 - name: kill
   uses: qemu.guest_kill
-
-- name: report
-  uses: core.reporter
-
-- name: inspect
-  uses: core.browser_open
