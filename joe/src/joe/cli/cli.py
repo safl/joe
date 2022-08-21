@@ -23,7 +23,7 @@ def log_errors(errors):
         log.error(error)
 
 
-def cli_lint(args):
+def cli_integrity_check(args):
     """Lint a workflow"""
 
     log.info("cli: lint")
@@ -349,7 +349,7 @@ def main():
     )
 
     if args.integrity_check:
-        return cli_lint(args)
+        return cli_integrity_check(args)
 
     if args.produce_report:
         return cli_produce_report(args)

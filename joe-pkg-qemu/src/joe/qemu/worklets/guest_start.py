@@ -6,6 +6,7 @@
     -------------------
 """
 import errno
+import logging as log
 
 from joe.qemu.wrapper import Guest
 

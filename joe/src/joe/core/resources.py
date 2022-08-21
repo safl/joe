@@ -66,7 +66,7 @@ def default_context(config=None, resources=None):
 
 
 def dict_substitute(topic: dict, context: dict) -> list:
-    """Traverse the given 'topic', replacing {{ foo.bar }} entities with context-values"""
+    """Traverse the given 'topic' replacing {{ foo.bar }} entities with ctx. values"""
 
     errors = []
 

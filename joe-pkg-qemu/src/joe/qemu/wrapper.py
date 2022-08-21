@@ -96,7 +96,7 @@ class Guest(object):
                     if "login:" in serialfile.read():
                         return True
             except Exception as exc:
-                logging.error(f"{exc}")
+                log.error(f"{exc}")
 
             now = time.time()
             elapsed_iter = now - enter
@@ -197,7 +197,7 @@ class Guest(object):
             os.makedirs(cloudinit_img.parent, exist_ok=True)
             err, path = download(url, cloudinit_img)
             if err:
-                logging.error(f"download({url}), {cloudinit_img}: failed")
+                log.error(f"download({url}), {cloudinit_img}: failed")
                 return err
 
         # Create the boot.img based on cloudinit_img
@@ -234,7 +234,7 @@ class Guest(object):
 
         rcode = self.start(daemonize=False, extra_args=system_args)
         if rcode:
-            logging.error("failed starting...")
+            log.error("failed starting...")
             return rcode
 
         return 0
