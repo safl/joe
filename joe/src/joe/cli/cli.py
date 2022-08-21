@@ -294,7 +294,7 @@ def parse_args():
         "-l",
         action="append_const",
         const=1,
-        help="Increase log-level",
+        help="Increase log-level.",
     )
 
     parser.add_argument(
@@ -302,7 +302,7 @@ def parse_args():
         "--produce-report",
         action="append_const",
         const=1,
-        help="Produce report for workflow in '-o / --output' directory and exit.",
+        help="Produce report for workflow in '-o / --output' and exit.",
     )
     parser.add_argument(
         "-i",
@@ -324,7 +324,7 @@ def parse_args():
         type=str,
         nargs="?",
         default=None,
-        help="Create a 'default.config' and 'example.workflow' in `pwd` then exit.",
+        help="Create 'default.config' and 'example.workflow' then exit.",
     )
     parser.add_argument(
         "-v",

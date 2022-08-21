@@ -29,14 +29,15 @@ def worklet_entry(args, cijoe, step):
     localversion = "custom"
 
     commands = [
-        "make olddefconfig",
+        'yes "" | make olddefconfig',
         "./scripts/config --disable CONFIG_DEBUG_INFO",
         "./scripts/config --disable SYSTEM_TRUSTED_KEYS",
         "./scripts/config --disable SYSTEM_REVOCATION_KEYS",
-        "/usr/bin/time make -j$(nproc) bindeb-pkg",
+        "mkdir -p artifacts",
+        f"make -j$(nproc) bindeb-pkg -O artifacts LOCALVERSION={localversion}",
     ]
     for cmd in commands:
-        rcode, _ = cijoe.run(cmd, cwd=str(repos), evars={"LOCALVERSION": localversion})
+        rcode, _ = cijoe.run(cmd, cwd=str(repos))
         if rcode:
             return rcode
 
