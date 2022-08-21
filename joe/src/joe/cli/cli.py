@@ -269,22 +269,22 @@ def parse_args():
     parser.add_argument("step", nargs="*", help="One or more workflow steps to run.")
 
     parser.add_argument(
-        "-c",
         "--config",
+        "-c",
         type=Path,
         default=cfiles[0] if cfiles else None,
         help="Path to the Configuration file.",
     )
     parser.add_argument(
-        "-w",
         "--workflow",
+        "-w",
         type=Path,
         default=wfiles[0] if wfiles else None,
         help="Path to Workflow file.",
     )
     parser.add_argument(
-        "-o",
         "--output",
+        "-o",
         type=Path,
         default=default_output_path(),
         help="Path to output directory.",
@@ -296,29 +296,35 @@ def parse_args():
         const=1,
         help="Increase log-level.",
     )
+    parser.add_argument(
+        "--monitor",
+        "-m",
+        action="store_true",
+        help="Increase log-level.",
+    )
 
     parser.add_argument(
-        "-p",
         "--produce-report",
+        "-p",
         action="append_const",
         const=1,
         help="Produce report for workflow in '-o / --output' and exit.",
     )
     parser.add_argument(
-        "-i",
         "--integrity-check",
+        "-i",
         action="store_true",
         help="Check integrity of workflow and exit.",
     )
     parser.add_argument(
-        "-r",
         "--resources",
+        "-r",
         action="store_true",
         help="List collected resources and exit.",
     )
     parser.add_argument(
-        "-e",
         "--example",
+        "-e",
         action="store",
         const="core",
         type=str,
@@ -327,8 +333,8 @@ def parse_args():
         help="Create 'default.config' and 'example.workflow' then exit.",
     )
     parser.add_argument(
-        "-v",
         "--version",
+        "-v",
         action="store_true",
         help="Print the version number of 'joe' and exit.",
     )
@@ -343,7 +349,7 @@ def main():
 
     log.basicConfig(
         format="%(levelname)s:%(module)s: %(message)s",
-        level=[log.ERROR, log.INFO, log.DEBUG][
+        level=[log.ERROR, log.INFO, log.WARNING, log.DEBUG][
             sum(args.log_level) if args.log_level else 0
         ],
     )
