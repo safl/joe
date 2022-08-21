@@ -194,7 +194,7 @@ def cli_workflow(args):
     workflow.state_dump(args.output / Workflow.STATE_FILENAME)
 
     monitor = None
-    if args.log_level:
+    if args.monitor:
         monitor = WorkflowMonitor(str(args.output), log_level=args.log_level)
         monitor.start()
 
@@ -300,7 +300,7 @@ def parse_args():
         "--monitor",
         "-m",
         action="store_true",
-        help="Increase log-level.",
+        help="Monitor workflow-output",
     )
 
     parser.add_argument(
