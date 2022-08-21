@@ -29,7 +29,7 @@ def worklet_entry(args, cijoe, step):
     localversion = "custom"
 
     commands = [
-        'yes "" | make olddefconfig',
+        'yes "" | make -O artifacts olddefconfig',
         "./scripts/config --disable CONFIG_DEBUG_INFO",
         "./scripts/config --disable SYSTEM_TRUSTED_KEYS",
         "./scripts/config --disable SYSTEM_REVOCATION_KEYS",
