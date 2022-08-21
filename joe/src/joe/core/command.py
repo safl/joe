@@ -14,10 +14,7 @@ from joe.core.resources import Config
 def default_output_path():
     """Returns a default output-path"""
 
-    return os.path.join(
-        os.getcwd(),
-        "cijoe-output-" + time.strftime("%Y%m%d-%H%M%S", time.gmtime(time.time())),
-    )
+    return os.path.join(os.getcwd(), "cijoe-output")
 
 
 class Cijoe(object):

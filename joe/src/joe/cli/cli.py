@@ -152,6 +152,9 @@ def cli_workflow(args):
     """Process workflow"""
 
     log.info("cli: run")
+    log.info(f"workflow: {args.workflow}")
+    log.info(f"config: {args.config}")
+    log.info(f"output: {args.output}")
 
     if args.workflow is None:
         log.error("missing workflow")
@@ -159,10 +162,10 @@ def cli_workflow(args):
     if args.config is None:
         log.error("missing config")
         return errno.EINVAL
-
-    log.info(f"workflow: {args.workflow}")
-    log.info(f"config: {args.config}")
-    log.info(f"output: {args.output}")
+    state_path = args.output / "workflow.state"
+    if state_path.exists():
+        log.error(f"aborting; output-directory({args.output}) already exists")
+        return errno.EPERM
 
     config = Config(args.config.resolve())
     errors = config.load()
