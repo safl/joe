@@ -27,7 +27,7 @@ def worklet_entry(args, cijoe, step):
     if rcode:
         return rcode
 
-    localversion = "custom"
+    localversion = step.get("with", {"localversion": "custom"}).get("localversion")
 
     commands = [
         "[ -f .config ] && rm .config || true",
@@ -36,10 +36,10 @@ def worklet_entry(args, cijoe, step):
         "./scripts/config --disable SYSTEM_TRUSTED_KEYS",
         "./scripts/config --disable SYSTEM_REVOCATION_KEYS",
         f"yes '' | make -j$(nproc) bindeb-pkg LOCALVERSION={localversion}",
-        f"mkdir -p {cijoe.output_path}/artifacts",
-        f"mv ../*.deb {cijoe.output_path}/artifacts/",
-        f"mv ../*.changes {cijoe.output_path}/artifacts/",
-        f"mv ../*.buildinfo {cijoe.output_path}/artifacts/",
+        f"mkdir -p {cijoe.output_path}/artifacts/linux",
+        f"mv ../*.deb {cijoe.output_path}/artifacts/linux",
+        f"mv ../*.changes {cijoe.output_path}/artifacts/linux",
+        f"mv ../*.buildinfo {cijoe.output_path}/artifacts/linux",
     ]
     for cmd in commands:
         rcode, _ = cijoe.run(cmd, cwd=str(repos))
