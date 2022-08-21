@@ -164,7 +164,7 @@ def cli_workflow(args):
         return errno.EINVAL
     state_path = args.output / "workflow.state"
     if state_path.exists():
-        log.error(f"aborting; output-directory({args.output}) already exists")
+        log.error(f"aborting; output({args.output}) directory already exists")
         return errno.EPERM
 
     config = Config(args.config.resolve())
