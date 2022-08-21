@@ -3,7 +3,8 @@
     =====================================
 
     There are a myriad of ways to build and install a custom Linux kernel. This worklet
-    builds it as a Debian package.
+    builds it as a Debian package. The generated .deb packages are stored in
+    cijoe.output_path.
 
     Build a custom Linux kernel using olddefconfig
 
@@ -29,14 +30,16 @@ def worklet_entry(args, cijoe, step):
     localversion = "custom"
 
     commands = [
-        "[ -f .config ] && rm .config",
-        'yes "" | make olddefconfig',
+        "[ -f .config ] && rm .config || true",
+        'yes '' | make olddefconfig',
         "./scripts/config --disable CONFIG_DEBUG_INFO",
         "./scripts/config --disable SYSTEM_TRUSTED_KEYS",
         "./scripts/config --disable SYSTEM_REVOCATION_KEYS",
-        f"yes "" | make -j$(nproc) bindeb-pkg LOCALVERSION={localversion}",
-        "mkdir -p artifacts",
-        "mv ../*.deb artifacts/",
+        f"yes '' | make -j$(nproc) bindeb-pkg LOCALVERSION={localversion}",
+        f"mkdir -p {cijoe.output_path}/artifacts",
+        f"mv ../*.deb {cijoe.output_path}/artifacts/",
+        f"mv ../*.changes {cijoe.output_path}/artifacts/",
+        f"mv ../*.buildinfo {cijoe.output_path}/artifacts/",
     ]
     for cmd in commands:
         rcode, _ = cijoe.run(cmd, cwd=str(repos))
