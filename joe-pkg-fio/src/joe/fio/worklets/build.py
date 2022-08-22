@@ -18,7 +18,7 @@ def worklet_entry(args, cijoe, step):
     commands = [
         "make clean",
         "./configure",
-        "make",
+        "make -j $(nproc)",
     ]
     for cmd in commands:
         rcode, _ = cijoe.run_local(cmd, cwd=build_dir)

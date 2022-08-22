@@ -275,65 +275,70 @@ def parse_args():
         [p.resolve() for p in Path.cwd().iterdir() if p.suffix == ".workflow"]
     )
 
-    parser = argparse.ArgumentParser(prog="joe")
+    parser = argparse.ArgumentParser(
+        prog="joe", formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
 
-    parser.add_argument("step", nargs="*", help="One or more workflow steps to run.")
+    workflow_group = parser.add_argument_group('workflow', 'Run workflows')
 
-    parser.add_argument(
+    workflow_group.add_argument("step", nargs="*", help="One or more workflow steps to run.")
+
+    workflow_group.add_argument(
         "--config",
         "-c",
         type=Path,
         default=cfiles[0] if cfiles else None,
         help="Path to the Configuration file.",
     )
-    parser.add_argument(
+    workflow_group.add_argument(
         "--workflow",
         "-w",
         type=Path,
         default=wfiles[0] if wfiles else None,
         help="Path to workflow file.",
     )
-    parser.add_argument(
+    workflow_group.add_argument(
         "--output",
         "-o",
         type=Path,
         default=default_output_path(),
         help="Path to output directory.",
     )
-    parser.add_argument(
+    workflow_group.add_argument(
         "--log-level",
         "-l",
         action="append_const",
         const=1,
         help="Increase log-level.",
     )
-    parser.add_argument(
+    workflow_group.add_argument(
         "--monitor",
         "-m",
         action="store_true",
         help="Monitor workflow-output at '-o / --output'.",
     )
 
-    parser.add_argument(
+    utils_group = parser.add_argument_group('utilities', 'Workflow Utilities')
+    utils_group.add_argument(
         "--produce-report",
         "-p",
         action="append_const",
         const=1,
         help="Produce report for workflow-output at '-o / --output' and exit.",
     )
-    parser.add_argument(
+    utils_group.add_argument(
         "--integrity-check",
         "-i",
         action="store_true",
         help="Check integrity of workflow at '-w / --workflow' and exit.",
     )
-    parser.add_argument(
+    utils_group.add_argument(
         "--resources",
         "-r",
         action="store_true",
         help="List collected resources and exit.",
     )
-    parser.add_argument(
+    utils_group.add_argument(
         "--example",
         "-e",
         action="store",
@@ -343,7 +348,7 @@ def parse_args():
         default=None,
         help="Create 'default.config' and 'example.workflow' and exit.",
     )
-    parser.add_argument(
+    utils_group.add_argument(
         "--version",
         "-v",
         action="store_true",
