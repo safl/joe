@@ -4,7 +4,7 @@ doc: |
   This workflow demonstrates how to use qemu via cijoe, specifically by:
 
   * Building qemu from source
-  * Installing qemu to /opt/qemu
+  * Installing qemu to $HOME/opt/qemu
   * Provisioning a guest using a cloudinit image
   * Starting a guest
   * Stoppping a guest
