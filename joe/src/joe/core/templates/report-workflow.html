@@ -72,10 +72,12 @@ div.image {
   margin-bottom: 0;
 }
 
-.hl-static {
-  background: #002b36;
-  color: #839496;
+.runlog > code {
   margin: 0;
+}
+
+.cmd_output {
+  border-top: 1px solid;
 }
 </style>
 </head>
@@ -252,8 +254,8 @@ div.image {
                 </div>
               </li>
             </ul>
-            <pre class="runlog"><code class="hl-static">$ {{ runlog["state"]["cmd"] }}</code></pre>
-            <pre class="runlog"><code class="hl-static">{{ runlog["output"] }}</code></pre>
+            <pre class="runlog cmd"><code>$ {{ runlog["state"]["cmd"] }}</code></pre>
+            <pre class="runlog cmd_output"><code>{{ runlog["output"] }}</code></pre>
             {% endfor %}
             </div>
           </div>
@@ -324,8 +326,8 @@ div.image {
                         </div>
                       </li>
                     </ul>
-                    <pre class="runlog"><code class="hl-static">$ {{ runlog["state"]["cmd"] }}</code></pre>
-                    <pre class="runlog"><code class="hl-static">{{ runlog["output"] }}</code></pre>
+                    <pre class="runlog cmd"><code>$ {{ runlog["state"]["cmd"] }}</code></pre>
+                    <pre class="runlog cmd_output"><code>{{ runlog["output"] }}</code></pre>
                   {% endfor %}
                   </div>
                 </li>
