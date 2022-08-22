@@ -2,7 +2,7 @@
 # This Makefile serves as convenient command-line auto-completion
 #
 PROJECT_NAME=joe-pkg-qemu
-CONFIGS=src/joe/qemu/configs/qemu.config
+CONFIGS=src/joe/qemu/configs/default.config
 
 define default-help
 # invoke: 'make uninstall', 'make install'
