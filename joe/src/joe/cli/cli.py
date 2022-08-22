@@ -279,9 +279,13 @@ def parse_args():
         prog="joe", formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
 
-    workflow_group = parser.add_argument_group('workflow', 'Run workflows')
+    workflow_group = parser.add_argument_group(
+        "workflow", "Run workflow at -w with config at -c output at -o"
+    )
 
-    workflow_group.add_argument("step", nargs="*", help="One or more workflow steps to run.")
+    workflow_group.add_argument(
+        "step", nargs="*", help="One or more workflow steps to run."
+    )
 
     workflow_group.add_argument(
         "--config",
@@ -318,7 +322,9 @@ def parse_args():
         help="Monitor workflow-output at '-o / --output'.",
     )
 
-    utils_group = parser.add_argument_group('utilities', 'Workflow Utilities')
+    utils_group = parser.add_argument_group(
+        "utilities", "Workflow, and workflow-related utilities"
+    )
     utils_group.add_argument(
         "--produce-report",
         "-p",
