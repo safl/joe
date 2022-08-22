@@ -58,12 +58,15 @@ def cijoe(request, capsys):
 
     config = Config.from_path(request.config.getoption("--config"))
     if config is None:
-        return None
+        raise Exception("Failed loading config")
 
     JOE = Cijoe(
         config,
         request.config.getoption("--output"),
     )
+    if JOE is None:
+        raise Exception("Failed instantiating Cijoe")
+
     JOE.set_output_ident(request.node.nodeid)
 
     return JOE

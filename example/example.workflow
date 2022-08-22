@@ -1,25 +1,32 @@
 # filetype=yaml
 ---
 doc: |
-  This is an example of utilizing some of the Linux worklets and helpers
+  This workflow demonstrates how to use qemu via cijoe, specifically by:
+
+  * Building qemu from source
+  * Installing qemu to /opt/qemu
+  * Provisioning a guest using a cloudinit image
+  * Starting a guest
+  * Stoppping a guest
+
+  This is done via worklets, which in turn are utilizing helper-functions from core.qemu.wrapper
 
 steps:
-- name: sysinfo
-  uses: linux.sysinfo
+- name: build
+  uses: qemu.build_x86
 
-- name: null_blk_insert
-  uses: linux.null_blk
+- name: install
+  uses: qemu.install
 
-- name: list
-  run: lsblk
+- name: provision
+  uses: qemu.guest_provision
 
-- name: null_blk_remove
-  uses: linux.null_blk
-  with:
-    do: remove
+- name: start
+  uses: qemu.guest_start
 
-- name: report
-  uses: core.reporter
+- name: check
+  run: |
+    hostname
 
-- name: report_open
-  uses: core.browser_open
+- name: kill
+  uses: qemu.guest_kill
