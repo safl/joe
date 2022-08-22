@@ -1,6 +1,3 @@
-"""
-This is a package collecting testcases and auxilary utils for testing xNVMe using joe
-"""
 from setuptools import find_namespace_packages, setup
 
 setup(
@@ -11,6 +8,9 @@ setup(
     url="https://github.com/safl/joe-pkg-xnvme/",
     install_requires=[
         "joe",
+        "joe-pkg-linux",
+        "joe-pkg-qemu",
+        "joe-pkg-fio",
     ],
     include_package_data=True,
     package_data={
