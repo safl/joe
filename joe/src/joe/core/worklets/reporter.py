@@ -69,7 +69,7 @@ def augment_testreport(path: Path):
 
     logpath = path / "testreport.log"
     if not logpath.exists():
-        return results
+        return {}
 
     with logpath.open() as logfile:
         for count, line in enumerate(logfile.readlines()):
@@ -108,7 +108,7 @@ def augment_testreport(path: Path):
     if results["status"]["total"]:
         return results
 
-    return None
+    return {}
 
 
 def worklet_entry(args, cijoe, step):
