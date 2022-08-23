@@ -86,7 +86,6 @@ def augment_testreport(path: Path):
                 }
             if isinstance(result["longrepr"], list):
                 results[nodeid]["longrepr"] += "\n".join([str(item) for item in result["longrepr"]])
-                print(results[nodeid]["longrepr"])
             results[nodeid]["duration"] += result["duration"]
             results[nodeid]["outcome"] += [result["outcome"]]
 
