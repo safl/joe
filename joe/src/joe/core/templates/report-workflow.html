@@ -268,7 +268,7 @@ div.image {
             <div class="card-body" style="background-color: gray;">
 
               <div class="card-header bg-light">
-                Aggretate test outcome, the number of tests passed, failed and skipped.
+                Number of tests passed, failed and skipped.
               </div>
 
               <table class="table">
@@ -289,17 +289,20 @@ div.image {
                     Skipped: {{ step["extras"]["testreport"]["status"]["skipped"] }}
                     </button>
                   </td>
+                  <td class="table-primary">
+                    <button class="btn btn-primary">
+                    Total: {{ step["extras"]["testreport"]["tests"] | length }}
+                    </button>
+                  </td>
                 </tr>
               </tbody>
               </table>
 
-              <div class="card-footer bg-light">
-                Tests are listed below. A line is provided for each test.
-                Skipped tests has the 'reason' printed. Failed tests have 'runlog' output for the
-                test itself. In case it is not available, then check the runlog for the workflow
-                step.
+              <div class="card-header bg-light">
+                Tests are listed below. A line is provided for each test.  Skipped tests has the
+                'reason' printed.  Failed tests have 'runlog' output for the test itself. In case
+                it is not available, then check the runlog for the workflow step.
               </div>
-
 
               <ul class="list-group">
                 {% for nodeid, testcase in step["extras"]["testreport"]["tests"].items() %}

@@ -63,7 +63,7 @@ def augment_testreport(path: Path):
     """Parse the given testfile into a list of "tests"""
 
     results = {
-        "status": {"failed": 0, "passed": 0, "skipped": 0},
+        "status": {"failed": 0, "passed": 0, "skipped": 0, "total": 0},
         "tests": {},
     }
 
@@ -94,11 +94,16 @@ def augment_testreport(path: Path):
             results["tests"][nodeid]["duration"] += result["duration"]
             results["tests"][nodeid]["outcome"] += [result["outcome"]]
 
-            results["status"][result["outcome"]] += 1
-
             runlog = augment_runlog(path / result["nodeid"])
             if runlog:
                 results["tests"][nodeid]["runlog"] = runlog
+
+    for nodeid, testcase in results["tests"].items():
+        results["status"]["total"] += 1
+        for key in ["failed", "skipped", "passed"]:
+            if key in testcase["outcome"]:
+                results["status"][key] += 1
+                break
 
     return results
 
