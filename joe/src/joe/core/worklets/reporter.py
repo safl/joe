@@ -105,7 +105,10 @@ def augment_testreport(path: Path):
                 results["status"][key] += 1
                 break
 
-    return results
+    if results["status"]["total"]:
+        return results
+
+    return None
 
 
 def worklet_entry(args, cijoe, step):

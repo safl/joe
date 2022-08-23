@@ -130,10 +130,10 @@ div.image {
             <table class="table">
               <tbody>
                 <tr>
-                  <td class="table-success"><button class="btn btn-success">Passed: {{ status.passed }}</button></td>
-                  <td class="table-danger"><button class="btn btn-danger">Failed: {{ status.failed }}</button></td>
-                  <td class="table-secondary"><button class="btn btn-secondary">Skipped: {{ status.skipped }}</button></td>
-                  <td class="table-info"><button class="btn btn-primary bi bi-clock-history">Elapsed: {{ status.elapsed | round(2) }} sec</button></td>
+                  <td class="table-success w-25"><button class="btn btn-success">Passed: {{ status.passed }}</button></td>
+                  <td class="table-danger w-25"><button class="btn btn-danger">Failed: {{ status.failed }}</button></td>
+                  <td class="table-secondary w-25"><button class="btn btn-secondary">Skipped: {{ status.skipped }}</button></td>
+                  <td class="table-info w-25"><button class="btn btn-primary bi bi-clock-history">Elapsed: {{ status.elapsed | round(2) }} sec</button></td>
                 </tr>
               </tbody>
             </table>
@@ -274,22 +274,22 @@ div.image {
               <table class="table">
               <tbody>
                 <tr>
-                  <td class="table-success">
+                  <td class="table-success w-25">
                     <button class="btn btn-success">
                     Passed: {{ step["extras"]["testreport"]["status"]["passed"] }}
                     </button>
                   </td>
-                  <td class="table-danger">
+                  <td class="table-danger w-25">
                     <button class="btn btn-danger">
                     Failed: {{ step["extras"]["testreport"]["status"]["failed"] }}
                     </button>
                   </td>
-                  <td class="table-secondary">
+                  <td class="table-secondary w-25">
                     <button class="btn btn-secondary">
                     Skipped: {{ step["extras"]["testreport"]["status"]["skipped"] }}
                     </button>
                   </td>
-                  <td class="table-primary">
+                  <td class="table-primary w-25">
                     <button class="btn btn-primary">
                     Total: {{ step["extras"]["testreport"]["tests"] | length }}
                     </button>
