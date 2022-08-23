@@ -62,7 +62,10 @@ def augment_runlog(path: Path):
 def augment_testreport(path: Path):
     """Parse the given testfile into a list of "tests"""
 
-    results = {}
+    results = {
+        "status": {"failed": 0, "passed": 0, "skipped": 0},
+        "tests": {},
+    }
 
     logpath = path / "testreport.log"
     if not logpath.exists():
@@ -75,8 +78,8 @@ def augment_testreport(path: Path):
                 continue
 
             nodeid = result["nodeid"]
-            if nodeid not in results:
-                results[nodeid] = {
+            if nodeid not in results["tests"]:
+                results["tests"][nodeid] = {
                     "count": count,
                     "nodeid": nodeid,
                     "duration": 0.0,
@@ -85,15 +88,17 @@ def augment_testreport(path: Path):
                     "longrepr": "",
                 }
             if isinstance(result["longrepr"], list):
-                results[nodeid]["longrepr"] += "\n".join(
+                results["tests"][nodeid]["longrepr"] += "\n".join(
                     [str(item) for item in result["longrepr"]]
                 )
-            results[nodeid]["duration"] += result["duration"]
-            results[nodeid]["outcome"] += [result["outcome"]]
+            results["tests"][nodeid]["duration"] += result["duration"]
+            results["tests"][nodeid]["outcome"] += [result["outcome"]]
+
+            results["status"][result["outcome"]] += 1
 
             runlog = augment_runlog(path / result["nodeid"])
             if runlog:
-                results[nodeid]["runlog"] = runlog
+                results["tests"][nodeid]["runlog"] = runlog
 
     return results
 

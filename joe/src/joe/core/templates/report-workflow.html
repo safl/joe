@@ -266,9 +266,37 @@ div.image {
           {% if "testreport" in step['extras'] %}
           <div class="collapse" id="CONTENT_TESTREPORT_{{ step['id'] }}" data-bs-parent="#CONTENT_{{ step['id'] }}">
             <div class="card-body" style="background-color: gray;">
-              Add some total stats and a description plus link to the report-log
+
+              <div class="card-header bg-light">
+                Find statistics for tests below. A line is provided for each test. Skipped tests
+                has the 'reason' printed. Failed tests have 'runlog' output for the test itself. In
+                case it is not available, then check the runlog for the workflow step.
+              </div>
+
+              <table class="table">
+              <tbody>
+                <tr>
+                  <td class="table-success">
+                    <button class="btn btn-success">
+                    Passed: {{ step["extras"]["testreport"]["status"]["passed"] }}
+                    </button>
+                  </td>
+                  <td class="table-danger">
+                    <button class="btn btn-danger">
+                    Failed: {{ step["extras"]["testreport"]["status"]["failed"] }}
+                    </button>
+                  </td>
+                  <td class="table-secondary">
+                    <button class="btn btn-secondary">
+                    Skipped: {{ step["extras"]["testreport"]["status"]["skipped"] }}
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+              </table>
+
               <ul class="list-group">
-                {% for nodeid, testcase in step["extras"]["testreport"].items() %}
+                {% for nodeid, testcase in step["extras"]["testreport"]["tests"].items() %}
                 {% if "failed" in testcase["outcome"] %}
                   {% set testcase_style = "danger" %}
                   {% set testcase_text = "failed" %}
