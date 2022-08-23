@@ -2,11 +2,18 @@ import os
 
 import pytest
 
-xnvme_configs = [
-    {"be": "linux", "sync": "block"},
-    {"be": "linux", "sync": "nvme"},
+backends = [
+    "linux": {
+        "async": ["emu", "thrpool", "aio", "libaio", "io_uring", "io_uring_cmd"],
+        "sync": ["nvme", "psync"],
+        "admin": ["nvme", "block"]
+    },
+    "spdk": {
+        "async": ["nvme"],
+        "sync": ["nvme"],
+        "admin": ["nvme"],
+    }
 ]
-
 
 def test_cli_xnvme_list(cijoe):
 

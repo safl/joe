@@ -282,7 +282,7 @@ div.image {
                   {% set testcase_style = "warning" %}
                 {% endif %}
 
-                <li class="list-group-item list-group-item--{{ testcase_style }}">
+                <li class="list-group-item list-group-item-{{ testcase_style }}">
                   <button class="btn btn-{{ testcase_style }}" type="button">
                     <b>{{ testcase_text }}</b>: {{ nodeid }}
                   </button>
@@ -300,6 +300,16 @@ div.image {
                     {% endif %}
                   </div>
                 </li>
+
+                <!-- workflow-setp-content-testrunner-longrepr BEGIN -->
+                {% if testcase["longrepr"] %}
+                <li class="list-group-item list-group-item-secondary">
+                  <div class="card-body">
+                    {{ testcase["longrepr"] }}
+                  </div>
+                </li>
+                {% endif %}
+                <!-- workflow-setp-content-testrunner-longrepr END -->
 
                 <!-- workflow-step-content-testrunner-runlog BEGIN -->
                 <li class="collapse" id="CONTENT_TESTREPORT_{{ step['id'] }}_runlog_{{ testcase['count'] }}"

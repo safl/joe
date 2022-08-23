@@ -170,6 +170,13 @@ def cli_workflow(args):
     if args.config is None:
         log.error("missing config")
         return errno.EINVAL
+
+    if args.output.exists() and args.force:
+        archive = args.output.with_name("cijoe-archive") / str(int(time.time() * 10))
+        os.makedirs(archive)
+        log.info(f"moving existing output-directory to {archive}")
+        os.rename(args.output, archive)
+
     state_path = args.output / "workflow.state"
     if state_path.exists():
         log.error(f"aborting; output({args.output}) directory already exists")
@@ -309,6 +316,12 @@ def parse_args():
         help="Path to output directory.",
     )
     workflow_group.add_argument(
+        "--force",
+        "-f",
+        action="store_true",
+        help="Force execution even though '-o / --output' exists (moving it)",
+    )
+    workflow_group.add_argument(
         "--log-level",
         "-l",
         action="append_const",
@@ -379,9 +392,6 @@ def main():
     if args.integrity_check:
         return cli_integrity_check(args)
 
-    if args.produce_report:
-        return cli_produce_report(args)
-
     if args.resources:
         return cli_resources(args)
 
@@ -391,4 +401,10 @@ def main():
     if args.version:
         return cli_version(args)
 
-    return cli_workflow(args)
+    rcode = cli_workflow(args)
+
+    if args.produce_report:
+        report_rcode = cli_produce_report(args)
+        rcode = rcode if rcode else report_rcode
+
+    return rcode
