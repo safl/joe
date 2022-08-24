@@ -19,7 +19,7 @@ def worklet_entry(args, cijoe, step):
         "make install",
     ]
     for cmd in commands:
-        rcode, _ = cijoe.run_local(cmd, cwd=repos_path)
+        rcode, _ = cijoe.run(cmd, cwd=repos_path)
         if rcode:
             return rcode
 
