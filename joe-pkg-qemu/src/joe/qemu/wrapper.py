@@ -1,5 +1,5 @@
 """
-    Wraps qemu binaries: system, qemu_img and provides "guest-control"
+    Wraps qemu binaries: system, qemu-img and provides "guest-control"
 
     NOTE: this wrapper is "local-only". That is, changing transport does not retarget
     the functionality provided here. Most of the code is utilizing Python modules such
@@ -20,7 +20,7 @@ from joe.core.misc import download
 
 
 def qemu_img(cijoe, args=[]):
-    """Helper function wrapping around 'qemu_img'"""
+    """Helper function wrapping around 'qemu-img'"""
 
     return cijoe.run_local(
         f"{cijoe.config.options['qemu']['img_bin']} " + " ".join(args)
@@ -53,6 +53,18 @@ class Guest(object):
         self.pid = self.guest_path / "guest.pid"
         self.monitor = self.guest_path / "monitor.sock"
         self.serial = self.guest_path / "serial.output"
+
+    def image_create(self, filename, fmt="raw", size="8GB"):
+        """
+        Creates an image-file in the guest_path. Returns 0 on succes, errno to
+        indicate the error.
+        """
+
+        rcode, _ = qemu_img(
+            self.cijoe, ["create", "-f", fmt, str(self.guest_path / filename), size]
+        )
+
+        return rcode
 
     def is_initialized(self):
         """Check that the guest is initialized"""
