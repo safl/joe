@@ -13,9 +13,9 @@ setup(
         "pytest-reportlog",
         "pyyaml",
         "requests",
-        "watchdog",
         "scp",
         "setuptools",
+        "watchdog",
     ],
     entry_points={
         "console_scripts": ["joe=joe.cli.cli:main"],

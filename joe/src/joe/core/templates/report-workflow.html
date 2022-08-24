@@ -245,11 +245,14 @@ div.image {
                   # {{ stem }}
                 </button>
                 <div class="btn-group float-end" role="group">
-                  <button class="btn btn-light" type="button">
-                  <a href="{{ runlog["output_path"] }}" class="bi bi-file-code">.output</a>
+                  <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                    {{ runlog["state"]["elapsed"] | round(2) }}
                   </button>
                   <button class="btn btn-light" type="button">
-                  <a href="{{ runlog["state_path"] }}" class="bi bi-filetype-yml">.state</a>
+                    <a href="{{ runlog["output_path"] }}" class="bi bi-file-code">.output</a>
+                  </button>
+                  <button class="btn btn-light" type="button">
+                    <a href="{{ runlog["state_path"] }}" class="bi bi-filetype-yml">.state</a>
                   </button>
                 </div>
               </li>
@@ -372,11 +375,14 @@ div.image {
                           # {{ stem }}
                         </button>
                         <div class="btn-group float-end" role="group">
-                          <button class="btn btn-light" type="button">
-                          <a href="{{ runlog["output_path"] }}" class="bi bi-file-code">.output</a>
+                          <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
+                            {{ runlog["state"]["elapsed"] | round(2) }}
                           </button>
                           <button class="btn btn-light" type="button">
-                          <a href="{{ runlog["state_path"] }}" class="bi bi-filetype-yml">.state</a>
+                            <a href="{{ runlog["output_path"] }}" class="bi bi-file-code">.output</a>
+                          </button>
+                          <button class="btn btn-light" type="button">
+                            <a href="{{ runlog["state_path"] }}" class="bi bi-filetype-yml">.state</a>
                           </button>
                         </div>
                       </li>
