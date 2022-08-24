@@ -133,7 +133,11 @@ div.image {
                   <td class="table-success w-25"><button class="btn btn-success">Passed: {{ status.passed }}</button></td>
                   <td class="table-danger w-25"><button class="btn btn-danger">Failed: {{ status.failed }}</button></td>
                   <td class="table-secondary w-25"><button class="btn btn-secondary">Skipped: {{ status.skipped }}</button></td>
-                  <td class="table-info w-25"><button class="btn btn-primary bi bi-clock-history">Elapsed: {{ status.elapsed | round(2) }} sec</button></td>
+                  <td class="table-info w-25">
+                    <button class="btn btn-primary bi bi-clock-history">
+                    Elapsed: {{ status.elapsed | round(2) }} sec
+                    </button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -246,7 +250,11 @@ div.image {
                 </button>
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
-                    {{ runlog["state"]["elapsed"] | round(2) }}
+                    {% if runlog["state"]["elapsed"] %}
+                      {{ runlog["state"]["elapsed"] | round(2) }}
+                    {% else %}
+                      0
+                    {% endif %}
                   </button>
                   <button class="btn btn-light" type="button">
                     <a href="{{ runlog["output_path"] }}" class="bi bi-file-code">.output</a>
@@ -376,7 +384,11 @@ div.image {
                         </button>
                         <div class="btn-group float-end" role="group">
                           <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
-                            {{ runlog["state"]["elapsed"] | round(2) }}
+                            {% if runlog["state"]["elapsed"] %}
+                              {{ runlog["state"]["elapsed"] | round(2) }}
+                            {% else %}
+                              0
+                            {% endif %}
                           </button>
                           <button class="btn btn-light" type="button">
                             <a href="{{ runlog["output_path"] }}" class="bi bi-file-code">.output</a>
