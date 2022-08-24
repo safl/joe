@@ -267,6 +267,11 @@ class Workflow(Resource):
                 errors.append(f"Missing required top-level key: '{top}'")
                 return False
 
+        step_names = [step["name"] for step in topic["steps"]]
+        if len(step_names) != len(set(step_names)):
+            errors.append(f"Duplicate step-names")
+            return False
+
         valid = set(["name", "uses", "with"])
         required = set(["name", "uses"])
 
