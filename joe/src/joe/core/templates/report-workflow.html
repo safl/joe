@@ -347,21 +347,29 @@ div.image {
                     <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                       {{ testcase['duration'] | round(2) }}
                     </button>
-                    {% if testcase["runlog"] %}
+                    <button class="btn btn-primary bi bi-info-square-fill" type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#CONTENT_TESTREPORT_{{ step['id'] }}_testinfo_{{ testcase['count'] }}"
+                      aria-controls="CONTENT_TESTREPORT_{{ step['id'] }}_testinfo__{{ testcase['count'] }}"
+                      aria-expanded="false"
+                      {% if not testcase["longrepr"] %}disabled="disabled"{% endif %}
+                      >&nbsp;testinfo</button>
                     <button class="btn btn-primary bi bi-file-earmark-text" type="button"
                       data-bs-toggle="collapse"
                       data-bs-target="#CONTENT_TESTREPORT_{{ step['id'] }}_runlog_{{ testcase['count'] }}"
                       aria-controls="CONTENT_TESTREPORT_{{ step['id'] }}_runlog__{{ testcase['count'] }}"
-                      aria-expanded="false">runlog</button>
-                    {% endif %}
+                      aria-expanded="false"
+                      {% if not testcase["runlog"] %}disabled="disabled"{% endif %}
+                      >&nbsp;runlog</button>
                   </div>
                 </li>
 
                 <!-- workflow-setp-content-testrunner-longrepr BEGIN -->
                 {% if testcase["longrepr"] %}
-                <li class="list-group-item list-group-item-secondary">
+                <li class="collapse" id="CONTENT_TESTREPORT_{{ step['id'] }}_testinfo_{{ testcase['count'] }}"
+                  data-bs-parent="#CONTENT_TESTREPORT_{{ step['id'] }}">
                   <div class="card-body">
-                    {{ testcase["longrepr"] }}
+                    <pre class="runlog cmd_output"><code>{{ testcase["longrepr"] }}</code></pre>
                   </div>
                 </li>
                 {% endif %}

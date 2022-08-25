@@ -18,6 +18,8 @@
     report_open: true|false
 """
 import json
+import yaml
+import pprint
 import logging as log
 import webbrowser
 from pathlib import Path
@@ -59,6 +61,35 @@ def augment_runlog(path: Path):
     return run
 
 
+def longrepr_to_string(longrepr):
+    """Extract pytest crash/traceback info"""
+
+    lines = []
+
+    lines.append("# crashinfo")
+    reprcrash = longrepr.get("reprcrash", {})
+    for key, value in reprcrash.items():
+        lines.append(f"{key}: {value}")
+
+    entries = longrepr.get("reprtraceback", {"reprentries": []}).get("reprentries", [])
+    for entry in entries:
+        lines.append("")
+        lines.append("# test-args")
+        for argline in (
+            entry.get("data", {"reprfuncargs": []})
+            .get("reprfuncargs", {})
+            .get("args", [])
+        ):
+            lines.append(":".join(argline))
+
+        lines.append("")
+        lines.append("# test-output-lines")
+        for dataline in entry.get("data", {"lines": []}).get("lines", []):
+            lines.append(dataline)
+
+    return "\n".join(lines)
+
+
 def augment_testreport(path: Path):
     """Parse the given testfile into a list of "tests"""
 
@@ -91,6 +122,11 @@ def augment_testreport(path: Path):
                 results["tests"][nodeid]["longrepr"] += "\n".join(
                     [str(item) for item in result["longrepr"]]
                 )
+            elif isinstance(result["longrepr"], dict):
+                results["tests"][nodeid]["longrepr"] += longrepr_to_string(
+                    result["longrepr"]
+                )
+
             results["tests"][nodeid]["duration"] += result["duration"]
             results["tests"][nodeid]["outcome"] += [result["outcome"]]
 
