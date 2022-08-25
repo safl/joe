@@ -73,13 +73,25 @@ def longrepr_to_string(longrepr):
 
     entries = longrepr.get("reprtraceback", {"reprentries": []}).get("reprentries", [])
     for entry in entries:
+        if entry is None:
+            continue
+
+        data = entry.get("data")
+        if data is None:
+            continue
+
+        reprfuncargs = data.get("reprfuncargs")
+        if reprfuncargs is None:
+            continue
+
+        reprargs = reprfuncargs.get("args")
+        if reprargs is None:
+            continue
+
         lines.append("")
         lines.append("# test-args")
-        for argline in (
-            entry.get("data", {"reprfuncargs": []})
-            .get("reprfuncargs", {})
-            .get("args", [])
-        ):
+
+        for argline in reprargs:
             lines.append(":".join(argline))
 
         lines.append("")
