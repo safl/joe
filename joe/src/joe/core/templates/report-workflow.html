@@ -134,7 +134,7 @@ div.image {
                   <td class="table-danger w-25"><button class="btn btn-danger">Failed: {{ status.failed }}</button></td>
                   <td class="table-secondary w-25"><button class="btn btn-secondary">Skipped: {{ status.skipped }}</button></td>
                   <td class="table-info w-25">
-                    <button class="btn btn-primary bi bi-clock-history">
+                    <button class="btn btn-primary bi bi-clock-history" disabled="disabled">
                     Elapsed: {{ status.elapsed | round(2) }} sec
                     </button>
                   </td>
