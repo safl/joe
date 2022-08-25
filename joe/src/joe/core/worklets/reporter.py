@@ -110,7 +110,16 @@ def augment_testreport(path: Path):
 
             nodeid = result["nodeid"]
             if nodeid not in results["tests"]:
+                try:
+                    comp = nodeid.split("::")
+                    group_left = comp[0]
+                    group_right = "".join(comp[1:])
+                except Exception:
+                    group_left, group_right = (nodeid, nodeid)
+
                 results["tests"][nodeid] = {
+                    "group_left": group_left,
+                    "group_right": group_right,
                     "count": count,
                     "nodeid": nodeid,
                     "duration": 0.0,
