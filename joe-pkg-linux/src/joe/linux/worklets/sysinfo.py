@@ -19,7 +19,6 @@ def worklet_entry(args, cijoe, step):
         "lsmem",
         "lsmod",
         "lspci",
-        "lsusb",
     ]
 
     rcode = 0
