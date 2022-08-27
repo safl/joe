@@ -145,17 +145,20 @@ def testreport_from_file(path: Path):
     return {}
 
 
-def artifacts_in_path(parent : Path, path: Path):
+def artifacts_in_path(parent: Path, path: Path):
     """Returns a list of paths to artifacts"""
 
     if not path.exists():
         return []
 
-    return [
-        {"path": artifact, "name": artifact.relative_to(parent)}
-        for artifact in path.iterdir()
-        if path.exists() and path.is_dir() and path.name == "artifacts"
-    ]
+    return sorted(
+        [
+            {"path": artifact, "name": artifact.relative_to(parent)}
+            for artifact in path.rglob("*")
+            if "artifacts" in str(artifact)
+        ],
+        key=lambda d: d["name"],
+    )
 
 
 def process_workflow_output(args, cijoe):
