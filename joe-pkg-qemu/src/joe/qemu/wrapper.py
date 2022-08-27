@@ -209,7 +209,7 @@ class Guest(object):
 
         # Create the boot.img based on cloudinit_img
         shutil.copyfile(str(cloudinit_img), str(self.boot_img))
-        self.cijoe.run_local(f"qemu-img resize {self.boot_img} 10G")
+        qemu_img(self.cijoe, f"resize {self.boot_img} 10G")
 
         # Create seed.img, with data and meta embedded
         metadata_path = shutil.copyfile(
