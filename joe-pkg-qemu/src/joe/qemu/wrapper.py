@@ -19,20 +19,16 @@ import psutil
 from joe.core.misc import download
 
 
-def qemu_img(cijoe, args=[]):
+def qemu_img(cijoe, args=""):
     """Helper function wrapping around 'qemu-img'"""
 
-    return cijoe.run_local(
-        f"{cijoe.config.options['qemu']['img_bin']} " + " ".join(args)
-    )
+    return cijoe.run_local(f"{cijoe.config.options['qemu']['img_bin']} {args}")
 
 
-def qemu_system(cijoe, args=[]):
+def qemu_system(cijoe, args=""):
     """Wrapping the qemu system binary"""
 
-    return cijoe.run_local(
-        f"{cijoe.config.options['qemu']['system_bin']}" + " ".join(args)
-    )
+    return cijoe.run_local(f"{cijoe.config.options['qemu']['system_bin']} {args}")
 
 
 class Guest(object):
@@ -60,9 +56,8 @@ class Guest(object):
         indicate the error.
         """
 
-        rcode, _ = qemu_img(
-            self.cijoe, ["create", "-f", fmt, str(self.guest_path / filename), size]
-        )
+        img_path = self.guest_path / filename
+        rcode, _ = qemu_img(self.cijoe, f"create -f {fmt} {img_path} {size}")
 
         return rcode
 
@@ -122,7 +117,7 @@ class Guest(object):
     def start(self, daemonize=True, extra_args=[]):
         """."""
 
-        args = [self.qemu_config["system_bin"]]
+        args = []
 
         # Create qemu-system args
         for key, value in self.guest_config["system_args"].items():
@@ -173,7 +168,7 @@ class Guest(object):
 
         args += extra_args
 
-        rcode, _ = self.cijoe.run_local(" ".join(args))
+        rcode, _ = qemu_system(self.cijoe, " ".join(args))
 
         return rcode
 
