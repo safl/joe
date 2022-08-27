@@ -21,9 +21,14 @@ import logging as log
 import webbrowser
 
 import jinja2
+import yaml
 
 from joe.core.processing import process_workflow_output
 from joe.core.resources import dict_from_yamlfile, get_resources
+
+
+def to_yaml(value):
+    return yaml.dump(value)
 
 
 def worklet_entry(args, cijoe, step):
@@ -41,9 +46,11 @@ def worklet_entry(args, cijoe, step):
 
     workflow_state = process_workflow_output(args, cijoe)
 
-    template = jinja2.Environment(
+    jinja_env = jinja2.Environment(
         autoescape=True, loader=jinja2.FileSystemLoader(template_path.parent)
-    ).get_template(template_path.name)
+    )
+    jinja_env.filters['to_yaml'] = to_yaml
+    template = jinja_env.get_template(template_path.name)
 
     with (report_path).open("w") as report:
         report.write(template.render(workflow_state))

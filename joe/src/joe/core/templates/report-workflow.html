@@ -61,7 +61,7 @@ div.image {
   padding: 1rem;
 }
 .workflow-configuration {
-  padding: 1rem;
+  padding: 0rem;
 }
 
 .runlog {
@@ -149,9 +149,10 @@ div.image {
           <div class="tab-pane" id="artifacts-tab-pane" role="tabpanel" aria-labelledby="artifacts-tab" tabindex="0">
             <div class="card-body">
               <p>
-              If any workflow-step (worklet / run) or test produced any artifacts, then they are
-              listed below.
+                If any workflow-step (worklet / run) or test produced any artifacts, then they are
+                listed here.
               </p>
+              <hr />
               <ul class="workflow-artifacts">
                 {% for artifact in artifacts %}
                 <li><a href="{{ artifact.path }}">{{ artifact.name }}</a></li>
@@ -161,11 +162,24 @@ div.image {
           </div>
 
           <div class="tab-pane" id="config-tab-pane" role="tabpanel" aria-labelledby="config-tab" tabindex="0">
-            <pre class="workflow-configuration">{{ config | pprint }}</pre>
+            <div class="card-body">
+              <p>
+                This is the configuration (<code>.config</code> file) with any
+                variable-placeholders such as <code>{{ '{{ local.env.HOME }}' }}</code> filled out.
+              </p>
+              <hr />
+              <pre class="workflow-configuration">{{ config | to_yaml }}</pre>
+            </div>
           </div>
 
           <div class="tab-pane" id="doc-tab-pane" role="tabpanel" aria-labelledby="doc-tab" tabindex="0">
-            <pre class="workflow-documentation">{{ doc }}</pre>
+            <div class="card-body">
+              <p>
+                This is the <code>doc</code> section of the workflow (<code>.workflow</code> file).
+              </p>
+              <hr />
+              <pre class="workflow-documentation">{{ doc }}</pre>
+            </div>
           </div>
         </div>
       </div>
