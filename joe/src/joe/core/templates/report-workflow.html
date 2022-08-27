@@ -107,6 +107,11 @@ div.image {
               aria-selected="true">Status</button>
           </li>
           <li class="nav-item" role="presentation">
+            <button class="nav-link" id="artifacts-tab" data-bs-toggle="tab"
+              data-bs-target="#artifacts-tab-pane" type="button" role="tab" aria-controls="artifacts-tab-pane"
+              aria-selected="false">Artifacts</button>
+          </li>
+          <li class="nav-item" role="presentation">
             <button class="nav-link" id="config-tab" data-bs-toggle="tab"
               data-bs-target="#config-tab-pane" type="button" role="tab" aria-controls="config-tab-pane"
               aria-selected="false">Configuration</button>
@@ -139,6 +144,14 @@ div.image {
                 </tr>
               </tbody>
             </table>
+          </div>
+
+          <div class="tab-pane" id="artifacts-tab-pane" role="tabpanel" aria-labelledby="artifacts-tab" tabindex="0">
+            <ul class="workflow-artifacts">
+              {% for artifact in artifacts %}
+              <li><a href="{{ artifact.path }}">{{ artifact.name }}</a></li>
+              {% endfor %}
+            </ul>
           </div>
 
           <div class="tab-pane" id="config-tab-pane" role="tabpanel" aria-labelledby="config-tab" tabindex="0">

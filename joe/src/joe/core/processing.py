@@ -145,13 +145,16 @@ def testreport_from_file(path: Path):
     return {}
 
 
-def artifacts_in_path(path: Path):
+def artifacts_in_path(parent : Path, path: Path):
     """Returns a list of paths to artifacts"""
 
+    if not path.exists():
+        return []
+
     return [
-        artifact
+        {"path": artifact, "name": artifact.relative_to(parent)}
         for artifact in path.iterdir()
-        if path.is_dir() and path.name == "artifacts"
+        if path.exists() and path.is_dir() and path.name == "artifacts"
     ]
 
 
@@ -159,7 +162,9 @@ def process_workflow_output(args, cijoe):
 
     workflow_state = dict_from_yamlfile(args.output / "workflow.state")
     workflow_state["config"] = cijoe.config.options
-    workflow_state["artifacts"] = artifacts_in_path(args.output / "artifacts")
+    workflow_state["artifacts"] = artifacts_in_path(
+        args.output, args.output / "artifacts"
+    )
 
     for step in workflow_state["steps"]:
         if "extras" not in step:
@@ -169,7 +174,7 @@ def process_workflow_output(args, cijoe):
         if not step_path.exists():
             continue
 
-        artifacts = artifacts_in_path(step_path / "artifacts")
+        artifacts = artifacts_in_path(args.output, step_path / "artifacts")
         if artifacts:
             step["extras"]["artifacts"] = artifacts
 
