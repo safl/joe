@@ -39,7 +39,7 @@ def runlog_from_path(path: Path):
 
 
 def longrepr_to_string(longrepr):
-    """Extract pytest crash/traceback info"""
+    """Extract pytest crash/traceback/longrepr info from pytest structure"""
 
     lines = []
 
@@ -143,3 +143,42 @@ def testreport_from_file(path: Path):
         return results
 
     return {}
+
+
+def artifacts_in_path(path: Path):
+    """Returns a list of paths to artifacts"""
+
+    return [
+        artifact
+        for artifact in path.iterdir()
+        if path.is_dir() and path.name == "artifacts"
+    ]
+
+
+def process_workflow_output(args, cijoe):
+
+    workflow_state = dict_from_yamlfile(args.output / "workflow.state")
+    workflow_state["config"] = cijoe.config.options
+    workflow_state["artifacts"] = artifacts_in_path(args.output / "artifacts")
+
+    for step in workflow_state["steps"]:
+        if "extras" not in step:
+            step["extras"] = {}
+
+        step_path = args.output / step["id"]
+        if not step_path.exists():
+            continue
+
+        artifacts = artifacts_in_path(step_path / "artifacts")
+        if artifacts:
+            step["extras"]["artifacts"] = artifacts
+
+        runlog = runlog_from_path(step_path)
+        if runlog:
+            step["extras"]["runlog"] = runlog
+
+        testreport = testreport_from_file(step_path)
+        if testreport:
+            step["extras"]["testreport"] = testreport
+
+    return workflow_state

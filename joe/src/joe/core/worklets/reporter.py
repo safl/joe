@@ -22,7 +22,7 @@ import webbrowser
 
 import jinja2
 
-from joe.core.processing import runlog_from_path, testreport_from_file
+from joe.core.processing import process_workflow_output
 from joe.core.resources import dict_from_yamlfile, get_resources
 
 
@@ -39,24 +39,7 @@ def worklet_entry(args, cijoe, step):
     log.info(f"template: {template_path}")
     log.info(f"report: {report_path}")
 
-    workflow_state = dict_from_yamlfile(args.output / "workflow.state")
-    workflow_state["config"] = cijoe.config.options
-
-    for step in workflow_state["steps"]:
-        if "extras" not in step:
-            step["extras"] = {}
-
-        step_path = args.output / step["id"]
-        if not step_path.exists():
-            continue
-
-        runlog = runlog_from_path(step_path)
-        if runlog:
-            step["extras"]["runlog"] = runlog
-
-        testreport = testreport_from_file(step_path)
-        if testreport:
-            step["extras"]["testreport"] = testreport
+    workflow_state = process_workflow_output(args, cijoe)
 
     template = jinja2.Environment(
         autoescape=True, loader=jinja2.FileSystemLoader(template_path.parent)
