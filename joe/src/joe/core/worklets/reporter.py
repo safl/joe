@@ -49,7 +49,7 @@ def worklet_entry(args, cijoe, step):
     jinja_env = jinja2.Environment(
         autoescape=True, loader=jinja2.FileSystemLoader(template_path.parent)
     )
-    jinja_env.filters['to_yaml'] = to_yaml
+    jinja_env.filters["to_yaml"] = to_yaml
     template = jinja_env.get_template(template_path.name)
 
     with (report_path).open("w") as report:
