@@ -1,8 +1,14 @@
 """
-    fio-wrapper for CIJOE
+    fio-wrapper
+    ===========
+
+    config
+    ------
+
+    fio.bin
 
     retargtable: true
-    =================
+    -----------------
 """
 
 
