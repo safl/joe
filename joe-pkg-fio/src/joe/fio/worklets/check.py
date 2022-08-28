@@ -2,7 +2,7 @@
 """
     Check the version of the wrapped fio
 """
-from cijoe.fio.wrapper import fio
+from joe.fio.wrapper import fio
 
 
 def worklet_entry(args, cijoe, step):

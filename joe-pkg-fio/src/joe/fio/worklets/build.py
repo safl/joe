@@ -9,19 +9,15 @@ from pathlib import Path
 def worklet_entry(args, cijoe, step):
     """Install qemu"""
 
-    conf = cijoe.config.options.get("fio", None)
-    if not conf:
-        return errno.EINVAL
-
-    build_dir = Path(conf["repository"]["path"])
-
     commands = [
         "make clean",
-        "./configure",
+        f"./configure --prefix={ cijoe.config.options['fio']['build']['prefix'] }",
         "make -j $(nproc)",
     ]
     for cmd in commands:
-        rcode, _ = cijoe.run_local(cmd, cwd=build_dir)
+        rcode, _ = cijoe.run_local(
+            cmd, cwd=Path(cijoe.config.options["fio"]["repository"]["path"])
+        )
         if rcode:
             return rcode
 
