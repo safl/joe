@@ -2,7 +2,7 @@
 # This Makefile serves as convenient command-line auto-completion
 #
 PROJECT_NAME=joe-pkg-fio
-CONFIGS=src/joe/fio/configs/fio-selftest.config
+CONFIGS=src/joe/fio/configs/default.config
 
 define default-help
 # invoke: 'make uninstall', 'make install'
