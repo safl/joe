@@ -5,7 +5,6 @@
     retargetable: True
     ==================
 """
-import errno
 from pathlib import Path
 
 

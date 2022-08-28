@@ -12,15 +12,15 @@ pytest.skip(allow_module_level=True, reason="Not implemented")
 #
 
 
-def test_xpy_dev_open(cijoe):
+def test_xpy_enumerate(cijoe):
 
-    rcode, _ = cijoe.run(f"xpy_enumerate")
+    rcode, _ = cijoe.run("xpy_enumerate")
     assert not rcode
 
 
 def test_xpy_libconf(cijoe):
 
-    rcode, _ = cijoe.run(f"xpy_libconf")
+    rcode, _ = cijoe.run("xpy_libconf")
     assert not rcode
 
 

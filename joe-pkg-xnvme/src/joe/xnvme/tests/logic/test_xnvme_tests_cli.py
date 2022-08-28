@@ -5,7 +5,7 @@ from joe.xnvme.tests.conftest import XnvmeDriver, xnvme_cli_args, xnvme_setup
 
 def test_optional_none(cijoe):
 
-    rcode, _ = cijoe.run(f"xnvme_tests_cli optional")
+    rcode, _ = cijoe.run("xnvme_tests_cli optional")
     assert not rcode
 
 

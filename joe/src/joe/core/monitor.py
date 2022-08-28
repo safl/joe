@@ -36,7 +36,7 @@ class WorkflowMonitor(object):
     def __init__(self, path, log_level):
         self.path = path
         self.cmdlogs = []
-        self.handler = Handler(self.cmdlogs, "cmd_\d+\.output", log_level)
+        self.handler = Handler(self.cmdlogs, r"cmd_\d+\.output", log_level)
         self.observer = Observer()
 
     def latest_cmdlog(self):

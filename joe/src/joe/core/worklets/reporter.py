@@ -24,7 +24,7 @@ import jinja2
 import yaml
 
 from joe.core.processing import process_workflow_output
-from joe.core.resources import dict_from_yamlfile, get_resources
+from joe.core.resources import get_resources
 
 
 def to_yaml(value):

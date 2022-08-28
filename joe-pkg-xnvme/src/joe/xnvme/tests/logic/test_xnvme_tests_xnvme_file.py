@@ -1,6 +1,6 @@
 import pytest
 
-from joe.xnvme.tests.conftest import XnvmeDriver, xnvme_cli_args, xnvme_setup_device
+from joe.xnvme.tests.conftest import XnvmeDriver, xnvme_setup_device
 
 
 @pytest.mark.parametrize("device", xnvme_setup_device(labels=["file"]))

@@ -5,7 +5,7 @@ from joe.xnvme.tests.conftest import XnvmeDriver, xnvme_cli_args, xnvme_setup
 
 def test_enum(cijoe):
 
-    rcode, _ = cijoe.run(f"lblk enum")
+    rcode, _ = cijoe.run("lblk enum")
 
     assert not rcode
 

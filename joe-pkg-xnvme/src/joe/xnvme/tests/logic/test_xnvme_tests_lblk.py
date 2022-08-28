@@ -21,7 +21,7 @@ def test_io(cijoe, device, be_opts):
 def test_scopy(cijoe, device, be_opts):
 
     if be_opts["be"] == "linux" and be_opts["sync"] in ["block", "psync"]:
-        pytest.skip(reason=f"Not supported: simple-copy via be_opts['sync']")
+        pytest.skip(reason=f"Not supported: simple-copy via { be_opts['sync'] }")
 
     XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
@@ -36,7 +36,7 @@ def test_scopy(cijoe, device, be_opts):
 def test_write_uncorrectable(cijoe, device, be_opts):
 
     if be_opts["be"] == "linux" and be_opts["sync"] in ["block", "psync"]:
-        pytest.skip(reason=f"Not supported: write_uncor via be_opts['sync']")
+        pytest.skip(reason=f"Not supported: write_uncor via { be_opts['sync'] }")
 
     XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
@@ -51,7 +51,7 @@ def test_write_uncorrectable(cijoe, device, be_opts):
 def test_write_zeroes(cijoe, device, be_opts):
 
     if be_opts["be"] == "linux" and be_opts["sync"] in ["block", "psync"]:
-        pytest.skip(reason=f"Not supported: write_zeroes via be_opts['sync']")
+        pytest.skip(reason=f"Not supported: write_zeroes via { be_opts['sync'] }")
 
     XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)

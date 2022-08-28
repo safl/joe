@@ -8,11 +8,11 @@ pytest.skip(allow_module_level=True, reason="Not implemented")
 def test_enum(cijoe):
 
     XnvmeDriver.kernel_attach()
-    rcode, _ = cijoe.run(f"kvs enum")
+    rcode, _ = cijoe.run("kvs enum")
     assert not rcode
 
     XnvmeDriver.kernel_detach()
-    rcode, _ = cijoe.run(f"kvs enum")
+    rcode, _ = cijoe.run("kvs enum")
     assert not rcode
 
 

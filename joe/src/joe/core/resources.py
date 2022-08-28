@@ -37,7 +37,7 @@ from importlib.machinery import SourceFileLoader
 from pathlib import Path
 
 import jinja2
-import setuptools
+import setuptools  # noqa
 import yaml
 
 import joe
@@ -269,7 +269,7 @@ class Workflow(Resource):
 
         step_names = [step["name"] for step in topic["steps"]]
         if len(step_names) != len(set(step_names)):
-            errors.append(f"Duplicate step-names")
+            errors.append("Duplicate step-names")
             return errors
 
         valid = set(["name", "uses", "with"])
@@ -283,7 +283,7 @@ class Workflow(Resource):
                 errors.append(f"Invalid step({nr}); required key(s): {missing}")
                 continue
 
-            if not re.match("^([a-zA-Z][a-zA-Z0-9\.\-_]*)", step["name"]):
+            if not re.match(r"^([a-zA-Z][a-zA-Z0-9\.\-_]*)", step["name"]):
                 errors.append(f"Invalid step({nr}); invalid chars in 'name'")
                 continue
 

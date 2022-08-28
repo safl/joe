@@ -2,7 +2,6 @@
 """
     Installs qemu
 """
-import errno
 from pathlib import Path
 
 

@@ -4,7 +4,7 @@
 import json
 from pathlib import Path
 
-from joe.core.resources import dict_from_yamlfile, get_resources
+from joe.core.resources import dict_from_yamlfile
 
 
 def runlog_from_path(path: Path):

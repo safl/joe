@@ -8,7 +8,7 @@ from joe.xnvme.tests.conftest import XnvmeDriver, xnvme_cli_args, xnvme_setup
 @pytest.mark.skip(reason="This is broken, hangs forever")
 def test_enum(cijoe):
 
-    rcode, _ = cijoe.run(f"zoned enum")
+    rcode, _ = cijoe.run("zoned enum")
 
     assert not rcode
 

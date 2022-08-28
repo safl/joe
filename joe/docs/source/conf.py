@@ -5,7 +5,7 @@
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
-import sphinx_rtd_theme
+import sphinx_rtd_theme  # noqa
 
 project = "cijoe"
 copyright = "2022, Simon A. F. Lund"
