@@ -5,7 +5,7 @@ import pytest
 from joe.core.command import Cijoe, default_output_path
 from joe.core.resources import Collector, Config
 
-JOE = None
+pytest.joe_instance = None
 
 
 def pytest_addoption(parser):
@@ -30,9 +30,19 @@ def pytest_addoption(parser):
 
 
 def pytest_configure(config):
-    config.addinivalue_line(
-        "markers", "rdonly(name): mark test as read-only, e.g. non-destructive"
+
+    joe_config_path = config.getoption("--config")
+    print(joe_config_path)
+    joe_config = Config.from_path(joe_config_path)
+    if joe_config is None:
+        raise Exception("Failed loading config")
+
+    pytest.joe_instance = Cijoe(
+        joe_config,
+        config.getoption("--output"),
     )
+    if pytest.joe_instance is None:
+        raise Exception("Failed instantiating cijoe")
 
 
 def pytest_terminal_summary(terminalreporter, exitstatus, config):
@@ -50,23 +60,9 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config):
 def cijoe(request, capsys):
     """Constructs a CIJOE instance using pytest-options: 'config', and 'output'"""
 
-    global JOE
+    if pytest.joe_instance is None:
+        raise Exception("Invalid configuration or instance")
 
-    if JOE:
-        JOE.set_output_ident(request.node.nodeid)
-        return JOE
+    pytest.joe_instance.set_output_ident(request.node.nodeid)
 
-    config = Config.from_path(request.config.getoption("--config"))
-    if config is None:
-        raise Exception("Failed loading config")
-
-    JOE = Cijoe(
-        config,
-        request.config.getoption("--output"),
-    )
-    if JOE is None:
-        raise Exception("Failed instantiating Cijoe")
-
-    JOE.set_output_ident(request.node.nodeid)
-
-    return JOE
+    return pytest.joe_instance

@@ -1,8 +1,6 @@
 """
     This is the test-configuration for xNVMe
 
-    pytest_configure(): hook loading the CIJOE Configuration.
-
     xnvme_setup(): generates a list of sensible backend configurations and matches
     them up with devices from the CIJOE configuration. Emitting (device, be_opts) and
     pytest.skip when a valid device is not found in the configuration.
@@ -10,18 +8,8 @@
     XnvmeDriver: provides a "functor" for controlling NVMe driver attachment.
 """
 import pytest
+from pathlib import Path
 from joe.core.resources import Config
-
-CIJOE_CONFIG = None
-
-
-def pytest_configure(config):
-    """Ensure that we have the CIJOE configuration available"""
-
-    global CIJOE_CONFIG
-
-    CIJOE_CONFIG = Config(config.getoption("--config"))
-    CIJOE_CONFIG.load()
 
 
 def xnvme_be_opts(options=None, only_labels=[]):
@@ -136,9 +124,7 @@ def xnvme_be_opts(options=None, only_labels=[]):
 def cijoe_config_get_device(labels):
     """Returns the 'device-dict' from 'devices' in 'cijoe_cfg' with the given 'label'"""
 
-    global CIJOE_CONFIG
-
-    for device in CIJOE_CONFIG.options.get("devices", []):
+    for device in pytest.joe_instance.config.options.get("devices", []):
         if not (set(labels) - set(device["labels"])):
             return device
 
