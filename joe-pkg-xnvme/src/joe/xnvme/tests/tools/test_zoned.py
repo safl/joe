@@ -1,6 +1,7 @@
 import copy
 
 import pytest
+
 from joe.xnvme.tests.conftest import XnvmeDriver, xnvme_cli_args, xnvme_setup
 
 
@@ -196,19 +197,4 @@ def test_reset_report_write_report(cijoe, device, be_opts):
     assert not rcode
 
     rcode, _ = cijoe.run(f"zoned report {args} --slba {slba} --limit {limit}")
-    assert not rcode
-
-
-@pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["zns"], opts=["be", "admin", "sync"])
-)
-def test_reset_report_write_report(cijoe, device, be_opts):
-
-    if be_opts["be"] == "linux" and be_opts["sync"] in ["psync", "block"]:
-        pytest.skip(reason="ENOSYS: sync=[psync,block] cannot do mgmt send/receive")
-
-    XnvmeDriver.attach(cijoe, device)
-    args = xnvme_cli_args(device, be_opts)
-
-    rcode, _ = cijoe.run(f"zoned mgmt-reset {args} --slba {slba}")
     assert not rcode

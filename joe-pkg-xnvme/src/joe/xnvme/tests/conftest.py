@@ -7,8 +7,10 @@
 
     XnvmeDriver: provides a "functor" for controlling NVMe driver attachment.
 """
-import pytest
 from pathlib import Path
+
+import pytest
+
 from joe.core.resources import Config
 
 

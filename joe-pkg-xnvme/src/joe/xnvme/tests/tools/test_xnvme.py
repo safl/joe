@@ -2,6 +2,7 @@ import errno
 import os
 
 import pytest
+
 from joe.xnvme.tests.conftest import XnvmeDriver, xnvme_cli_args, xnvme_setup
 
 
@@ -173,9 +174,7 @@ def test_padc(cijoe, device, be_opts):
     )
     assert not rcode
 
-    rcode, _ = cijoe.run(
-        f"nvmec show --cmd-input {cmd_path}"
-    )
+    rcode, _ = cijoe.run(f"nvmec show --cmd-input {cmd_path}")
     assert not rcode
 
     rcode, _ = cijoe.run(
@@ -190,7 +189,7 @@ def test_padc(cijoe, device, be_opts):
 def test_pioc(cijoe, device, be_opts):
     """Construct and send an I/O command (read)"""
 
-    pytest.fail(msg = "Not implemented")
+    pytest.fail(reason="Not implemented")
 
     XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
@@ -207,9 +206,7 @@ def test_pioc(cijoe, device, be_opts):
     )
     assert not rcode
 
-    rcode, _ = cijoe.run(
-        f"nvmec show --cmd-input {cmd_path}"
-    )
+    rcode, _ = cijoe.run(f"nvmec show --cmd-input {cmd_path}")
     assert not rcode
 
     rcode, _ = cijoe.run(
