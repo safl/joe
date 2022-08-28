@@ -1,5 +1,5 @@
 import pytest
-from conftest import XnvmeDriver, xnvme_cli_args, xnvme_setup
+from joe.xnvme.tests.conftest import XnvmeDriver, xnvme_cli_args, xnvme_setup
 
 pytest.skip(allow_module_level=True, reason="Not implemented")
 
