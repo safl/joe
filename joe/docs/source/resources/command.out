@@ -18,7 +18,7 @@ configs:
   - ident: core.transport-ssh
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/configs/transport-ssh.config
   - ident: default
-    path: /home/safl/git/joe/joe/docs/default.config
+    path: /home/safl/git/joe/joe/docs/source/default.config
   - ident: fio.default
     path: /home/safl/.local/lib/python3.9/site-packages/joe/fio/configs/default.config
   - ident: linux.default
@@ -35,7 +35,7 @@ workflows:
   - ident: core.example
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/workflows/example.workflow
   - ident: example
-    path: /home/safl/git/joe/joe/docs/example.workflow
+    path: /home/safl/git/joe/joe/docs/source/example.workflow
   - ident: fio.example
     path: /home/safl/.local/lib/python3.9/site-packages/joe/fio/workflows/example.workflow
   - ident: linux.example

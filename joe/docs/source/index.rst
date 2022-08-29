@@ -22,7 +22,10 @@ Then, produce an default configuration file and a workflow example:
 .. literalinclude:: 100_example.cmd
    :language: bash
 
-.. literalinclude:: 100_example.out
+Have, a look in your current workdir directory, the following files should be
+there:
+
+.. literalinclude:: 150_example.out
    :language: bash
 
 Then go ahead and run it:
