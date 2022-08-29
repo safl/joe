@@ -165,9 +165,10 @@ def xnvme_setup(labels=[], opts=[]):
         search = labels + [be_opts["label"]]
         device = cijoe_config_get_device(search)
 
-        dstr = device["uri"] if device else "~"
+        dstr = device["uri"] if device else "None"
         bstr = ",".join([f"{k}={v}" for k, v in be_opts.items()])
-        paramid = f"d={dstr},{bstr}"
+
+        paramid = f"uri={dstr},{bstr}"
 
         if device is None:
             parametrization.append(
