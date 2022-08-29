@@ -1,1 +1,1 @@
-ls | egrep "(example|workflow)"
+ls | egrep "(.config|.workflow)"

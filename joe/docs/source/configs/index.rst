@@ -1,4 +1,4 @@
-.. _sec-config:
+.. _sec-configuration:
 
 Configuration
 =============

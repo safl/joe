@@ -17,7 +17,8 @@ First, install **cijoe**:
 .. literalinclude:: 000_install.cmd
    :language: bash
 
-Then, produce an default configuration file and a workflow example:
+Then, produce an default :ref:`sec-configuration` file and a
+:ref:`sec-workflow` example:
 
 .. literalinclude:: 100_example.cmd
    :language: bash

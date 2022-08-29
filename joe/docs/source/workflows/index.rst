@@ -1,7 +1,7 @@
-.. _sec-workflows:
+.. _sec-workflow:
 
-Workflows
-=========
+Workflow
+========
 
 Not unlike the use of Yaml in Ansible and GitHUB Actions.
 
