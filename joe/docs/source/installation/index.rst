@@ -22,14 +22,6 @@ colliding with system packages. The **cijoe package** ``cijoe-pkg-example`` is
 not strictly needed, however, the resources provided with the package will be
 used through the documentation.
 
-.. warning:: Take care installing **cijoe** and **cijoe packages** using the
-   same installation method. That is, do **not** mix installation-methods of
-   **user-local**, **system-wide**, and **virtual-env**  as that will mess up
-   how **cijoe** resolves paths to the resources provided by a package.
-
-.. tip:: To create your own **cijoe package**, have a look at the
-   :ref:`sec-packages` section.
-
 Check installation
 ------------------
 
@@ -57,4 +49,4 @@ to your shell, e.g. for Bash do:
     echo "export PATH=\"$PATH:$(python3 -m site --user-base)/bin\"" >> ~/.bash_profile
 
 Once you have verified that **cijoe** is installed correctly and that you can
-execute the command-line tools, then procede to :ref:`sec-running`.
+execute the command-line tools, then procede to :ref:`sec-workflow`.

@@ -19,7 +19,7 @@ produce a workflow-report:
 .. literalinclude:: 200_quickstart.cmd
    :language: bash
 
-.. literalinclude:: 100_example.cmd
+.. literalinclude:: 250_quickstart.txt
    :language: bash
 
 For a thorough description, the rest of the documentation is provided with the
@@ -38,8 +38,9 @@ Contents:
    configs/index.rst
    workflows/index.rst
    worklets/index.rst
-   resources/index.rst
    testing/index.rst
+   templates/index.rst
+   resources/index.rst
 
 Indices and tables
 ==================

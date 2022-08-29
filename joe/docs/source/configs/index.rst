@@ -13,7 +13,7 @@ Configuration files are formated using `YAML`_ and named with suffix
 ``transport`` has special meaning.
 
 Keys are otherwise granted meaning by their use of :ref:`sec-worklets`,
-:ref:`tests`, and regular Python modules.
+:ref:`sec-testing`, and regular Python modules.
 
 .. _sec-configuration-files-example:
 

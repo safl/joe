@@ -1,0 +1,7 @@
+
+ERROR:cli: aborting; output(/home/safl/git/joe/joe/docs/cijoe-output) directory already exists
+[33332:33332:0830/000736.849580:ERROR:sandbox_linux.cc(377)] InitializeSandbox() called with multiple threads in process gpu-process.
+[33285:33357:0830/000736.992009:ERROR:nss_util.cc(286)] After loading Root Certs, loaded==false: NSS error code: -8018
+[33285:33356:0830/000739.011060:ERROR:chrome_browser_main_extra_parts_metrics.cc(227)] START: ReportBluetoothAvailability(). If you don't see the END: message, this is crbug.com/1216328.
+[33285:33356:0830/000739.011086:ERROR:chrome_browser_main_extra_parts_metrics.cc(230)] END: ReportBluetoothAvailability()
+*** stack smashing detected ***: terminated

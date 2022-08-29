@@ -11,7 +11,7 @@ as the **dev box**.
 Said **changes** are then deployed for testing on one or more
 boxes/VMs/systems, we refer to the latter as **test-targets**.
 
-With **cijoe** you create an :ref:`sec-config` for each of available
+With **cijoe** you create an :ref:`sec-configuration` for each of available
 **test-target**.
 
 .. _devenv:
@@ -24,12 +24,10 @@ With **cijoe** you create an :ref:`sec-config` for each of available
 The sections :ref:`sec-prerequisites` and :ref:`sec-installation`  describe
 what is needed on your **dev box** and your **test-target(s)**.
 
-.. note:: An :ref:`sec-configuration-files-example` **environment definition**
-   for a **test-target** named ``box01`` is used throughout the documentation,
-   such as in the examples of :ref:`sec-running` and dropping into the
-   :ref:`sec-shell`.
+Troughout these are distinguished between as **local** and **remote** command
+transports.
 
 Once you have ensured that :ref:`sec-prerequisites` are met, have gone through
-the :ref:`sec-installation`, and created your :ref:`sec-config`.
+the :ref:`sec-installation`, and created your :ref:`sec-configuration`.
 
 .. _GitHUB: https://github.com/refenv/cijoe
