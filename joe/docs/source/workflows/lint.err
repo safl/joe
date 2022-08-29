@@ -1,6 +1,0 @@
-
-INFO:cli: cli: run
-INFO:cli: workflow: /home/safl/git/joe/joe/docs/source/workflows/example.workflow
-INFO:cli: config: /home/safl/git/joe/joe/docs/source/workflows/default.config
-INFO:cli: output: /home/safl/git/joe/joe/docs/source/workflows/cijoe-output
-ERROR:cli: aborting; output(/home/safl/git/joe/joe/docs/source/workflows/cijoe-output) directory already exists

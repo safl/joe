@@ -1,8 +1,0 @@
-== Example =================================================
-config: /home/safl/git/joe/joe/docs/source/workflows/default.config
-workflow: /home/safl/git/joe/joe/docs/source/workflows/example.workflow
-------------------------------------------------------------
-skipping config(/home/safl/git/joe/joe/docs/source/workflows/default.config); already exists
-skipping workflow(/home/safl/git/joe/joe/docs/source/workflows/example.workflow); already exists
-== Example; Done ===========================================
-
