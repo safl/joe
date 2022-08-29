@@ -168,6 +168,8 @@ class Guest(object):
 
         args += extra_args
 
+        args += [self.guest_config.get("extra_args", "")]
+
         rcode, _ = qemu_system(self.cijoe, " ".join(args))
 
         return rcode
