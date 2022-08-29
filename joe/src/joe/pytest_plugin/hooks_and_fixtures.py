@@ -30,7 +30,7 @@
     fixture: cijoe
     --------------
 
-    Provides the cijoe instance ('pytest.joe_instance') with a per-test specific
+    Provides the cijoe instance ('pytest.cijoe_instance') with a per-test specific
     output-directory based on the test nodeid.
 """
 from pathlib import Path

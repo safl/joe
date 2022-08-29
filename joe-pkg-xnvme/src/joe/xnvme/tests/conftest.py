@@ -164,6 +164,11 @@ def xnvme_setup(labels=[], opts=[]):
     for be_opts in combinations:
         search = labels + [be_opts["label"]]
         device = cijoe_config_get_device(search)
+
+        dstr = device["uri"] if device else "~"
+        bstr = ",".join([f"{k}={v}" for k, v in be_opts.items()])
+        paramid = f"d={dstr},{bstr}"
+
         if device is None:
             parametrization.append(
                 pytest.param(
@@ -172,10 +177,17 @@ def xnvme_setup(labels=[], opts=[]):
                     marks=pytest.mark.skip(
                         f"Configuration has no device labelled: {search}"
                     ),
+                    id=paramid,
                 )
             )
         else:
-            parametrization.append((device, be_opts))
+            parametrization.append(
+                pytest.param(
+                    device,
+                    be_opts,
+                    id=paramid,
+                )
+            )
 
     return parametrization
 

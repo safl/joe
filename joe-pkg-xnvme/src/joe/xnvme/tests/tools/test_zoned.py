@@ -16,7 +16,7 @@ def test_enum(cijoe):
 
 @pytest.mark.parametrize(
     "device,be_opts",
-    xnvme_setup(labels=["zns"], opts=["be", "admin"], indirect=["device"]),
+    xnvme_setup(labels=["zns"], opts=["be", "admin"]), indirect=["device"]
 )
 def test_info(cijoe, device, be_opts):
 
