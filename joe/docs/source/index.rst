@@ -12,29 +12,14 @@ and **reproducible** workflow.
 Quickstart
 ==========
 
-First, install **cijoe**:
+The following will install **cijoe**, produce a default configuration, and an
+example workflow, and execute the workflow using the configuration, and lastly
+produce a workflow-report:
 
-.. literalinclude:: 000_install.cmd
+.. literalinclude:: 200_quickstart.cmd
    :language: bash
-
-Then, produce an default :ref:`sec-configuration` file and a
-:ref:`sec-workflow` example:
 
 .. literalinclude:: 100_example.cmd
-   :language: bash
-
-Have, a look in your current workdir directory, the following files should be
-there:
-
-.. literalinclude:: 150_example.out
-   :language: bash
-
-Then go ahead and run it:
-
-.. literalinclude:: 200_run.cmd
-   :language: bash
-
-.. literalinclude:: 200_run.out
    :language: bash
 
 For a thorough description, the rest of the documentation is provided with the

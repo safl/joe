@@ -1,1 +1,0 @@
-ls | egrep "(.config|.workflow)"
