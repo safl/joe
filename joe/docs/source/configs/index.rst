@@ -5,8 +5,8 @@ Configuration
 
 .. _sec-configuration-files:
 
-Configuration Files
--------------------
+Files
+-----
 
 Configuration files are formated using `YAML`_ and named with suffix
 ``.config``. In the core functionality of provided by cijoe, only the key
@@ -24,8 +24,8 @@ Example
 
 .. _sec-configuration-objects:
 
-Configuration Objects
----------------------
+Objects
+-------
 
 Represented in the code as a :ref:`sec-resources`.
 

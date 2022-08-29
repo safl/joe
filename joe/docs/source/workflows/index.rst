@@ -5,14 +5,11 @@ Workflow
 
 Not unlike the use of Yaml in Ansible and GitHUB Actions.
 
-Workflow Files
---------------
+Files
+-----
 
 Workflow files are formated using `YAML`_ and named with suffix
 ``.workflow``.
-
-Example
--------
 
 .. literalinclude:: example.workflow
    :language: yaml
