@@ -1,12 +1,13 @@
 import pytest
 
 from joe.xnvme.tests.conftest import xnvme_cli_args, xnvme_setup
-from joe.xnvme.tests conftest import xnvme_device_driver as device
+from joe.xnvme.tests.conftest import xnvme_device_driver as device
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["zns"], opts=["be", "admin", "sync"]),
-    indirect=["device"]
+    "device,be_opts",
+    xnvme_setup(labels=["zns"], opts=["be", "admin", "sync"]),
+    indirect=["device"],
 )
 def test_write(cijoe, device, be_opts):
 
@@ -21,8 +22,9 @@ def test_write(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["zns"], opts=["be", "admin", "sync"]),
-    indirect=["device"]
+    "device,be_opts",
+    xnvme_setup(labels=["zns"], opts=["be", "admin", "sync"]),
+    indirect=["device"],
 )
 def test_append(cijoe, device, be_opts):
 
@@ -39,8 +41,9 @@ def test_append(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["zns"], opts=["be", "admin", "sync"]),
-    indirect=["device"]
+    "device,be_opts",
+    xnvme_setup(labels=["zns"], opts=["be", "admin", "sync"]),
+    indirect=["device"],
 )
 def test_read(cijoe, device, be_opts):
 

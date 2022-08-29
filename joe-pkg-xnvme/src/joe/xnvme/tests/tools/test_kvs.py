@@ -1,27 +1,27 @@
 import pytest
 
-from joe.xnvme.tests.conftest import XnvmeDriver, xnvme_cli_args, xnvme_setup
+from joe.xnvme.tests.conftest import xnvme_cli_args, xnvme_setup
+from joe.xnvme.tests.conftest import xnvme_device_driver
 
 pytest.skip(allow_module_level=True, reason="Not implemented")
 
 
 def test_enum(cijoe):
 
-    XnvmeDriver.kernel_attach()
     rcode, _ = cijoe.run("kvs enum")
     assert not rcode
 
-    XnvmeDriver.kernel_detach()
     rcode, _ = cijoe.run("kvs enum")
     assert not rcode
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["kvs"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["kvs"], opts=["be", "admin"]),
+    indirect=["device"],
 )
 def test_info(cijoe, device, be_opts):
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     rcode, _ = cijoe.run(f"kvs info {args}")
@@ -30,11 +30,12 @@ def test_info(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["kvs"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["kvs"], opts=["be", "admin"]),
+    indirect=["device"],
 )
 def test_idfy_ns(cijoe, device, be_opts):
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     rcode, _ = cijoe.run(f"kvs idfy-ns {args} --nsid {device['nsid']}")
@@ -43,11 +44,12 @@ def test_idfy_ns(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["kvs"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["kvs"], opts=["be", "admin"]),
+    indirect=["device"],
 )
 def test_delete_store_exist(cijoe, device, be_opts):
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     key = "hello"
@@ -67,11 +69,12 @@ def test_delete_store_exist(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["kvs"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["kvs"], opts=["be", "admin"]),
+    indirect=["device"],
 )
 def test_delete_store_list(cijoe, device, be_opts):
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     pairs = [

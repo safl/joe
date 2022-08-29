@@ -26,11 +26,12 @@ def test_xpy_libconf(cijoe):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["dev"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["dev"], opts=["be", "admin"]),
+    indirect=["device"],
 )
 def test_xpy_dev_open(cijoe, device, be_opts):
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     rcode, _ = cijoe.run(f"xpy_dev_open --uri {args['uri']} --dev-nsid {args['nsid']}")

@@ -1,21 +1,22 @@
 import pytest
 
-from joe.xnvme.tests.conftest import XnvmeDriver, xnvme_setup_device
+from joe.xnvme.tests.conftest import xnvme_setup_device
+from joe.xnvme.tests.conftest import xnvme_device_driver as device
 
 
-@pytest.mark.parametrize("device", xnvme_setup_device(labels=["file"]))
+@pytest.mark.parametrize(
+    "device", xnvme_setup_device(labels=["file"]), indirect=["device"]
+)
 def test_write_fsync(cijoe, device):
-
-    XnvmeDriver.attach(cijoe, device)
 
     rcode, _ = cijoe.run(f"xnvme_tests_xnvme_file write-fsync {device['uri']}")
     assert not rcode
 
 
-@pytest.mark.parametrize("device", xnvme_setup_device(labels=["file"]))
+@pytest.mark.parametrize(
+    "device", xnvme_setup_device(labels=["file"]), indirect=["device"]
+)
 def test_file_trunc(cijoe, device):
-
-    XnvmeDriver.attach(cijoe, device)
 
     rcode, _ = cijoe.run(f"xnvme_tests_xnvme_file file-trunc {device['uri']}")
     assert not rcode

@@ -17,7 +17,6 @@ def test_optional_none(cijoe):
 )
 def test_optional_all(cijoe, device, be_opts):
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args({}, be_opts)
 
     rcode, _ = cijoe.run(f"xnvme_tests_cli optional {args}")

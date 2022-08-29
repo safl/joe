@@ -1,6 +1,7 @@
 import pytest
 
-from joe.xnvme.tests.conftest import XnvmeDriver, xnvme_cli_args, xnvme_setup
+from joe.xnvme.tests.conftest import xnvme_cli_args, xnvme_setup
+from joe.xnvme.tests.conftest import xnvme_device_driver
 
 
 def test_library_info(cijoe):
@@ -11,11 +12,12 @@ def test_library_info(cijoe):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["dev"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["dev"], opts=["be", "admin"]),
+    indirect=["xnvme_device_driver"],
 )
 def test_info(cijoe, device, be_opts):
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     rcode, _ = cijoe.run(f"xnvme info {args}")
@@ -24,11 +26,12 @@ def test_info(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["dev"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["dev"], opts=["be", "admin"]),
+    indirect=["xnvme_device_driver"],
 )
 def test_idfy(cijoe, device, be_opts):
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     rcode, _ = cijoe.run(f"xnvme idfy {args} --cns 0x0")
@@ -37,11 +40,12 @@ def test_idfy(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["dev"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["dev"], opts=["be", "admin"]),
+    indirect=["xnvme_device_driver"],
 )
 def test_idfy_ns(cijoe, device, be_opts):
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     rcode, _ = cijoe.run(f"xnvme idfy-ns {args}")
@@ -50,11 +54,12 @@ def test_idfy_ns(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["dev"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["dev"], opts=["be", "admin"]),
+    indirect=["xnvme_device_driver"],
 )
 def test_idfy_ctrlr(cijoe, device, be_opts):
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     rcode, _ = cijoe.run(f"xnvme idfy-ctrlr {args}")
@@ -63,14 +68,15 @@ def test_idfy_ctrlr(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["dev"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["dev"], opts=["be", "admin"]),
+    indirect=["xnvme_device_driver"],
 )
 def test_idfy_cs(cijoe, device, be_opts):
 
     if be_opts["be"] == "linux" and be_opts["admin"] in ["block"]:
         pytest.skip(reason="[admin=block] does not implement idfy-cs")
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     rcode, _ = cijoe.run(f"xnvme idfy-cs {args}")
@@ -79,14 +85,15 @@ def test_idfy_cs(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["dev"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["dev"], opts=["be", "admin"]),
+    indirect=["xnvme_device_driver"],
 )
 def test_log_erri(cijoe, device, be_opts):
 
     if be_opts["be"] == "linux" and be_opts["admin"] in ["block"]:
         pytest.skip(reason="[admin=block] does not implement health-log")
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     logpath = "/tmp/xnvme_log-erri.bin"
@@ -100,14 +107,15 @@ def test_log_erri(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["dev"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["dev"], opts=["be", "admin"]),
+    indirect=["xnvme_device_driver"],
 )
 def test_log_health(cijoe, device, be_opts):
 
     if be_opts["be"] == "linux" and be_opts["admin"] in ["block"]:
         pytest.skip(reason="[admin=block] does not implement health-log")
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     rcode, _ = cijoe.run(f"xnvme log-health {args} --nsid {device['nsid']}")
@@ -116,11 +124,12 @@ def test_log_health(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["dev"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["dev"], opts=["be", "admin"]),
+    indirect=["xnvme_device_driver"],
 )
 def test_feature_get(cijoe, device, be_opts):
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     for fid, descr in [("0x4", "Temperature threshold"), ("0x5", "Error recovery")]:
@@ -135,11 +144,12 @@ def test_feature_get(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["dev"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["dev"], opts=["be", "admin"]),
+    indirect=["xnvme_device_driver"],
 )
 def test_feature_set(cijoe, device, be_opts):
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     rcode, _ = cijoe.run(f"xnvme feature-set {args} --fid 0x4 --save --feat 0x1")
@@ -151,12 +161,13 @@ def test_feature_set(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["dev"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["dev"], opts=["be", "admin"]),
+    indirect=["xnvme_device_driver"],
 )
 def test_padc(cijoe, device, be_opts):
     """Construct and send an admin command (identify-controller)"""
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     opcode = "0x02"
@@ -181,14 +192,15 @@ def test_padc(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["dev"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["dev"], opts=["be", "admin"]),
+    indirect=["xnvme_device_driver"],
 )
 def test_pioc(cijoe, device, be_opts):
     """Construct and send an I/O command (read)"""
 
     pytest.fail(reason="Not implemented")
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     opcode = "0x02"

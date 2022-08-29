@@ -5,7 +5,9 @@ from joe.xnvme.tests.conftest import xnvme_device_driver as device
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["dev"], opts=["be", "admin", "async"])
+    "device,be_opts",
+    xnvme_setup(labels=["dev"], opts=["be", "admin", "async"]),
+    indirect=["device"],
 )
 def test_init_term(cijoe, device, be_opts):
 

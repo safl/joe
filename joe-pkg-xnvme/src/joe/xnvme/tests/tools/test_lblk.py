@@ -1,6 +1,7 @@
 import pytest
 
-from joe.xnvme.tests.conftest import XnvmeDriver, xnvme_cli_args, xnvme_setup
+from joe.xnvme.tests.conftest import xnvme_cli_args, xnvme_setup
+from joe.xnvme.tests.conftest import xnvme_device_driver as device
 
 
 def test_enum(cijoe):
@@ -11,11 +12,12 @@ def test_enum(cijoe):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["dev"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["dev"], opts=["be", "admin"]),
+    indirect=["device"],
 )
 def test_info(cijoe, device, be_opts):
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     rcode, _ = cijoe.run(f"lblk info {args}")
@@ -24,11 +26,12 @@ def test_info(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["dev"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["dev"], opts=["be", "admin"]),
+    indirect=["device"],
 )
 def test_idfy(cijoe, device, be_opts):
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     rcode, _ = cijoe.run(f"lblk idfy {args}")
@@ -37,11 +40,12 @@ def test_idfy(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["dev"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["dev"], opts=["be", "admin"]),
+    indirect=["device"],
 )
 def test_read(cijoe, device, be_opts):
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     rcode, _ = cijoe.run(f"lblk read {args} --slba 0x0 --nlb 0")
@@ -50,11 +54,12 @@ def test_read(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["dev"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["dev"], opts=["be", "admin"]),
+    indirect=["device"],
 )
 def test_write(cijoe, device, be_opts):
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     rcode, _ = cijoe.run(f"lblk write {args} --slba 0x0 --nlb 0")
@@ -63,11 +68,12 @@ def test_write(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["write_uncor"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["write_uncor"], opts=["be", "admin"]),
+    indirect=["device"],
 )
 def test_write_uncor(cijoe, device, be_opts):
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     rcode, _ = cijoe.run(f"lblk write-uncor {args} --slba 0x0 --nlb 0")
@@ -76,11 +82,12 @@ def test_write_uncor(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["write_zeroes"], opts=["be", "admin"])
+    "device,be_opts",
+    xnvme_setup(labels=["write_zeroes"], opts=["be", "admin"]),
+    indirect=["device"],
 )
 def test_write_zeroes(cijoe, device, be_opts):
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     rcode, _ = cijoe.run(f"lblk write-zeros {args} --slba 0x0 --nlb 0")
