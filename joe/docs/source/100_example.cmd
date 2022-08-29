@@ -1,1 +1,1 @@
-joe -e
+joe --example
