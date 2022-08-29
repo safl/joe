@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """
-    Installs qemu
+    fio: build
+    ============
+
+    Retargetable: True
+    ------------------
 """
 from pathlib import Path
 
@@ -14,7 +18,7 @@ def worklet_entry(args, cijoe, step):
         "make -j $(nproc)",
     ]
     for cmd in commands:
-        rcode, _ = cijoe.run_local(
+        rcode, _ = cijoe.run(
             cmd, cwd=Path(cijoe.config.options["fio"]["repository"]["path"])
         )
         if rcode:

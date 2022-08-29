@@ -122,7 +122,7 @@ def xnvme_be_opts(options=None, only_labels=[]):
 def cijoe_config_get_device(labels):
     """Returns the 'device-dict' from 'devices' in 'cijoe_cfg' with the given 'label'"""
 
-    for device in pytest.joe_instance.config.options.get("devices", []):
+    for device in pytest.cijoe_instance.config.options.get("devices", []):
         if not (set(labels) - set(device["labels"])):
             return device
 

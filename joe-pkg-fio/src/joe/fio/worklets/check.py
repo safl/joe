@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 """
+    fio: check
+    ==========
+
     Check the version of the wrapped fio
+
+    Retargetable: True
+    ------------------
 """
 from joe.fio.wrapper import fio
 

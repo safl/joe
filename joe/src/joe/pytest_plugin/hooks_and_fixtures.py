@@ -40,7 +40,7 @@ import pytest
 from joe.core.command import Cijoe, default_output_path
 from joe.core.resources import Collector, Config
 
-pytest.joe_instance = None
+pytest.cijoe_instance = None
 
 
 def pytest_addoption(parser):
@@ -72,11 +72,11 @@ def pytest_configure(config):
     if joe_config is None:
         raise Exception("Failed loading config")
 
-    pytest.joe_instance = Cijoe(
+    pytest.cijoe_instance = Cijoe(
         joe_config,
         config.getoption("--output"),
     )
-    if pytest.joe_instance is None:
+    if pytest.cijoe_instance is None:
         raise Exception("Failed instantiating cijoe")
 
 
@@ -92,12 +92,12 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config):
 
 
 @pytest.fixture
-def cijoe(request, capsys):
+def cijoe(request):
     """Constructs a CIJOE instance using pytest-options: 'config', and 'output'"""
 
-    if pytest.joe_instance is None:
+    if pytest.cijoe_instance is None:
         raise Exception("Invalid configuration or instance")
 
-    pytest.joe_instance.set_output_ident(request.node.nodeid)
+    pytest.cijoe_instance.set_output_ident(request.node.nodeid)
 
-    return pytest.joe_instance
+    return pytest.cijoe_instance
