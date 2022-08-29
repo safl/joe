@@ -6,6 +6,9 @@
     pytest.skip when a valid device is not found in the configuration.
 
     XnvmeDriver: provides a "functor" for controlling NVMe driver attachment.
+
+    xnvme_driver: a fixture for parametrize, invoking XnvmeDriver as needed by the
+    specific testcase, e.g. specific to the parametrization.
 """
 import pytest
 
@@ -240,3 +243,8 @@ class XnvmeDriver(object):
             cijoe.run("xnvme enum")
         else:
             cijoe.run('echo "Skipping XnvmeDriver.attach()."')
+
+
+@pytest.fixture
+def xnvme_driver(cijoe, device):
+    XnvmeDriver.attach(cijoe, device)
