@@ -1,6 +1,8 @@
 """
     This is the test-configuration for xNVMe
 
+    xnvme_be_opts(): helper-function used by xnvme_setup()
+
     xnvme_setup(): generates a list of sensible backend configurations and matches
     them up with devices from the CIJOE configuration. Emitting (device, be_opts) and
     pytest.skip when a valid device is not found in the configuration.
@@ -8,7 +10,8 @@
     XnvmeDriver: provides a "functor" for controlling NVMe driver attachment.
 
     xnvme_driver: a fixture for parametrize, invoking XnvmeDriver as needed by the
-    specific testcase, e.g. specific to the parametrization.
+    specific testcase, e.g. specific to the parametrization. This relies on the pytest
+    feature "indirect parametrization".
 """
 import pytest
 
@@ -246,5 +249,27 @@ class XnvmeDriver(object):
 
 
 @pytest.fixture
-def xnvme_driver(cijoe, device):
-    XnvmeDriver.attach(cijoe, device)
+def xnvme_device_driver(cijoe, request):
+    """
+    This handles NVMe-driver-device-attachment per parametrized testcase.
+
+    Usage example:
+
+      from joe.xnvme.tests.config import xnvme_device_driver as device
+
+      pytest.mark.parametrize("device,be_opts", {data}, indirect=["device"])
+      test_foo(cijoe, device, be_opts):
+        ...
+
+    By doing so, then each generated/parameter for the test-case is sent by this
+    fixture. This allows the fixture to invoke device-driver attachment according the
+    the given device. This avoid having to call:
+
+      XnvmeDriver.attach(cijoe, request.param)
+
+    from within the testcase body itself.
+    """
+
+    XnvmeDriver.attach(cijoe, request.param)
+
+    return request.param
