@@ -54,8 +54,7 @@ Contents:
    workflows/index.rst
    worklets/index.rst
    resources/index.rst
-
-   api/index.rst
+   testing/index.rst
 
 Indices and tables
 ==================

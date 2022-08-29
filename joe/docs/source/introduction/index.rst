@@ -24,9 +24,9 @@ With **cijoe** you create an :ref:`sec-config` for each of available
 The sections :ref:`sec-prerequisites` and :ref:`sec-installation`  describe
 what is needed on your **dev box** and your **test-target(s)**.
 
-.. note:: An :ref:`sec-config-example` **environment definition** for a
-   **test-target** named ``box01`` is used throughout the documentation, such
-   as in the examples of :ref:`sec-running` and dropping into the
+.. note:: An :ref:`sec-configuration-files-example` **environment definition**
+   for a **test-target** named ``box01`` is used throughout the documentation,
+   such as in the examples of :ref:`sec-running` and dropping into the
    :ref:`sec-shell`.
 
 Once you have ensured that :ref:`sec-prerequisites` are met, have gone through
