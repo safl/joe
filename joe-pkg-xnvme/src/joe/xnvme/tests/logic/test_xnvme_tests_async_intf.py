@@ -1,6 +1,7 @@
 import pytest
 
-from joe.xnvme.tests.conftest import XnvmeDriver, xnvme_cli_args, xnvme_setup
+from joe.xnvme.tests.conftest import xnvme_cli_args, xnvme_setup
+from joe.xnvme.tests.conftest import xnvme_device_driver as device
 
 
 @pytest.mark.parametrize(
@@ -8,7 +9,6 @@ from joe.xnvme.tests.conftest import XnvmeDriver, xnvme_cli_args, xnvme_setup
 )
 def test_init_term(cijoe, device, be_opts):
 
-    XnvmeDriver.attach(cijoe, device)
     args = xnvme_cli_args(device, be_opts)
 
     qdepth = 64

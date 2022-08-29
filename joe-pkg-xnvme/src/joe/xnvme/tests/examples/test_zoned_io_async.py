@@ -5,8 +5,9 @@ from joe.xnvme.tests.conftest import xnvme_device_driver as device
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["zns"], opts=["be", "admin", "async"]),
-    indirect=["device"]
+    "device,be_opts",
+    xnvme_setup(labels=["zns"], opts=["be", "admin", "async"]),
+    indirect=["device"],
 )
 def test_write(cijoe, device, be_opts):
 
@@ -19,8 +20,9 @@ def test_write(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["zns"], opts=["be", "admin", "async"]),
-    indirect=["device"]
+    "device,be_opts",
+    xnvme_setup(labels=["zns"], opts=["be", "admin", "async"]),
+    indirect=["device"],
 )
 def test_append(cijoe, device, be_opts):
 
@@ -39,8 +41,9 @@ def test_append(cijoe, device, be_opts):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(labels=["zns"], opts=["be", "admin", "async"]),
-    indirect=["device"]
+    "device,be_opts",
+    xnvme_setup(labels=["zns"], opts=["be", "admin", "async"]),
+    indirect=["device"],
 )
 def test_read(cijoe, device, be_opts):
 

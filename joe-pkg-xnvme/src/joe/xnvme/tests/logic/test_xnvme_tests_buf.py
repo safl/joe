@@ -1,9 +1,12 @@
 import pytest
 
-from joe.xnvme.tests.conftest import XnvmeDriver, xnvme_cli_args, xnvme_setup
+from joe.xnvme.tests.conftest import xnvme_cli_args, xnvme_setup
+from joe.xnvme.tests.conftest import xnvme_device_driver as device
 
 
-@pytest.mark.parametrize("device,be_opts", xnvme_setup(labels=["dev"], opts=["be"]))
+@pytest.mark.parametrize(
+    "device,be_opts", xnvme_setup(labels=["dev"], opts=["be"]), indirect=["device"]
+)
 def test_buf_alloc_free(cijoe, device, be_opts):
 
     XnvmeDriver.attach(cijoe, device)
@@ -13,7 +16,9 @@ def test_buf_alloc_free(cijoe, device, be_opts):
     assert not rcode
 
 
-@pytest.mark.parametrize("device,be_opts", xnvme_setup(labels=["dev"], opts=["be"]))
+@pytest.mark.parametrize(
+    "device,be_opts", xnvme_setup(labels=["dev"], opts=["be"]), indirect=["device"]
+)
 def test_buf_virt_alloc_free(cijoe, device, be_opts):
 
     XnvmeDriver.attach(cijoe, device)

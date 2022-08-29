@@ -1,6 +1,7 @@
 import pytest
 
-from joe.xnvme.tests.conftest import XnvmeDriver, xnvme_cli_args, xnvme_setup
+from joe.xnvme.tests.conftest import xnvme_cli_args, xnvme_setup
+from joe.xnvme.tests.conftest import xnvme_device_driver as device
 
 
 def test_optional_none(cijoe):
@@ -10,7 +11,9 @@ def test_optional_none(cijoe):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts", xnvme_setup(opts=["be", "mem", "sync", "async", "admin"])
+    "device,be_opts",
+    xnvme_setup(opts=["be", "mem", "sync", "async", "admin"]),
+    indirect=["device"],
 )
 def test_optional_all(cijoe, device, be_opts):
 
