@@ -55,10 +55,6 @@ Contents:
    worklets/index.rst
    resources/index.rst
 
-   packages/index.rst
-
-   ssh/index.rst
-
    api/index.rst
 
 Indices and tables
