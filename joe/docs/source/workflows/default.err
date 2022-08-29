@@ -1,5 +1,0 @@
-
-usage: joe [-h] [-w WORKFLOW] [-c CONFIG] [-o OUTPUT] [-l] [-r] [-e [EXAMPLE]]
-           [-v]
-           [step ...]
-joe: error: unrecognized arguments: -s

@@ -28,5 +28,6 @@ Submodules
    joe.core.command
    joe.core.misc
    joe.core.monitor
+   joe.core.processing
    joe.core.resources
    joe.core.transport

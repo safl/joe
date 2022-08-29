@@ -1,6 +1,4 @@
-== Resources ===============================================
 Resources collected by the CIJOE collector are listed below.
-------------------------------------------------------------
 auxilary:
   - ident: conf
     path: /home/safl/git/joe/joe/docs/source/conf.py
@@ -21,10 +19,14 @@ configs:
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/configs/transport-ssh.config
   - ident: default
     path: /home/safl/git/joe/joe/docs/default.config
+  - ident: fio.default
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/fio/configs/default.config
   - ident: linux.default
     path: /home/safl/.local/lib/python3.9/site-packages/joe/linux/configs/default.config
   - ident: qemu.default
     path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/configs/default.config
+  - ident: xnvme.default
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/xnvme/configs/default.config
 perf_reqs: ~
 templates:
   - ident: core.report-workflow
@@ -34,12 +36,16 @@ workflows:
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/workflows/example.workflow
   - ident: example
     path: /home/safl/git/joe/joe/docs/example.workflow
+  - ident: fio.example
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/fio/workflows/example.workflow
   - ident: linux.example
     path: /home/safl/.local/lib/python3.9/site-packages/joe/linux/workflows/example.workflow
   - ident: linux.example-worklets
     path: /home/safl/.local/lib/python3.9/site-packages/joe/linux/workflows/example-worklets.workflow
   - ident: qemu.example
     path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/workflows/example.workflow
+  - ident: xnvme.example
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/xnvme/workflows/example.workflow
 worklets:
   - ident: core.cmdrunner
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/worklets/cmdrunner.py
@@ -51,6 +57,12 @@ worklets:
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/worklets/reporter.py
   - ident: core.testrunner
     path: /home/safl/.local/lib/python3.9/site-packages/joe/core/worklets/testrunner.py
+  - ident: fio.build
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/fio/worklets/build.py
+  - ident: fio.check
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/fio/worklets/check.py
+  - ident: fio.install
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/fio/worklets/install.py
   - ident: linux.build_deb
     path: /home/safl/.local/lib/python3.9/site-packages/joe/linux/worklets/build_deb.py
   - ident: linux.null_blk
@@ -65,6 +77,12 @@ worklets:
     path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/worklets/guest_provision.py
   - ident: qemu.guest_start
     path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/worklets/guest_start.py
+  - ident: qemu.guest_start_nvme
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/worklets/guest_start_nvme.py
   - ident: qemu.install
     path: /home/safl/.local/lib/python3.9/site-packages/joe/qemu/worklets/install.py
+  - ident: xnvme.build
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/xnvme/worklets/build.py
+  - ident: xnvme.install
+    path: /home/safl/.local/lib/python3.9/site-packages/joe/xnvme/worklets/install.py
 

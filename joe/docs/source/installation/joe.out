@@ -1,26 +1,42 @@
-usage: joe [-h] [-w WORKFLOW] [-c CONFIG] [-o OUTPUT] [-p] [-i] [-l] [-r]
-           [-e [EXAMPLE]] [-v]
+usage: joe [-h] [--config CONFIG] [--workflow WORKFLOW] [--output OUTPUT]
+           [--force] [--log-level] [--monitor] [--produce-report]
+           [--integrity-check] [--resources] [--example [EXAMPLE]] [--version]
            [step ...]
-
-positional arguments:
-  step                  One or more workflow steps to run.
 
 optional arguments:
   -h, --help            show this help message and exit
-  -w WORKFLOW, --workflow WORKFLOW
-                        Path to Workflow file.
-  -c CONFIG, --config CONFIG
-                        Path to the Configuration file.
-  -o OUTPUT, --output OUTPUT
-                        Path to output directory.
-  -p, --print-cmd-logs  Prints 'cmd*.output' paths as they are created
-  -i, --invoke-reporter
-                        Invokes the 'core.reporter' worklet by the end of the
-                        workflow
-  -l, --lint            Check integrity of workflow and exit.
-  -r, --resources       List collected resources and exit.
-  -e [EXAMPLE], --example [EXAMPLE]
-                        Create a 'default.config' and 'example.workflow' in
-                        `pwd` then exit.
-  -v, --version         Print the version number of 'joe' and exit.
+
+workflow:
+  Run workflow at -w with config at -c output at -o
+
+  step                  One or more workflow steps to run. (default: None)
+  --config CONFIG, -c CONFIG
+                        Path to the Configuration file. (default:
+                        /home/safl/git/joe/joe/docs/default.config)
+  --workflow WORKFLOW, -w WORKFLOW
+                        Path to workflow file. (default:
+                        /home/safl/git/joe/joe/docs/example.workflow)
+  --output OUTPUT, -o OUTPUT
+                        Path to output directory. (default:
+                        /home/safl/git/joe/joe/docs/cijoe-output)
+  --force, -f           Force execution even though '-o / --output' exists
+                        (moving it) (default: False)
+  --log-level, -l       Increase log-level. (default: None)
+  --monitor, -m         Monitor workflow-output at '-o / --output'. (default:
+                        False)
+
+utilities:
+  Workflow, and workflow-related utilities
+
+  --produce-report, -p  Produce report for workflow-output at '-o / --output'
+                        and exit. (default: None)
+  --integrity-check, -i
+                        Check integrity of workflow at '-w / --workflow' and
+                        exit. (default: False)
+  --resources, -r       List collected resources and exit. (default: False)
+  --example [EXAMPLE], -e [EXAMPLE]
+                        Create 'default.config' and 'example.workflow' and
+                        exit. (default: None)
+  --version, -v         Print the version number of 'joe' and exit. (default:
+                        False)
 
