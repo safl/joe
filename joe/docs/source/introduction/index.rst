@@ -12,8 +12,7 @@ Said **changes** are then deployed for testing on one or more
 boxes/VMs/systems, we refer to the latter as **test-targets**.
 
 With **cijoe** you create an :ref:`sec-config` for each of available
-**test-target**. Thus, when you are e.g. :ref:`sec-running`, then you can
-easily switch **test-target** by providing a different :ref:`sec-config`.
+**test-target**.
 
 .. _devenv:
 .. figure:: ../_static/environment.png
@@ -31,24 +30,6 @@ what is needed on your **dev box** and your **test-target(s)**.
    :ref:`sec-shell`.
 
 Once you have ensured that :ref:`sec-prerequisites` are met, have gone through
-the :ref:`sec-installation`, and created your :ref:`sec-config`, then you
-have the basics in place and you can start :ref:`sec-running`, generate reports
-using the :ref:`sec-post-processing-reporter`, extract **metrics** of interest
-using the :ref:`sec-post-processing-extractor` and feed extracted metrics to
-the :ref:`sec-post-processing-analyser` for evaluation and
-:ref:`sec-post-processing-plotter` to produce graphs.
-
-In addition to the command-line tools described in the sections above, then
-**cijoe** and **cijoe packages** provide Bash-modules, you can familiarize
-yourself with these by using the :ref:`sec-shell` and have a look at how to do
-:ref:`sec-provisioning`, of your **test-target(s)**, and integrate **cijoe** in
-**CI/CD** systems using the :ref:`sec-provisioning-snippet` and glue together
-tasks in your workflow as outlined in the :ref:`sec-provisioning-script`.
-
-After going through the sections described above, then you should have gotten a
-feel for **cijoe** and you can start :ref:`sec-packages` for your project(s).
-At this point it is likely that you have stumbled accross things you find are
-wrong, annoying, or for other reasons you would like to change. In that case
-then feel free to create a pull-request with your changes on `GitHUB`_.
+the :ref:`sec-installation`, and created your :ref:`sec-config`.
 
 .. _GitHUB: https://github.com/refenv/cijoe

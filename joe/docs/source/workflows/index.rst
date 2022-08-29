@@ -5,6 +5,12 @@ Workflow
 
 Not unlike the use of Yaml in Ansible and GitHUB Actions.
 
+Workflow Files
+--------------
+
+Workflow files are formated using `YAML`_ and named with suffix
+``.workflow``.
+
 Example
 -------
 
@@ -15,8 +21,11 @@ Example
 Linting
 -------
 
-.. literalinclude:: lint.cmd
+.. literalinclude:: 200_lint.cmd
    :language: bash
 
-.. literalinclude:: lint.out
+.. literalinclude:: 200_lint.out
    :language: bash
+
+
+.. _YAML: https://yaml.org/
