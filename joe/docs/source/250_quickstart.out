@@ -1,7 +1,8 @@
 
 ERROR:cli: aborting; output(/home/safl/git/joe/joe/docs/cijoe-output) directory already exists
-[33332:33332:0830/000736.849580:ERROR:sandbox_linux.cc(377)] InitializeSandbox() called with multiple threads in process gpu-process.
-[33285:33357:0830/000736.992009:ERROR:nss_util.cc(286)] After loading Root Certs, loaded==false: NSS error code: -8018
-[33285:33356:0830/000739.011060:ERROR:chrome_browser_main_extra_parts_metrics.cc(227)] START: ReportBluetoothAvailability(). If you don't see the END: message, this is crbug.com/1216328.
-[33285:33356:0830/000739.011086:ERROR:chrome_browser_main_extra_parts_metrics.cc(230)] END: ReportBluetoothAvailability()
+[34222:34222:0830/000941.731130:ERROR:sandbox_linux.cc(377)] InitializeSandbox() called with multiple threads in process gpu-process.
+[34175:34209:0830/000941.866416:ERROR:nss_util.cc(286)] After loading Root Certs, loaded==false: NSS error code: -8018
+[34175:34246:0830/000943.879800:ERROR:chrome_browser_main_extra_parts_metrics.cc(227)] START: ReportBluetoothAvailability(). If you don't see the END: message, this is crbug.com/1216328.
+[34175:34246:0830/000943.879830:ERROR:chrome_browser_main_extra_parts_metrics.cc(230)] END: ReportBluetoothAvailability()
 *** stack smashing detected ***: terminated
+[34223:34232:0830/000944.918016:ERROR:node_controller.cc(585)] Trying to re-add dropped peer A3D9A1781B159F89.3B3AEBB8AE15DE7A
