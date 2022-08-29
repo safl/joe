@@ -3,59 +3,35 @@
 Configuration
 =============
 
-A **configuration** is Yaml-file with a set of keys with special meaning.
+.. _sec-configuration-files:
 
-a Bash-script consisting of **exported**
-variables defining the various properties of a **test-target**.
+Configuration Files
+-------------------
 
-The **configuration** describes **where** to run, specifically by
-defining the variables needed for accessing your **test-target** via **SSH**.
-Have a look at the reference environment (``remote.sh``) provided with
-**cijoe** either in your installation at ``$CIJ_ENVS/remote.sh`` or in the
-`cijoe repository`_.
+Configuration files are formated using `YAML`_ and named with suffix
+``.config``. In the core functionality of provided by cijoe, only the key
+``transport`` has special meaning.
 
-.. note:: This is all that you need to provide in the **environment
-   definition** for **cijoe** itself. However, each **cijoe** package provide
-   one or more **reference configuration(s)**. These serve, as the
-   name suggest, as a reference for the **exported variables** that a given
-   **cijoe package** needs.  Consult these for setting up your environment for
-   the functionality provided by a specific package.
+Keys are otherwise granted meaning by their use of :ref:`sec-worklets`,
+:ref:`tests`, and regular Python modules.
 
-.. _sec-environment-example:
+.. _sec-configuration-files-example:
 
-Example: remote
----------------
+Example
+~~~~~~~
 
-As an example, we create an **configuration** for the **test-target**
-named ``box01`` with a login-account accessible with the username ``odus``. To
-easily distingush different configurations then we name
-``box01_env.sh``:
+...
 
-.. literalinclude:: box01_env.sh
-   :language: bash
-   :caption: box01_env.sh
+.. _sec-configuration-objects:
 
-Adjust this to match your development environment, that is, the hostname of
-your **test-target** box and the username of your **account** on that system.
-In case you missed it, then ensure that you have :ref:`sec-ssh` appropriatly.
+Configuration Objects
+---------------------
 
-We can now use this **configuration** for :ref:`sec-running` and
-interactively in the :ref:`sec-shell`.
+Represented in the code as a :ref:`sec-resources`.
 
-.. _sec-environment-example-local:
+.. autoclass:: joe.core.resources.Config
+   :members:
+   :undoc-members:
+   :inherited-members:
 
-Example: local
---------------
-
-In case your **dev box** and **test-target** are one and the same machine, then
-you can either setup your **SSH** configuration to access localhost, or you can
-use configure **cijoe** to not use **SSH** for command-transport.
-
-An example of the latter is provided with **cijoe** in the ``envs/local.sh``
-file, it looks like this:
-
-.. literalinclude:: ../../../envs/local.sh
-   :language: bash
-   :caption: envs/local.sh
-
-.. _cijoe repository: https://github.com/refenv/cijoe/
+.. _YAML: https://yaml.org/
