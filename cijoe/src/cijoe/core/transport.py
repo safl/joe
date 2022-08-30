@@ -31,7 +31,7 @@ class Local(Transport):
     def __init__(self, config: Config, output_path: Path):
         self.config = config
         self.output_path = output_path
-        self.output_ident = "aux"
+        self.output_ident = "artifacts"
 
     def run(self, cmd, cwd, evars, logfile):
         """Invoke the given command"""
@@ -94,12 +94,12 @@ class SSH(Transport):
 
         self.scp = None
 
-        paramiko.util.log_to_file("/tmp/paramiko.log", level="WARN")
+        paramiko.util.log_to_file(self.output_path / "paramiko.log", level="INFO")
 
     def __connect(self):
 
         self.ssh.connect(**self.config.options.get("transport").get("ssh"))
-        self.scp = SCPClient(self.ssh.get_transport())
+        self.scp = SCPClient(self.ssh.get_transport(), sanitize=lambda x: x)
 
     def run(self, cmd, cwd, evars, logfile):
         """Invoke the given command"""
@@ -119,6 +119,9 @@ class SSH(Transport):
     def put(self, src, dst=None):
         """Hmm... no return-value just exceptions"""
 
+        if not self.scp:
+            self.__connect()
+
         if dst is None:
             dst = os.path.basename(src)
         if not os.path.isabs(src):
@@ -130,6 +133,9 @@ class SSH(Transport):
 
     def get(self, src, dst=None):
         """Hmm... no return-value just exceptions"""
+
+        if not self.scp:
+            self.__connect()
 
         if dst is None:
             dst = os.path.basename(src)

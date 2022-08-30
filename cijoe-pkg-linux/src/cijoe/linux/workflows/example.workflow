@@ -1,10 +1,10 @@
 ---
 doc: |
-  This is an example of utilizing some of the Linux worklets and helpers
+  This workflow builds Linux kernel as .deb installable packages
 
 steps:
 - name: sysinfo
   uses: linux.sysinfo
 
 - name: build
-  uses: linux.build_deb
+  uses: linux.build_kdebs
