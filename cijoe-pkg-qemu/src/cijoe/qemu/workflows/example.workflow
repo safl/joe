@@ -5,7 +5,7 @@ doc: |
   * Build qemu from source
   * Instal qemu
   * Provision a guest using a cloudinit image
-  * Start the provision guest
+  * Start the provisioned guest
   * Run a command within the guest
   * Stop the guest again
 
@@ -21,8 +21,8 @@ steps:
 - name: install
   uses: qemu.install
 
-- name: provision
-  uses: qemu.guest_provision
+- name: cloudinit
+  uses: qemu.guest_cloudinit
 
 - name: start
   uses: qemu.guest_start

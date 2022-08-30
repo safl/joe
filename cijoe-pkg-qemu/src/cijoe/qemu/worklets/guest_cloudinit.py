@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Provision a qemu-guest
-======================
+initialize guest os using cloud-init
+====================================
 
 Retargetable: False
 -------------------
@@ -14,4 +14,4 @@ def worklet_entry(args, cijoe, step):
 
     guest = Guest(cijoe, cijoe.config)
 
-    return guest.provision()
+    return guest.cloudinit()

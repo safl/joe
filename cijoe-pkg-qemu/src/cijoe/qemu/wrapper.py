@@ -191,8 +191,8 @@ class Guest(object):
 
         return rcode
 
-    def provision(self):
-        """Provision a guest"""
+    def cloudinit(self):
+        """Provision a guest OS using cloudinit"""
 
         # Ensure the guest is *not* running
         self.kill()
