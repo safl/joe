@@ -49,6 +49,7 @@ repos:
     args:
     - '--max-line-length=88'
     - '--extend-ignore=E203' # ignore "whitespace before ':'"
+    - '--extend-ignore=F811' # Happens all the time with pytest-fixtures for parametrize
 
 # Shell: todo: exclude xnvme-driver.sh
 - repo: https://github.com/jumanjihouse/pre-commit-hooks

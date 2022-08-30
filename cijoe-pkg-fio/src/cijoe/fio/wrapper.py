@@ -81,7 +81,7 @@ def fio_script_engine(
         spdk_conf.append("  TransportID \"trtype:PCIe traddr:{device['uri']\" Nvme0")
 
         args.append("--spdk_conf=/tmp/spdk.bdev.conf")
-        args.append(f"--filename=Nvme0n1")
+        args.append("--filename=Nvme0n1")
         # TODO: add subnqn here
 
     # Add extra arguments
