@@ -43,20 +43,23 @@ def worklet_entry(args, cijoe, step):
 
         rcode, _ = cijoe.run(f"mkdir -p {repos_root}")
         if rcode:
-            log.error("failed creating dir for repository; giving up")
+            log.error("failed creating repos_root({repos_root}; giving up")
             return rcode
 
         rcode, _ = cijoe.run(
-            f"[ ! -d {repos['path'].parent} ] &&"
+            f"[ ! -d {repos['path']} ] &&"
             f" git clone {repos['upstream']} {repos['path']}"
         )
         if rcode:
             log.info("either already cloned or failed cloning; continuing optimisticly")
 
-        rcode, _ = cijoe.run(f"git checkout {repos['branch']}", cwd=repos["path"])
-        if rcode:
-            log.error("Failed checking out; giving up")
-            return rcode
+        if "branch" not in repos:
+            log.info("no 'branch' key; skipping checkout")
+        else:
+            rcode, _ = cijoe.run(f"git checkout {repos['branch']}", cwd=repos["path"])
+            if rcode:
+                log.error("Failed checking out; giving up")
+                return rcode
 
         rcode, _ = cijoe.run("git pull --rebase", cwd=repos["path"])
         if rcode:
