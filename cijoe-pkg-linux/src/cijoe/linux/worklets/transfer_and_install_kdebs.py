@@ -13,8 +13,8 @@ Retargetable: True
 
 Transfer from local to remote, the config.transport.ssh determines the remote.
 """
-from pathlib import Path
 import errno
+from pathlib import Path
 
 
 def worklet_entry(args, cijoe, step):

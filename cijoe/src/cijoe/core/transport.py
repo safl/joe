@@ -1,3 +1,4 @@
+import logging
 import os
 import shutil
 import subprocess
@@ -91,15 +92,21 @@ class SSH(Transport):
         # when a host changed, e.g. re-provisioned virtual machine, then the host-key
         # changes and Paramiko cannot connect.
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
         self.scp = None
 
-        paramiko.util.log_to_file(self.output_path / "paramiko.log", level="INFO")
+        paramiko.util.log_to_file(
+            self.output_path / "paramiko.log", level=logging.root.level
+        )
 
     def __connect(self):
 
         self.ssh.connect(**self.config.options.get("transport").get("ssh"))
-        self.scp = SCPClient(self.ssh.get_transport(), sanitize=lambda x: x)
+        self.scp = SCPClient(self.ssh.get_transport())
+
+    def __disconnect(self):
+
+        self.scp.close()
+        self.ssh.close()
 
     def run(self, cmd, cwd, evars, logfile):
         """Invoke the given command"""
@@ -107,28 +114,23 @@ class SSH(Transport):
         if cwd:
             cmd = f"cd {cwd}; {cmd}"
 
-        if not self.scp:
-            self.__connect()
+        self.__connect()
 
-        # Attempt at re-establishing a broken connection
-        try:
-            foo = self.ssh.get_transport()
-            foo.send_ignore()
-        except EOFError as e:
-            self.__connect()
-
-        stdin, stdout, stderr = self.ssh.exec_command(cmd, environment=evars)
+        _, stdout, stderr = self.ssh.exec_command(cmd, environment=evars)
 
         logfile.write(stdout.read().decode(ENCODING))
         logfile.write(stderr.read().decode(ENCODING))
 
-        return stdout.channel.recv_exit_status()
+        rcode = stdout.channel.recv_exit_status()
+
+        self.__disconnect()
+
+        return rcode
 
     def put(self, src, dst=None):
         """Hmm... no return-value just exceptions"""
 
-        if not self.scp:
-            self.__connect()
+        self.__connect()
 
         if dst is None:
             dst = os.path.basename(src)
@@ -137,13 +139,14 @@ class SSH(Transport):
 
         self.scp.put(src, dst)
 
+        self.__disconnect()
+
         return True
 
     def get(self, src, dst=None):
         """Hmm... no return-value just exceptions"""
 
-        if not self.scp:
-            self.__connect()
+        self.__connect()
 
         if dst is None:
             dst = os.path.basename(src)
@@ -151,5 +154,7 @@ class SSH(Transport):
             dst = os.path.join(self.output_path, self.output_ident, dst)
 
         self.scp.get(src, dst)
+
+        self.__disconnect()
 
         return True
