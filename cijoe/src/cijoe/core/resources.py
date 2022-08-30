@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-    CIJOE Resources
+    Resources
+    =========
 
     The following constitutes the base-logic of CIJOE:
 
@@ -22,10 +23,17 @@
     The Collector is a SingleTon, since it is used extensively everywhere and the tasks
     of doing collection can be somewhat time-consuming.
 
-    Intended usage:
+    Intended usage
+    --------------
+
+    From Python::
 
         from cijoe.core.resources import get_resources
         resources = get_resources()
+
+    From command-line::
+
+        cijoe --resources
 """
 import ast
 import importlib
