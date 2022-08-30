@@ -47,9 +47,7 @@ repos:
   - id: flake8
     name: Python-lint-flake8
     args:
-    - '--max-line-length=88'
-    - '--extend-ignore=E203' # ignore "whitespace before ':'"
-    - '--extend-ignore=F811' # Happens all the time with pytest-fixtures for parametrize
+    - '--ignore=E203,F811,F401'
 
 # Shell: todo: exclude xnvme-driver.sh
 - repo: https://github.com/jumanjihouse/pre-commit-hooks
