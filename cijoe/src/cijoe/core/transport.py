@@ -109,6 +109,14 @@ class SSH(Transport):
 
         if not self.scp:
             self.__connect()
+
+        # Attempt at re-establishing a broken connection
+        try:
+            foo = self.ssh.get_transport()
+            foo.send_ignore()
+        except EOFError as e:
+            self.__connect()
+
         stdin, stdout, stderr = self.ssh.exec_command(cmd, environment=evars)
 
         logfile.write(stdout.read().decode(ENCODING))
