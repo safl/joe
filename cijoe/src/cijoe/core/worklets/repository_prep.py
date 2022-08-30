@@ -5,15 +5,19 @@
    For every key in the configuration which has a subkey named "repository", then
    following is done:
 
-   * git clone (repository.upstream; skip if directory exists)
-   * git checkout (repository.branch or repository.tag)
-   * git pull --rebase (if repository.branch)
+   * git clone repository.upstream                   # if ! exists(repository.path)
+   * git checkout [repository.branch,repository.tag] # if repository.{branch,tag}
+   * git pull --rebase                               # if repository.branch
    * git status
+
+   The intended usage of this worklet is to prepare a repositories in a recently
+   provision system. Such as a done by 'qemu.provision'.
 
    Configuration
    -------------
 
-   Ensure that the "repository.{upstream,path,branch}" have sensible values
+   Ensure that the "repository" has sensible values for:
+   * {upstream,path,branch}"
 
    Retargetable: True
    ------------------
@@ -55,19 +59,18 @@ def worklet_entry(args, cijoe, step):
 
         do_checkout = repos.get("branch", repos.get("tag", None))
         if do_checkout:
-            rcode, _ = cijoe.run(f"git checkout {repos['branch']}", cwd=repos["path"])
+            rcode, _ = cijoe.run(f"git checkout {do_checkout}", cwd=repos["path"])
             if rcode:
                 log.error("Failed checking out; giving up")
                 return rcode
-
-            if "branch" in repos.keys():
-                rcode, _ = cijoe.run("git pull --rebase", cwd=repos["path"])
-                if rcode:
-                    log.error("failed pulling; giving up")
-                    return rcode
         else:
             log.info("no 'branch' nor 'tag' key; skipping checkout")
 
+        if "branch" in repos.keys():
+            rcode, _ = cijoe.run("git pull --rebase", cwd=repos["path"])
+            if rcode:
+                log.error("failed pulling; giving up")
+                return rcode
 
         rcode, _ = cijoe.run("git status", cwd=repos["path"])
         if rcode:
