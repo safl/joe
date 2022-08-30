@@ -1,4 +1,4 @@
-.. _sec-workflow:
+.. _sec-resources-workflow:
 
 Workflow
 ========

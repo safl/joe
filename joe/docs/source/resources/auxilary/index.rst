@@ -1,4 +1,4 @@
-.. _sec-auxilary:
+.. _sec-resources-auxilary:
 
 Auxilary
 ========

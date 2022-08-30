@@ -1,28 +1,23 @@
-.. _sec-configuration:
+.. _sec-resources-configs:
 
-Configuration
-=============
+Configs
+=======
 
-.. _sec-configuration-files:
-
-Files
------
-
-Configuration files are formated using `YAML`_ and named with suffix
+**cijoe** configuration files are formated using `YAML`_ and named with suffix
 ``.config``. In the core functionality of provided by cijoe, only the key
 ``transport`` has special meaning.
 
 Keys are otherwise granted meaning by their use of :ref:`sec-worklets`,
 :ref:`sec-testing`, and regular Python modules.
 
-.. _sec-configuration-files-example:
+.. _sec-resources-configs-example:
 
 Example
 ~~~~~~~
 
 ...
 
-.. _sec-configuration-objects:
+.. _sec-resources-configs-objects:
 
 Objects
 -------

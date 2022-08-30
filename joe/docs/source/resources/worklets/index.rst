@@ -1,4 +1,4 @@
-.. _sec-worklets:
+.. _sec-resources-worklets:
 
 Worklets
 ========

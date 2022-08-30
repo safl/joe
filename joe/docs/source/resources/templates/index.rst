@@ -1,4 +1,4 @@
-.. _sec-templates:
+.. _sec-resources-templates:
 
 Templates
 =========

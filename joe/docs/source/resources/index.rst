@@ -4,7 +4,7 @@
  Resources
 ===========
 
-In **cijoe**, :ref:`Auxilary Files`_, :ref:`Workflows`_, :ref:`Worklets`_,
+In **cijoe**, :ref:`resources-auxilary`_, :ref:`Workflows`_, :ref:`Worklets`_,
 :ref:`Configuration Files`, :ref:`Templates`, and :ref:`Performance
 Requirements` are all considered dynamically loadable resources.
 
@@ -22,6 +22,8 @@ It should provide a usage page that looks like this:
    :includehidden:
    :hidden:
 
+   configs/index.rst
    workflows/index.rst
    worklets/index.rst
    templates/index.rst
+   auxilary/index.rst

@@ -1,1 +1,1 @@
-joe -r
+joe --resources
