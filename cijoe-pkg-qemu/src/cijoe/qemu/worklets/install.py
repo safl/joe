@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """
-    Installs qemu
+Install qemu
+============
+
+Retargetable: False
+-------------------
 """
 import errno
 from pathlib import Path

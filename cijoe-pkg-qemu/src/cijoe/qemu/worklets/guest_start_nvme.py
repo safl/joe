@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-    Start a qemu-guest
+Start a qemu-guest with NVMe devices
+====================================
 
-    Retargetable: false
-    -------------------
+Retargetable: false
+-------------------
 """
 import errno
 import logging as log

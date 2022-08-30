@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-    Provision a qemu-guest
+Provision a qemu-guest
+======================
 
-    Retargetable: false
-    -------------------
+Retargetable: False
+-------------------
 """
 from cijoe.qemu.wrapper import Guest
 

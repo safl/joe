@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """
-    Builds qemu system(x86_64-softmmu), disabling most graphics related features, and
-    enabling virtfs and debugging.
+build qemu system(x86_64-softmmu)
+==================================
 
-    Retargetable: false
-    -------------------
+In the build, graphics related features are disabled, virtfs and debugging enabled.
 
-    Arguments
-    ---------
+Arguments
+---------
 
-    repository.path
-    build.prefix
+* repository.path
+* build.prefix
+
+Retargetable: False
+-------------------
 """
 import errno
 import logging as log
