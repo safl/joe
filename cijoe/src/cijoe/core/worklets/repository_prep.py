@@ -9,6 +9,14 @@
    * git checkout (repository.branch)
    * git pull --rebase
    * git status
+
+   Configuration
+   -------------
+
+   Ensure that the "repository.{upstream,path,branch}" have sensible values
+
+   Retargetable: True
+   ------------------
 """
 import errno
 import logging as log
