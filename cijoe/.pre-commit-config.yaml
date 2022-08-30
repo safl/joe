@@ -46,8 +46,7 @@ repos:
   hooks:
   - id: flake8
     name: Python-lint-flake8
-    args:
-    - '--ignore=E203,F811,F401'
+    args: [--ignore=E203,F811,F401]
 
 # Shell: todo: exclude xnvme-driver.sh
 - repo: https://github.com/jumanjihouse/pre-commit-hooks
