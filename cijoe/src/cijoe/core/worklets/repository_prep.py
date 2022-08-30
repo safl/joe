@@ -6,8 +6,8 @@
    following is done:
 
    * git clone (repository.upstream; skip if directory exists)
-   * git checkout (repository.branch)
-   * git pull --rebase
+   * git checkout (repository.branch or repository.tag)
+   * git pull --rebase (if repository.branch)
    * git status
 
    Configuration
@@ -48,26 +48,30 @@ def worklet_entry(args, cijoe, step):
 
         rcode, _ = cijoe.run(
             f"[ ! -d {repos['path']} ] &&"
-            f" git clone {repos['upstream']} {repos['path']}"
+            f" git clone {repos['upstream']} {repos['path']} --recursive"
         )
         if rcode:
             log.info("either already cloned or failed cloning; continuing optimisticly")
 
-        if "branch" not in repos:
-            log.info("no 'branch' key; skipping checkout")
-        else:
+        do_checkout = repos.get("branch", repos.get("tag", None))
+        if do_checkout:
             rcode, _ = cijoe.run(f"git checkout {repos['branch']}", cwd=repos["path"])
             if rcode:
                 log.error("Failed checking out; giving up")
                 return rcode
 
-        rcode, _ = cijoe.run("git pull --rebase", cwd=repos["path"])
-        if rcode:
-            log.info("failed pulling; continuing optimisticly")
+            if "branch" in repos.keys():
+                rcode, _ = cijoe.run("git pull --rebase", cwd=repos["path"])
+                if rcode:
+                    log.error("failed pulling; giving up")
+                    return rcode
+        else:
+            log.info("no 'branch' nor 'tag' key; skipping checkout")
+
 
         rcode, _ = cijoe.run("git status", cwd=repos["path"])
         if rcode:
-            log.error("failed getting git status; giving up")
+            log.error("failed 'git status'; giving up")
             return rcode
 
     return 0
