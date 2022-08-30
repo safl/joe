@@ -1,4 +1,4 @@
 Opening in existing browser session.
 
 ERROR:cli: aborting; output(/home/safl/git/joe/joe/docs/cijoe-output) directory already exists
-[26222:26222:0100/000000.003634:ERROR:sandbox_linux.cc(377)] InitializeSandbox() called with multiple threads in process gpu-process.
+[29579:29579:0100/000000.561100:ERROR:sandbox_linux.cc(377)] InitializeSandbox() called with multiple threads in process gpu-process.

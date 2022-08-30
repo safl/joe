@@ -42,11 +42,13 @@ probably not configured to look for binaries in the location that
 
 For example, on Linux then the output of ``python3 -m site --user-base`` is not
 in your environment-variable ``$PATH``. You can quickly fix this by adding it
-to your shell, e.g. for Bash do:
+to your shell, e.g. for `Bash <https://www.gnu.org/software/bash/>`_ do:
 
 .. code-block:: bash
 
     echo "export PATH=\"$PATH:$(python3 -m site --user-base)/bin\"" >> ~/.bash_profile
 
 Once you have verified that **cijoe** is installed correctly and that you can
-execute the command-line tools, then procede to :ref:`sec-workflow`.
+execute the command-line tools, then procede to :ref:`sec-resources-workflows`.
+
+

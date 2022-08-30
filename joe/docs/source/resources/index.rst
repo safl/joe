@@ -4,9 +4,10 @@
  Resources
 ===========
 
-In **cijoe**, :ref:`resources-auxilary`_, :ref:`Workflows`_, :ref:`Worklets`_,
-:ref:`Configuration Files`, :ref:`Templates`, and :ref:`Performance
-Requirements` are all considered dynamically loadable resources.
+In **cijoe**, :ref:`sec-resources-auxilary`, :ref:`sec-resources-workflows`,
+:ref:`sec-resources-worklets`, :ref:`sec-resources-configs`,
+:ref:`sec-resources-templates`, and :ref:`sec-resources-perfreq` are all
+considered dynamically loadable resources.
 
 .. literalinclude:: command.cmd
    :language: bash
