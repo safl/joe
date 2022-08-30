@@ -24,7 +24,7 @@ endef
 .PHONY: apidoc
 apidoc:
 	@echo "## apidoc"
-	${PY_ENV_ACTIVATE} && sphinx-apidoc --implicit-namespaces -e -H "API" -M -f --tocfile index -o ${SPHINX_SOURCEDIR}/api ../src/joe
+	${PY_ENV_ACTIVATE} && sphinx-apidoc --implicit-namespaces -e -H "API" -M -f --tocfile index -o ${SPHINX_SOURCEDIR}/api ../src/cijoe
 
 define kmdo-help
 # Generate api documentation using Sphinx autodoc
@@ -63,6 +63,6 @@ venv-setup:
 	@${PY_ENV} -m pip install -r requirements.txt
 	@echo "## venv-setup: installing cijoe (for sphinx autodoc)"
 	@${PY_ENV} -m pip install ..
-	@${PY_ENV} -m pip install ../../joe-pkg-qemu
-	@${PY_ENV} -m pip install ../../joe-pkg-linux
-	@${PY_ENV} -m pip install ../../joe-pkg-fio
+	@${PY_ENV} -m pip install ../../cijoe-pkg-qemu
+	@${PY_ENV} -m pip install ../../cijoe-pkg-linux
+	@${PY_ENV} -m pip install ../../cijoe-pkg-fio
