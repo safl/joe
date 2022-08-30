@@ -35,12 +35,12 @@ repos:
   hooks:
   - id: flake8
     name: Python-lint-flake8
+    # Max-line-length matching black
+    # ignore "whitespace before ':'"; ignore line length
+    # F401 = F811; This happens for fixtures for indirect parametrize
     args:
     - --max-line-length=88
     - --extend-ignore=E203,F401,F811
-
-    # ignore "whitespace before ':'"; ignore line length
-    # F401 = F811; This happens for fixtures for indirect parametrize
 
 - repo: https://github.com/jumanjihouse/pre-commit-hooks
   rev: 3.0.0
