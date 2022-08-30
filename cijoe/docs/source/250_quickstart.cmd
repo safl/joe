@@ -1,1 +1,1 @@
-joe --produce-report || true
+cijoe --produce-report || true

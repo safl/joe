@@ -28,4 +28,4 @@ steps:
 - name: test
   uses: core.testrunner
   with:
-    args: "--pyargs joe.core.selftest"
+    args: "--pyargs cijoe.core.selftest"

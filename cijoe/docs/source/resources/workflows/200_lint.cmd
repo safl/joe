@@ -1,1 +1,1 @@
-cd source/resources/workflows && joe -i
+cd source/resources/workflows && cijoe --integrity-check

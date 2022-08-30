@@ -24,6 +24,7 @@ The command-line, provides a quick way to lookup all available resources:
 .. literalinclude:: command.cmd
    :language: bash
 
+
 .. literalinclude:: command.out
    :language: bash
 

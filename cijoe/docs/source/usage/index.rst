@@ -17,7 +17,7 @@ Testrunner
 
 The worklet... and the pytest-plugin...
 
-.. automodule:: joe.pytest_plugin.hooks_and_fixtures
+.. automodule:: cijoe.pytest_plugin.hooks_and_fixtures
    :members:
    :undoc-members:
    :inherited-members:

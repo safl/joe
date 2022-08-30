@@ -1,4 +1,7 @@
 """
+  testrunner
+  ==========
+
   Invokes 'pytest' for cijoe testcases
 
   It is intended for a specific use of pytest with the plugins listed below, it is as
@@ -13,6 +16,9 @@
   * report-log, dump testnode-status as JSON, this is consumed by 'core.report' to
     produce an overview of testcases and link them with the cijoe-captured output and
     auxilary files
+
+  Retargetable: False
+  -------------------
 """
 
 
@@ -31,6 +37,7 @@ def worklet_entry(args, cijoe, step):
         pytest_cmd.append(str(args.config))
 
     pytest_cmd += step.get("with").get("args", "").split(" ")
-    rcode, state = cijoe.run_local(" ".join(pytest_cmd))
+
+    rcode, _ = cijoe.run_local(" ".join(pytest_cmd))
 
     return rcode

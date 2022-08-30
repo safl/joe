@@ -1,1 +1,1 @@
-joe -h
+cijoe --help

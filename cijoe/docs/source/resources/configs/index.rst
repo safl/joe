@@ -24,7 +24,7 @@ Objects
 
 Represented in the code as a :ref:`sec-resources`.
 
-.. autoclass:: joe.core.resources.Config
+.. autoclass:: cijoe.core.resources.Config
    :members:
    :undoc-members:
    :inherited-members:

@@ -1,1 +1,1 @@
-joe --resources
+cijoe --resources
