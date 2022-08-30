@@ -10,8 +10,9 @@
    * git pull --rebase
    * git status
 """
-import logging as log
 import errno
+import logging as log
+from pathlib import Path
 
 
 def worklet_entry(args, cijoe, step):
@@ -30,7 +31,7 @@ def worklet_entry(args, cijoe, step):
         if "qemu" in repos["upstream"]:
             continue
 
-        repos_root = Path(repos['path']).parent
+        repos_root = Path(repos["path"]).parent
 
         rcode, _ = cijoe.run(f"mkdir -p {repos_root}")
         if rcode:
@@ -44,16 +45,16 @@ def worklet_entry(args, cijoe, step):
         if rcode:
             log.info("either already cloned or failed cloning; continuing optimisticly")
 
-        rcode, _ = cijoe.run(f"git checkout {repos['branch']}", cwd=repos['path'])
+        rcode, _ = cijoe.run(f"git checkout {repos['branch']}", cwd=repos["path"])
         if rcode:
             log.error("Failed checking out; giving up")
             return rcode
 
-        rcode, _ = cijoe.run("git pull --rebase", cwd=repos['path'])
+        rcode, _ = cijoe.run("git pull --rebase", cwd=repos["path"])
         if rcode:
             log.info("failed pulling; continuing optimisticly")
 
-        rcode, _ = cijoe.run("git status", cwd=repos['path'])
+        rcode, _ = cijoe.run("git status", cwd=repos["path"])
         if rcode:
             log.error("failed getting git status; giving up")
             return rcode
