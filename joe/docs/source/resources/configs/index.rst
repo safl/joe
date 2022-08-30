@@ -7,8 +7,8 @@ Configs
 ``.config``. In the core functionality of provided by cijoe, only the key
 ``transport`` has special meaning.
 
-Keys are otherwise granted meaning by their use of :ref:`sec-worklets`,
-:ref:`sec-testing`, and regular Python modules.
+Keys are otherwise granted meaning by their use of
+:ref:`sec-resources-worklets`, tests, and regular Python modules.
 
 .. _sec-resources-configs-example:
 

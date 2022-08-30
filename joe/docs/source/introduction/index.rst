@@ -9,8 +9,8 @@ A network-connected **development environment**, as illustrated in
 using editors/IDEs/Toolchains for the task at hand, we refer to such a machine
 as the **dev box**.
 
-Said **changes** are then testing on one or more boxes/VMs/systems, we refer to
-the latter as **test-targets**.
+Said **changes** are then **tested** on one or more boxes/VMs/systems, we refer
+to the latter as **test-targets**.
 
 With **cijoe** you create an :ref:`sec-resources-configs` for each of available
 **test-target**.

@@ -35,8 +35,6 @@ For a thorough description, the rest of the documentation is provided with the
 
    introduction/index.rst
    prerequisites/index.rst
-   usage/index.rst
    installation/index.rst
+   usage/index.rst
    resources/index.rst
-
-   testing/index.rst
