@@ -12,14 +12,13 @@ and **reproducible** workflow.
 Quickstart
 ==========
 
-The following will install **cijoe**, produce a default configuration, and an
-example workflow, and execute the workflow using the configuration, and lastly
-produce a workflow-report:
+The following will install **cijoe**, produce an example configuration and
+workflow, and execute the workflow using the configuration.
 
 .. literalinclude:: 200_quickstart.cmd
    :language: bash
 
-**cijoe** is by default silent, as in, does not print out anything unless
+**cijoe** is silent by default, as in, does not print out anything unless
 errors occur. Thus, to get an overview of what happened above, then produce a
 report by invoking:
 
@@ -36,6 +35,7 @@ For a thorough description, the rest of the documentation is provided with the
 
    introduction/index.rst
    prerequisites/index.rst
+   usage/index.rst
    installation/index.rst
    resources/index.rst
 
