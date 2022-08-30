@@ -19,6 +19,10 @@ produce a workflow-report:
 .. literalinclude:: 200_quickstart.cmd
    :language: bash
 
+**cijoe** is by default silent, as in, does not print out anything unless
+errors occur. Thus, to get an overview of what happened above, then produce a
+report by invoking:
+
 .. literalinclude:: 250_quickstart.txt
    :language: bash
 
@@ -34,13 +38,9 @@ Contents:
    introduction/index.rst
    prerequisites/index.rst
    installation/index.rst
-
-   configs/index.rst
-   workflows/index.rst
-   worklets/index.rst
-   testing/index.rst
-   templates/index.rst
    resources/index.rst
+
+   testing/index.rst
 
 Indices and tables
 ==================

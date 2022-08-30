@@ -1,37 +1,20 @@
 """
-    cijoe plugin for pytest
-    =======================
+    cijoe pytest-plugin
+    ===================
 
     The plugin provides a cijoe-instance readily available as a test-fixture, setup per
-    test with a nodeid-defined output-directory.
+    test with a nodeid-defined output-directory. For example::
 
-    pytest_addoption
-    ----------------
+        def test_foo(cijoe):
+            rcode, _ = cijoe.run("hostname")
+            asssert not rcode
 
-      * --config
-      * --output
+    To provide the cijoe-instance a configuration and output directory must be provided.
+    These are given via pytest, e.g.:
 
-    pytest_configure
-    ----------------
+        pytest --config default.config --output /tmp/foo
 
-    Initialized the cijoe instance using pytest-options '--config' and '--output'
-
-    The cijoe-instance is stored in 'pytest.joe_instance', this might appear as bad
-    form, however, pytest does not provide infrastructure for sharing state between
-    fixtures, tests and utility functions, such as functions emitting
-    parametrize-output.
-
-    pytest_terminal_summary
-    -----------------------
-
-    Prints out a notice that CIJOE is beeing used along with the values of the
-    '--config' and '--output' options.
-
-    fixture: cijoe
-    --------------
-
-    Provides the cijoe instance ('pytest.cijoe_instance') with a per-test specific
-    output-directory based on the test nodeid.
+    In case no arguments are provided, defaults are used.
 """
 from pathlib import Path
 
@@ -44,6 +27,10 @@ pytest.cijoe_instance = None
 
 
 def pytest_addoption(parser):
+    """
+    Add options ``--config`` and ``--output`` to pytest, these will be used for the
+    instantiation of cijoe.
+    """
 
     collector = Collector()
     collector.collect()
@@ -52,19 +39,31 @@ def pytest_addoption(parser):
         "--config",
         action="store",
         type=Path,
-        help="Path to CIJOE Environment Definition",
-        default=collector.resources["configs"]["core.default"],
+        help="Path to cijoe configuration",
+        default=str(collector.resources["configs"]["core.default"]),
     )
     parser.addoption(
         "--output",
         action="store",
         type=Path,
-        help="Path to auxilary output directory",
+        help="Path to cijoe output directory",
         default=default_output_path(),
     )
 
 
 def pytest_configure(config):
+    """
+    Initializes the cijoe instance using pytest-options ``--config`` and ``--output``
+
+    The cijoe-instance is stored in ``pytest.cijoe_instance``, this might appear as bad
+    form. However, it is a common pytest-pattern for enabling access to state otherwise
+    only accessible to tests and fixtures.
+
+    Why would this be needed? Well, for large paramaterizations, e.g. to generate input
+    to pytest.mark.parametrize(). Here it is convenient to be able to access the same
+    cijoe instance, and for example generate test-parametrization based on the content
+    of the cijoe-configuration.
+    """
 
     joe_config_path = config.getoption("--config")
 
@@ -81,7 +80,10 @@ def pytest_configure(config):
 
 
 def pytest_terminal_summary(terminalreporter, exitstatus, config):
-    """Provide a CIJOE section for pytest terminal report"""
+    """
+    Prints out a notice that cijoe is beeing used along with the values of the
+    ``--config`` and ``--output`` options.
+    """
 
     terminalreporter.ensure_newline()
     terminalreporter.section(
@@ -93,7 +95,10 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config):
 
 @pytest.fixture
 def cijoe(request):
-    """Constructs a CIJOE instance using pytest-options: 'config', and 'output'"""
+    """
+    Provides a cijoe-instance, initialized with the pytest-options: ``--config``, and
+    ``--output`` and with a per-test customization of the output directory.
+    """
 
     if pytest.cijoe_instance is None:
         raise Exception("Invalid configuration or instance")

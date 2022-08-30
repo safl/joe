@@ -1,6 +1,0 @@
-.. _sec-worklets:
-
-Worklets
-========
-
-...
