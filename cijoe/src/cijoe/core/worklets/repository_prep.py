@@ -1,6 +1,6 @@
 """
-   git prepare
-   ===========
+   repository_prep
+   ===============
 
    For every key in the configuration which has a subkey named "repository", then
    following is done:
@@ -30,13 +30,15 @@ def worklet_entry(args, cijoe, step):
         if "qemu" in repos["upstream"]:
             continue
 
-        rcode, _ = cijoe.run(f"mkdir -p {repos['path']}")
+        repos_root = Path(repos['path']).parent
+
+        rcode, _ = cijoe.run(f"mkdir -p {repos_root}")
         if rcode:
             log.error("failed creating dir for repository; giving up")
             return rcode
 
         rcode, _ = cijoe.run(
-            f"[ ! -d {repos['path']} ] &&"
+            f"[ ! -d {repos['path'].parent} ] &&"
             f" git clone {repos['upstream']} {repos['path']}"
         )
         if rcode:
