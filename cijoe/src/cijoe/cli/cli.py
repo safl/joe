@@ -302,14 +302,14 @@ def parse_args():
         "--config",
         "-c",
         type=Path,
-        default=cfiles[0] if cfiles else None,
+        default=os.environ.get("CIJOE_DEFAULT_CONFIG", cfiles[0] if cfiles else None),
         help="Path to the Configuration file.",
     )
     workflow_group.add_argument(
         "--workflow",
         "-w",
         type=Path,
-        default=wfiles[0] if wfiles else None,
+        default=os.environ.get("CIJOE_DEFAULT_WORKFLOW", wfiles[0] if wfiles else None),
         help="Path to workflow file.",
     )
     workflow_group.add_argument(
