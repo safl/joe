@@ -1,19 +1,10 @@
 ---
 default_language_version:
-  # force all unspecified python hooks to run python3
   python: python3
 
 repos:
-# Yaml: intended for the GitHUB Actions .yaml and testplans
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.1.0
-  hooks:
-  - id: check-yaml # pre-commit-hook-yamlfmt only works on valid YAML files
-    name: YAML-format-check
-    types: [file]
-    files: \.(yaml|yml|plan)$
 - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
-  rev: 0.1.1
+  rev: 0.2.2
   hooks:
   - id: yamlfmt
     name: YAML-format
@@ -24,34 +15,32 @@ repos:
     - '--width=120'
     - '--preserve-quotes'
     types: [file]
-    files: \.(yaml|yml|plan)$
+    files: \.(yaml|yml|config|workflow)$
 
-# Python: for all the helpers in toolbox/*
 - repo: https://github.com/psf/black
-  rev: '22.3.0'
+  rev: 22.6.0
   hooks:
   - id: black
     name: Python-format-black
 - repo: https://github.com/pycqa/isort
-  rev: '5.10.1'
+  rev: 5.10.1
   hooks:
-  # Available args: https://pycqa.github.io/isort/docs/configuration/options.html
   - id: isort
     name: Python-format-isort
     args:
     - '--profile=black'
     - '--line-length=88'
 - repo: https://github.com/pycqa/flake8
-  rev: '4.0.1'
+  rev: 5.0.4
   hooks:
   - id: flake8
     name: Python-lint-flake8
-    args: [--ignore=F811, F811, F401]
+    args:
+    - '--extend-ignore=E203,E501' # ignore "whitespace before ':'"; ignore line length
+    exclude: (ctypes_mapping\/api\.py)$
 
-# Shell: todo: exclude xnvme-driver.sh
 - repo: https://github.com/jumanjihouse/pre-commit-hooks
-  rev: 2.1.6
+  rev: 3.0.0
   hooks:
   - id: shellcheck
     name: Shell-lint
-    exclude: (xnvme-driver\.sh)|(pkgs.*\.sh)$

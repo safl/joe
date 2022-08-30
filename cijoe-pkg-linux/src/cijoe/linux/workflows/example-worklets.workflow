@@ -1,4 +1,3 @@
-# filetype=yaml
 ---
 doc: |
   This is an example of utilizing some of the Linux worklets and helpers

@@ -6,13 +6,6 @@ from cijoe.xnvme.tests.conftest import xnvme_setup
 
 pytest.skip(allow_module_level=True, reason="Not implemented")
 
-#
-# TODO
-# * add call of selftest of ctypes
-# * add "XNVME_URI=${XNVME_URI} XNVME_BE=${XNVME_BE} XNVME_DEV_NSID=${XNVME_DEV_NSID} python3 -m pytest --pyargs xnvme.cython_bindings -v -s"; then
-# * add "XNVME_URI=${XNVME_URI} XNVME_BE=${XNVME_BE} XNVME_DEV_NSID=${XNVME_DEV_NSID} python3 -m pytest --cython-collect ${XNVME_REPO}/python/xnvme-cy-header/xnvme/cython_header/tests/ -v -s"; then
-#
-
 
 def test_xpy_enumerate(cijoe):
 

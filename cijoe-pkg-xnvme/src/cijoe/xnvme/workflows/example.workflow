@@ -1,4 +1,3 @@
-# filetype=yaml
 ---
 doc: |
   Show how to build xNVMe

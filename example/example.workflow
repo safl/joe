@@ -1,4 +1,3 @@
-# filetype=yaml
 ---
 doc: |
   This workflow demonstrates how to use qemu via cijoe, specifically by:

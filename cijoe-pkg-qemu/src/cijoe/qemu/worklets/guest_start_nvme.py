@@ -75,7 +75,8 @@ def worklet_entry(args, cijoe, step):
     nvme += ["-device pcie-root-port,id=pcie_root_port1,chassis=1,slot=1"]
     nvme += ["-device x3130-upstream,id=pcie_upstream_port1,bus=pcie_root_port1"]
     nvme += [
-        "-device xio3130-downstream,id=pcie_downstream_port1,bus=pcie_upstream_port1,chassis=2,slot=1"
+        "-device xio3130-downstream"
+        ",id=pcie_downstream_port1,bus=pcie_upstream_port1,chassis=2,slot=1"
     ]
 
     nvme += [

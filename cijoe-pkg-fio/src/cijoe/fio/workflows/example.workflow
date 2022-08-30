@@ -1,4 +1,3 @@
-# filetype=yaml
 ---
 doc: |
   This workflow demonstrates how to use build and install fio via cijoe

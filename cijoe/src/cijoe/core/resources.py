@@ -13,8 +13,8 @@
     and loadable resources. That is, configuration-files, worklets, workflows,
     templates, and auxilary files.
 
-    The base-representation of these resources is the cijoe.core.resources.Resource class,
-    with content-specific subclasses (Config, Worklet, and Workflow).
+    The base-representation of these resources is the cijoe.core.resources.Resource
+    class, with content-specific subclasses (Config, Worklet, and Workflow).
 
     These resources are collected from installed and locally available Packages, as well
     as for path by the cijoe.core.resources.Collector.
