@@ -2,7 +2,9 @@ import copy
 
 import pytest
 
-from cijoe.xnvme.tests.conftest import xnvme_cli_args, xnvme_device_driver, xnvme_setup
+from cijoe.xnvme.tests.conftest import xnvme_cli_args
+from cijoe.xnvme.tests.conftest import xnvme_device_driver as device
+from cijoe.xnvme.tests.conftest import xnvme_setup
 
 
 @pytest.mark.skip(reason="This is broken, hangs forever")
