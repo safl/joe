@@ -176,7 +176,9 @@ def cli_workflow(args):
         return errno.EINVAL
 
     if args.output.exists() and args.force:
-        archive = args.output.with_name("cijoe-archive") / str(int(time.time() * 10))
+        archive = args.output.with_name("cijoe-archive") / str(
+            time.strftime("%Y-%m-%d_%H:%M:%S")
+        )
         os.makedirs(archive)
         log.info(f"moving existing output-directory to {archive}")
         os.rename(args.output, archive)
