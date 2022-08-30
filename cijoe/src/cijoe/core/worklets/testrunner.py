@@ -1,24 +1,27 @@
 """
-  testrunner
-  ==========
+testrunner
+==========
 
-  Invokes 'pytest' for cijoe testcases
+Invokes 'pytest' for cijoe testcases
 
-  It is intended for a specific use of pytest with the plugins listed below, it is as
-  such not a completely open-ended pytest-invocation as the cijoe-testcases must utilize
-  'cijoe.run' etc. to encapsulate command-execution, capture command output, and
-  collector artifacts.
+It is intended for a specific use of pytest with the plugins listed below, it is as
+such not a completely open-ended pytest-invocation as the cijoe-testcases must utilize
+'cijoe.run' etc. to encapsulate command-execution, capture command output, and
+collector artifacts.
 
-  Requires the following pytest plugins for correct behaviour:
+Requires the following pytest plugins for correct behaviour:
 
-  * cijoe, fixtures providing 'cijoe' object and "--config" and "--output"
-    pytest-arguments to instantiate cijoe.
-  * report-log, dump testnode-status as JSON, this is consumed by 'core.report' to
-    produce an overview of testcases and link them with the cijoe-captured output and
-    auxilary files
+ * cijoe, fixtures providing 'cijoe' object and "--config" and "--output"
+ pytest-arguments to instantiate cijoe.
 
-  Retargetable: False
-  -------------------
+ * report-log, dump testnode-status as JSON, this is consumed by 'core.report' to
+ produce an overview of testcases and link them with the cijoe-captured output and
+ auxilary files.
+
+Retargetable: False
+-------------------
+
+Although the worklet is not retargetable, then the pytest-plugin itself is retargetable.
 """
 
 

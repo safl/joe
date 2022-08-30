@@ -211,7 +211,11 @@ div.image {
           <li class="list-group-item list-group-item-{{ step_style }}">
 
             <!-- workflow-step-buttons-left BEGIN -->
-            <button class="btn btn-{{ step_style }}" type="button">
+            <button class="btn btn-{{ step_style }}" type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#CONTENT_DESCRIPTION_{{ step['id'] }}"
+                  aria-controls="CONTENT_DESCRIPTION_{{ step['id'] }}"
+                  aria-expanded="false">
               <span style="font-family: monospace;">
                 <b>{{ step["name"] }}</b>
                 {% if "run" in step %}
@@ -263,6 +267,20 @@ div.image {
 
         <!-- workflow-step-content BEGIN -->
         <div id="CONTENT_{{ step['id'] }}">
+
+          <!-- workflow-step-content-description BEGIN -->
+          <div class="collapse" id="CONTENT_DESCRIPTION_{{ step['id'] }}" data-bs-parent="#CONTENT_{{ step['id'] }}">
+            <div class="card-header">
+              <p>
+              Steps <code>uses</code> <b>worklets</b>. A description of the <b>worklet</b> used by
+              the current step is provided below. The description is extracted from the docstring
+              of the worklet and provided here in verbatim / as-is.
+              <p>
+              <hr />
+              <pre class="runlog cmd"><code>{{ step['description'] }}</code></pre>
+            </div>
+          </div>
+          <!-- workflow-step-content-description END -->
 
           <!-- workflow-step-content-yaml BEGIN -->
           <div class="collapse" id="CONTENT_YAML_{{ step['id'] }}" data-bs-parent="#CONTENT_{{ step['id'] }}">

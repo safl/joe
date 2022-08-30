@@ -1,26 +1,26 @@
 """
-   repository_prep
-   ===============
+repository_prep
+===============
 
-   For every key in the configuration which has a subkey named "repository", then
-   following is done:
+For every key in the configuration which has a subkey named "repository", then
+following is done:
 
-   * git clone repository.upstream                   # if ! exists(repository.path)
-   * git checkout [repository.branch,repository.tag] # if repository.{branch,tag}
-   * git pull --rebase                               # if repository.branch
-   * git status
+ * git clone repository.upstream                   # if ! exists(repository.path)
+ * git checkout [repository.branch,repository.tag] # if repository.{branch,tag}
+ * git pull --rebase                               # if repository.branch
+ * git status
 
-   The intended usage of this worklet is to prepare a repositories in a recently
-   provision system. Such as a done by 'qemu.provision'.
+The intended usage of this worklet is to prepare a repositories in a recently
+provisioned system. Such as a done by 'qemu.provision'.
 
-   Configuration
-   -------------
+Configuration
+-------------
 
-   Ensure that the "repository" has sensible values for:
-   * {upstream,path,branch}"
+Ensure that the "repository" has sensible values for:
+* {upstream,path,branch}"
 
-   Retargetable: True
-   ------------------
+Retargetable: True
+------------------
 """
 import errno
 import logging as log

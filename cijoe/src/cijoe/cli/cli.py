@@ -212,6 +212,16 @@ def cli_workflow(args):
     os.makedirs(args.output)
     shutil.copyfile(args.config, args.output / "config.orig")
     shutil.copyfile(args.workflow, args.output / "workflow.orig")
+    resources = get_resources()
+
+    # pre-load worklets and augment state with step-descriptions
+    for step in workflow.state["steps"]:
+        worklet_ident = step["uses"]
+        resources["worklets"][worklet_ident].load()
+
+        step["description"] = "Undocumented"
+        if resources["worklets"][worklet_ident].mod.__doc__:
+            step["description"] = str(resources["worklets"][worklet_ident].mod.__doc__)
 
     workflow.state_dump(args.output / Workflow.STATE_FILENAME)
 
@@ -221,7 +231,6 @@ def cli_workflow(args):
         monitor.start()
 
     fail_fast = False
-    resources = get_resources()
 
     cijoe = Cijoe(config, args.output)
     for step in workflow.state["steps"]:
@@ -239,7 +248,6 @@ def cli_workflow(args):
             worklet_ident = step["uses"]
 
             try:
-                resources["worklets"][worklet_ident].load()
                 err = resources["worklets"][worklet_ident].func(args, cijoe, step)
                 if err:
                     log.error(f"worklet({worklet_ident}) : err({err})")
