@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """
-    fio: build
-    ============
+build fio
+=========
 
-    Retargetable: True
-    ------------------
+Build fio in fio.repository.path, using prefix fio.build.prefix.
+
+Retargetable: True
+------------------
 """
 from pathlib import Path
 

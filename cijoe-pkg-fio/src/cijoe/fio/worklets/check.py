@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-    fio: check
-    ==========
+check fio
+=========
 
-    Check the version of the wrapped fio
+Check the version of the wrapped fio. This is useful for reference and as a check that
+fio-wrapper has the correct options set.
 
-    Retargetable: True
-    ------------------
+Retargetable: True
+------------------
 """
 from cijoe.fio.wrapper import fio
 

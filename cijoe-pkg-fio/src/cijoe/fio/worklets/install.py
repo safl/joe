@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """
-    Installs fio
+install fio
+===========
 
-    Retargetable: True
-    ==================
+Just a plain 'make install' within 'repository.path'
+
+Retargetable: True
+------------------
 """
 from pathlib import Path
 
