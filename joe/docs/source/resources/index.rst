@@ -20,6 +20,7 @@ It should provide a usage page that looks like this:
 .. toctree::
    :maxdepth: 2
    :includehidden:
+   :hidden:
 
    workflows/index.rst
    worklets/index.rst

@@ -1,1 +1,1 @@
-cd source/workflows && joe -e
+cd source/resources/workflows && joe -e

@@ -29,11 +29,10 @@ report by invoking:
 For a thorough description, the rest of the documentation is provided with the
 :ref:`sec-introduction` serving as the starting point.
 
-Contents:
-
 .. toctree::
    :maxdepth: 2
    :includehidden:
+   :hidden:
 
    introduction/index.rst
    prerequisites/index.rst
@@ -41,10 +40,3 @@ Contents:
    resources/index.rst
 
    testing/index.rst
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

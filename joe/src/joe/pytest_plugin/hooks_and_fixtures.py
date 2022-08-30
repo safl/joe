@@ -10,7 +10,7 @@
             asssert not rcode
 
     To provide the cijoe-instance a configuration and output directory must be provided.
-    These are given via pytest, e.g.:
+    These are given via pytest, e.g.::
 
         pytest --config default.config --output /tmp/foo
 
