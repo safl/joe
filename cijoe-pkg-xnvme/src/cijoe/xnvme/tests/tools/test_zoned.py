@@ -8,6 +8,11 @@ zoned_idfy_ns.sh                --> test_idfy_ns()
 zoned_info.sh                   --> test_info()
 zoned_mgmt_open.sh              --> MISSING
 zoned_read.sh                   --> test_read()
+zoned_report.sh                 --> test_report_limit()
+zoned_report_all.sh             --> test_report_all()
+zoned_report_one.sh             --> test_report_single()
+zoned_report_some.sh            --> test_report_some()
+zoned_write.sh                  --> test_reset_report_write_report()
 
 TODO: for some reason 'zoned enum' hangs forever. It did not use to do that!?
 """
@@ -116,7 +121,7 @@ def test_append(cijoe, device, be_opts):
     xnvme_setup(labels=["zns"], opts=["be", "admin", "sync"]),
     indirect=["device"],
 )
-def test_report(cijoe, device, be_opts):
+def test_report_all(cijoe, device, be_opts):
 
     if be_opts["be"] == "linux" and be_opts["sync"] in ["psync"]:
         pytest.skip(reason="ENOSYS: psync(pwrite/pread) cannot do mgmt send/receive")
