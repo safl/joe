@@ -36,12 +36,14 @@ def test_library_info(cijoe):
 
     assert not rcode
 
+
 # TODO: this needs to switch driver attachment
 def test_enum(cijoe):
 
     rcode, _ = cijoe.run("xnvme enum")
 
     assert not rcode
+
 
 # TODO: this needs to parametrize with a fabrics-endpoint
 def test_enum(cijoe):
@@ -138,9 +140,7 @@ def test_log_erri(cijoe, device, be_opts):
 
     args = xnvme_cli_args(device, be_opts)
 
-    rcode, _ = cijoe.run(
-        f"xnvme log-erri {args} --nsid {device['nsid']}"
-    )
+    rcode, _ = cijoe.run(f"xnvme log-erri {args} --nsid {device['nsid']}")
 
     assert not rcode
 

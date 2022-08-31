@@ -1,3 +1,11 @@
+"""
+This is a port of the tests:
+
+xnvme_tests_lblk_io.sh                      --> test_io()
+xnvme_tests_lblk_scopy.sh                   --> test_scopy()
+xnvme_tests_lblk_write_uncorrectable.sh     --> test_write_uncorrectable()
+xnvme_tests_lblk_zero.sh                    --> test_write_zeroes()
+"""
 import pytest
 
 from cijoe.xnvme.tests.conftest import xnvme_cli_args

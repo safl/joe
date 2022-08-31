@@ -6,8 +6,9 @@ xnvme_tests_enum_any_be_open.sh  --> test_open_all_be()
 xnvme_tests_enum_multi.sh        --> test_open()
 xnvme_tests_enum_open.sh         --> test_multi()
 """
-from cijoe.xnvme.tests.conftest import xnvme_cli_args
-from cijoe.xnvme.tests.conftest import XnvmeDriver
+import pytest
+
+from cijoe.xnvme.tests.conftest import XnvmeDriver, xnvme_cli_args
 from cijoe.xnvme.tests.conftest import xnvme_device_driver as device
 from cijoe.xnvme.tests.conftest import xnvme_setup
 
@@ -54,6 +55,3 @@ def test_multi_all_be(cijoe):
     XnvmeDriver.kernel_detach(cijoe)
     rcode, _ = cijoe.run("xnvme_tests_enum multi --count 4")
     assert not rcode
-
-
-
