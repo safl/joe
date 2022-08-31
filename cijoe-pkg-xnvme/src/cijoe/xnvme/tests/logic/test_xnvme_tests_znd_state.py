@@ -1,3 +1,7 @@
+"""
+This is a port of the tests:
+xnvme_tests_znd_state.sh    --> test_transition()
+"""
 import pytest
 
 from cijoe.xnvme.tests.conftest import xnvme_cli_args

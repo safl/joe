@@ -1,3 +1,14 @@
+"""
+This is a port of tests:
+
+xnvme_tests_znd_zrwa_flush.sh               --> test_flush()
+xnvme_tests_znd_zrwa_flush_explicit.sh      --> test_flush_explicit()
+xnvme_tests_znd_zrwa_flush_implicit.sh      --> test_flush_implicit()
+xnvme_tests_znd_zrwa_idfy.sh                --> test_idfy()
+xnvme_tests_znd_zrwa_open_with_zrwa.sh      --> test_open-with_zrwa()
+xnvme_tests_znd_zrwa_open_without_zrwa.sh   --> test_open_without_zrwa()
+xnvme_tests_znd_zrwa_support.sh             --> test_support()
+"""
 import pytest
 
 from cijoe.xnvme.tests.conftest import xnvme_cli_args

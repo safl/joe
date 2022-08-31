@@ -1,3 +1,8 @@
+"""
+This is a port of the tests:
+
+xnvme_tests_znd_append.sh --> test_verify
+"""
 import pytest
 
 from cijoe.xnvme.tests.conftest import xnvme_cli_args
