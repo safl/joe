@@ -1,3 +1,21 @@
+"""
+This is a port of the tests:
+
+xnvme_kvs_enum.sh     --> test_enum [TODO]
+- Should attach/detach
+- There should also be a enumerate-fabrics test
+
+xnvme_kvs_exist.sh     --> test_delete_store_exist()
+xnvme_kvs_idfy_ns.sh   --> test_idfy_ns()
+xnvme_kvs_list.sh      --> test_delete_store_list()
+xnvme_kvs_retrieve.sh  --> MISSING
+xnvme_kvs_store_opt.sh --> MISSING
+
+Note
+----
+
+Currently no upstream support for the KVS command-set, thus these tests are skipped
+"""
 import pytest
 
 from cijoe.xnvme.tests.conftest import xnvme_cli_args
