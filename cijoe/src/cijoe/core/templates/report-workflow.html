@@ -138,7 +138,7 @@ div.image {
                   <td class="table-secondary w-25"><button class="btn btn-secondary">Skipped: {{ status.skipped }}</button></td>
                   <td class="table-info w-25">
                     <button class="btn btn-primary bi bi-clock-history" disabled="disabled">
-                    Elapsed: {{ status.elapsed | round(2) }} sec
+                    Elapsed: {{ status.elapsed | elapsed_txt }}
                     </button>
                   </td>
                 </tr>
@@ -233,7 +233,7 @@ div.image {
                 <span style="font-family: monospace;"
                       title="Elapsed Wall-Clock time in seconds"
                       data-bs-original-title="Tooltip on right">
-                  {{ step["status"]["elapsed"] | round(2) }} sec
+                  {{ step["status"]["elapsed"] | elapsed_txt }}
                 </span>
               </button>
 
@@ -308,7 +308,7 @@ div.image {
                 <div class="btn-group float-end" role="group">
                   <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                     {% if runlog["state"]["elapsed"] %}
-                      {{ runlog["state"]["elapsed"] | round(2) }}
+                      {{ runlog["state"]["elapsed"] | elapsed_txt }}
                     {% else %}
                       0
                     {% endif %}
@@ -471,7 +471,7 @@ div.image {
                         <div class="btn-group float-end" role="group">
                           <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
                             {% if runlog["state"]["elapsed"] %}
-                              {{ runlog["state"]["elapsed"] | round(2) }}
+                              {{ runlog["state"]["elapsed"] | elapsed_txt }}
                             {% else %}
                               0
                             {% endif %}

@@ -30,6 +30,21 @@ def to_yaml(value):
     return yaml.dump(value)
 
 
+def elapsed_txt(value):
+
+    minutes, seconds = divmod(float(value), 60.0)
+    hours, minutes = divmod(minutes, 60.0)
+
+    txt = []
+    if hours:
+        txt.append(f"{hours:.0f} hour")
+    if minutes:
+        txt.append(f"{minutes:.0f} min")
+    txt.append(f"{seconds:0.2f} sec")
+
+    return " ".join(txt)
+
+
 def worklet_entry(args, cijoe, step):
     """Produce a HTML report of the 'workflow.state' file in 'args.output'"""
 
@@ -49,6 +64,7 @@ def worklet_entry(args, cijoe, step):
         autoescape=True, loader=jinja2.FileSystemLoader(template_path.parent)
     )
     jinja_env.filters["to_yaml"] = to_yaml
+    jinja_env.filters["elapsed_txt"] = elapsed_txt
     template = jinja_env.get_template(template_path.name)
 
     with (report_path).open("w") as report:
