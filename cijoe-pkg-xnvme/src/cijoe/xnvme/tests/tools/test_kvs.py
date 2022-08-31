@@ -41,7 +41,6 @@ def test_enum(cijoe):
 def test_info(cijoe, device, be_opts, cli_args):
 
     rcode, _ = cijoe.run(f"kvs info {cli_args}")
-
     assert not rcode
 
 
@@ -53,7 +52,6 @@ def test_info(cijoe, device, be_opts, cli_args):
 def test_idfy_ns(cijoe, device, be_opts, cli_args):
 
     rcode, _ = cijoe.run(f"kvs idfy-ns {cli_args} --nsid {device['nsid']}")
-
     assert not rcode
 
 

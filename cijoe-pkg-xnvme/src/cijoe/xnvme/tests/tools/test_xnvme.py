@@ -32,7 +32,6 @@ from cijoe.xnvme.tests.conftest import xnvme_setup
 def test_library_info(cijoe):
 
     rcode, _ = cijoe.run("xnvme library-info")
-
     assert not rcode
 
 
@@ -55,7 +54,6 @@ def test_enum(cijoe):
 def test_enum(cijoe, device, be_opts, cli_args):
 
     rcode, _ = cijoe.run(f"xnvme enum --uri {device['uri']}")
-
     assert not rcode
 
 
@@ -67,7 +65,6 @@ def test_enum(cijoe, device, be_opts, cli_args):
 def test_info(cijoe, device, be_opts, cli_args):
 
     rcode, _ = cijoe.run(f"xnvme info {cli_args}")
-
     assert not rcode
 
 
@@ -81,7 +78,6 @@ def test_idfy(cijoe, device, be_opts, cli_args):
     rcode, _ = cijoe.run(
         f"xnvme idfy {cli_args} --cns 0x0 --cntid 0x0 --setid 0x0 --uuid 0x0"
     )
-
     assert not rcode
 
 
@@ -93,7 +89,6 @@ def test_idfy(cijoe, device, be_opts, cli_args):
 def test_idfy_ns(cijoe, device, be_opts, cli_args):
 
     rcode, _ = cijoe.run(f"xnvme idfy-ns {cli_args} --nsid {device['nsid']}")
-
     assert not rcode
 
 
@@ -105,7 +100,6 @@ def test_idfy_ns(cijoe, device, be_opts, cli_args):
 def test_idfy_ctrlr(cijoe, device, be_opts, cli_args):
 
     rcode, _ = cijoe.run(f"xnvme idfy-ctrlr {cli_args}")
-
     assert not rcode
 
 
@@ -120,7 +114,6 @@ def test_idfy_cs(cijoe, device, be_opts, cli_args):
         pytest.skip(reason="[admin=block] does not implement idfy-cs")
 
     rcode, _ = cijoe.run(f"xnvme idfy-cs {cli_args}")
-
     assert not rcode
 
 
@@ -132,7 +125,6 @@ def test_idfy_cs(cijoe, device, be_opts, cli_args):
 def test_format(cijoe, device, be_opts, cli_args):
 
     rcode, _ = cijoe.run(f"xnvme format {cli_args}")
-
     assert not rcode
 
 
@@ -146,7 +138,6 @@ def test_format(cijoe, device, be_opts, cli_args):
     pytest.skip(reason="TODO: always fails. Investigate.")
 
     rcode, _ = cijoe.run(f"xnvme sanitize {cli_args}")
-
     assert not rcode
 
 
@@ -161,7 +152,6 @@ def test_log_erri(cijoe, device, be_opts, cli_args):
         pytest.skip(reason="[admin=block] does not implement health-log")
 
     rcode, _ = cijoe.run(f"xnvme log-erri {cli_args} --nsid {device['nsid']}")
-
     assert not rcode
 
 
@@ -180,7 +170,6 @@ def test_log_health(cijoe, device, be_opts, cli_args):
 
     # Check the namespace
     rcode, _ = cijoe.run(f"xnvme log-health {cli_args} --nsid {device['nsid']}")
-
     assert not rcode
 
 
