@@ -17,6 +17,39 @@ def default_output_path():
     return os.path.join(os.getcwd(), "cijoe-output")
 
 
+class CommandState(object):
+    def __init__(self, cmd, cwd, rcode, begin, end, output_fpath, state_fpath):
+        self.cmd = cmd
+        self.cwd = cwd
+        self.rcode = rcode
+        self.begin = begin
+        self.end = end
+        self.elapsed = end - begin
+        self.output_fpath = output_fpath
+        self.state_fpath = state_fpath
+
+    def output(self):
+        """Returns the content of 'output_fpath'"""
+
+        with self.output_fpath.open() as ofd:
+            return ofd.read()
+
+    def to_file(self):
+        """Dump the command state to file"""
+
+        state = {
+            "cmd": self.cmd,
+            "cwd": self.cwd,
+            "rcode": self.rcode,
+            "begin": self.begin,
+            "end": self.end,
+            "elapsed": self.elapsed,
+            "output_fpath": self.output_fpath,
+        }
+        with open(self.state_fpath, "a", encoding=ENCODING) as state_file:
+            state_file.write(str(state))
+
+
 class Cijoe(object):
     """CIJOE providing retargetable command-line expressions and data-transfers"""
 
@@ -79,17 +112,16 @@ class Cijoe(object):
 
             end = time.time()
 
-            state = {
-                "cmd": cmd,
-                "cwd": cwd,
-                "rcode": rcode,
-                "begin": begin,
-                "end": end,
-                "elapsed": end - begin,
-                "output_fpath": cmd_output_fpath,
-            }
-            with open(cmd_state_fpath, "a", encoding=ENCODING) as state_file:
-                state_file.write(str(state))
+            state = CommandState(
+                cmd=cmd,
+                cwd=cwd,
+                rcode=rcode,
+                begin=begin,
+                end=end,
+                output_fpath=cmd_output_fpath,
+                state_fpath=cmd_state_fpath,
+            )
+            state.to_file()
 
         return rcode, state
 
