@@ -1,3 +1,19 @@
+"""
+This is a port of the tests:
+
+xnvme_enum.sh         --> test_enum() [TODO]
+xnvme_enum_fabrics.sh --> test_enum_fabrics() [TODO]
+xnvme_feature_get.sh  --> test_feature_get()
+xnvme_feature_set.sh  --> test_feature_set()
+xnvme_format.sh       --> [MISSING]
+xnvme_idfy.sh         --> test_idfy()
+xnvme_idfy_ctrlr.sh   --> test_idfy_ctrlr()
+xnvme_idfy_ns.sh      --> test_idfy_ns()
+xnvme_info.sh         --> test_info()
+
+Observation:
+    How was idfy-cs tested previously?
+"""
 import pytest
 
 from cijoe.xnvme.tests.conftest import xnvme_cli_args
@@ -8,6 +24,20 @@ from cijoe.xnvme.tests.conftest import xnvme_setup
 def test_library_info(cijoe):
 
     rcode, _ = cijoe.run("xnvme library-info")
+
+    assert not rcode
+
+# TODO: this needs to switch driver attachment
+def test_enum(cijoe):
+
+    rcode, _ = cijoe.run("xnvme enum")
+
+    assert not rcode
+
+# TODO: this needs to parametrize with a fabrics-endpoint
+def test_enum(cijoe):
+
+    rcode, _ = cijoe.run("xnvme enum")
 
     assert not rcode
 
@@ -35,7 +65,9 @@ def test_idfy(cijoe, device, be_opts):
 
     args = xnvme_cli_args(device, be_opts)
 
-    rcode, _ = cijoe.run(f"xnvme idfy {args} --cns 0x0")
+    rcode, _ = cijoe.run(
+        f"xnvme idfy {args} --cns 0x0 --cntid 0x0 --setid 0x0 --uuid 0x0"
+    )
 
     assert not rcode
 
@@ -49,7 +81,7 @@ def test_idfy_ns(cijoe, device, be_opts):
 
     args = xnvme_cli_args(device, be_opts)
 
-    rcode, _ = cijoe.run(f"xnvme idfy-ns {args}")
+    rcode, _ = cijoe.run(f"xnvme idfy-ns {args} --nsid {device['nsid']}")
 
     assert not rcode
 
@@ -153,7 +185,7 @@ def test_feature_set(cijoe, device, be_opts):
 
     args = xnvme_cli_args(device, be_opts)
 
-    rcode, _ = cijoe.run(f"xnvme feature-set {args} --fid 0x4 --save --feat 0x1")
+    rcode, _ = cijoe.run(f"xnvme feature-set {args} --fid 0x4 --feat 0x1 --save")
 
     if be_opts["admin"] == "block":
         assert rcode
