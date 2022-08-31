@@ -152,6 +152,21 @@ def xnvme_setup_device(labels):
     ]
 
 
+def xnvme_cli_args(device, be_opts):
+    """Construct cli-arguments for the given device and backend options"""
+
+    args = []
+
+    if device:
+        args += [f"{device['uri']}"]
+        args += [f"--dev-nsid {device['nsid']}"]
+
+    if be_opts:
+        args += [f"--{arg} {val}" for arg, val in be_opts.items() if arg != "label"]
+
+    return " ".join(args)
+
+
 def xnvme_setup(labels=[], opts=[]):
     """Produces a config, yields (device, be_opts)"""
 
@@ -191,21 +206,6 @@ def xnvme_setup(labels=[], opts=[]):
             )
 
     return parametrization
-
-
-def xnvme_cli_args(device, be_opts):
-    """Construct cli-arguments for the given device and backend options"""
-
-    args = []
-
-    if device:
-        args += [f"{device['uri']}"]
-        args += [f"--dev-nsid {device['nsid']}"]
-
-    if be_opts:
-        args += [f"--{arg} {val}" for arg, val in be_opts.items() if arg != "label"]
-
-    return " ".join(args)
 
 
 class XnvmeDriver(object):
