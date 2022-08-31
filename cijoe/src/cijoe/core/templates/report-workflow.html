@@ -423,7 +423,7 @@ div.image {
 
                   <div class="btn-group float-end" role="group">
                     <button class="btn btn-primary bi bi-clock-history" type="button" disabled="disabled">
-                      {{ testcase['duration'] | round(2) }}
+                      {{ testcase['duration'] | elapsed_txt }}
                     </button>
                     <button class="btn btn-primary bi bi-info-square" type="button"
                       data-bs-toggle="collapse"
