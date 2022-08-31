@@ -168,7 +168,7 @@ def xnvme_cli_args(device, be_opts):
 
 
 def xnvme_setup(labels=[], opts=[]):
-    """Produces a config, yields (device, be_opts)"""
+    """Produces a config, yields (device, be_opts, cli_args)"""
 
     parametrization = []
 
@@ -185,11 +185,14 @@ def xnvme_setup(labels=[], opts=[]):
 
         paramid = f"uri={dstr},{bstr}"
 
+        cli_args = xnvme_cli_args(device, be_opts)
+
         if device is None:
             parametrization.append(
                 pytest.param(
                     device,
                     be_opts,
+                    cli_args,
                     marks=pytest.mark.skip(
                         f"Configuration has no device labelled: {search}"
                     ),
@@ -201,6 +204,7 @@ def xnvme_setup(labels=[], opts=[]):
                 pytest.param(
                     device,
                     be_opts,
+                    cli_args,
                     id=paramid,
                 )
             )

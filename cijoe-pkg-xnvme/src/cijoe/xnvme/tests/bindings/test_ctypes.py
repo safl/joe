@@ -7,7 +7,6 @@ xpy_ctypes_bin_libconf.sh           --> test_xpy_libconf()
 """
 import pytest
 
-from cijoe.xnvme.tests.conftest import xnvme_cli_args
 from cijoe.xnvme.tests.conftest import xnvme_device_driver as device
 from cijoe.xnvme.tests.conftest import xnvme_setup
 
@@ -27,13 +26,13 @@ def test_xpy_libconf(cijoe):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts",
+    "device,be_opts,cli_args",
     xnvme_setup(labels=["dev"], opts=["be", "admin"]),
     indirect=["device"],
 )
-def test_xpy_dev_open(cijoe, device, be_opts):
+def test_xpy_dev_open(cijoe, device, be_opts, cli_args):
 
-    args = xnvme_cli_args(device, be_opts)
-
-    rcode, _ = cijoe.run(f"xpy_dev_open --uri {args['uri']} --dev-nsid {args['nsid']}")
+    rcode, _ = cijoe.run(
+        f"xpy_dev_open --uri {cli_args['uri']} --dev-nsid {cli_args['nsid']}"
+    )
     assert not rcode

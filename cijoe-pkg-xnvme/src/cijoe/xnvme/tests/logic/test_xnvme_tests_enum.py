@@ -8,17 +8,17 @@ xnvme_tests_enum_open.sh         --> test_multi()
 """
 import pytest
 
-from cijoe.xnvme.tests.conftest import XnvmeDriver, xnvme_cli_args
+from cijoe.xnvme.tests.conftest import XnvmeDriver
 from cijoe.xnvme.tests.conftest import xnvme_device_driver as device
 from cijoe.xnvme.tests.conftest import xnvme_setup
 
 
 @pytest.mark.parametrize(
-    "device,be_opts",
+    "device,be_opts,cli_args",
     xnvme_setup(labels=["dev"], opts=["be"]),
     indirect=["device"],
 )
-def test_open(cijoe, device, be_opts):
+def test_open(cijoe, device, be_opts, cli_args):
 
     rcode, _ = cijoe.run("xnvme_tests_enum open --count 4 --be {be_opts['be']}")
     assert not rcode
@@ -36,11 +36,11 @@ def test_open_all_be(cijoe):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts",
+    "device,be_opts,cli_args",
     xnvme_setup(labels=["dev"], opts=["be"]),
     indirect=["device"],
 )
-def test_multi(cijoe, device, be_opts):
+def test_multi(cijoe, device, be_opts, cli_args):
 
     rcode, _ = cijoe.run("xnvme_tests_enum multi --count 4 --be {be_opts['be']}")
     assert not rcode

@@ -11,14 +11,12 @@ from cijoe.xnvme.tests.conftest import xnvme_setup
 
 
 @pytest.mark.parametrize(
-    "device,be_opts",
+    "device,be_opts,cli_args",
     xnvme_setup(labels=["dev"], opts=["be", "admin"]),
     indirect=["device"],
 )
-def test_hw(cijoe, device, be_opts):
+def test_hw(cijoe, device, be_opts, cli_args):
 
-    args = xnvme_cli_args(device, be_opts)
-
-    rcode, _ = cijoe.run(f"xnvme_hello hw {args}")
+    rcode, _ = cijoe.run(f"xnvme_hello hw {cli_args}")
 
     assert not rcode

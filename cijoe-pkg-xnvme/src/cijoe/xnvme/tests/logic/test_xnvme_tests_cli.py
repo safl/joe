@@ -3,7 +3,6 @@ New addition
 """
 import pytest
 
-from cijoe.xnvme.tests.conftest import xnvme_cli_args
 from cijoe.xnvme.tests.conftest import xnvme_device_driver as device
 from cijoe.xnvme.tests.conftest import xnvme_setup
 
@@ -15,13 +14,18 @@ def test_optional_none(cijoe):
 
 
 @pytest.mark.parametrize(
-    "device,be_opts",
+    "device,be_opts,cli_args",
     xnvme_setup(opts=["be", "mem", "sync", "async", "admin"]),
     indirect=["device"],
 )
-def test_optional_all(cijoe, device, be_opts):
+def test_optional_all(cijoe, device, be_opts, cli_args):
 
-    args = xnvme_cli_args({}, be_opts)
-
-    rcode, _ = cijoe.run(f"xnvme_tests_cli optional {args}")
+    rcode, _ = cijoe.run(
+        f"xnvme_tests_cli optional "
+        f"-be {be_opts['be']} "
+        f"-mem {be_opts['mem']} "
+        f"-sync {be_opts['sync']} "
+        f"-async {be_opts['async']} "
+        f"-admin {be_opts['admin']} "
+    )
     assert not rcode
