@@ -1,8 +1,8 @@
 """
 This is a port of the tests:
 
-xnvme_enum.sh         --> test_enum() [TODO]
-xnvme_enum_fabrics.sh --> test_enum_fabrics() [TODO]
+xnvme_enum.sh         --> test_enum()
+xnvme_enum_fabrics.sh --> test_enum_fabrics()
 xnvme_feature_get.sh  --> test_feature_get()
 xnvme_feature_set.sh  --> test_feature_set()
 xnvme_format.sh       --> test_format()
@@ -14,7 +14,7 @@ xnvme_info.sh         --> test_info()
 xnvme_library_info.sh --> test_library_info()
 xnvme_log-erri.sh     --> test_log_erri()
 xnvme_log-health.sh   --> test_log_health()
-xnvme_log.sh          --> MISSING
+xnvme_log.sh          --> test_log()
 xnvme_padc.sh         --> test_padc()
 xnvme_pioc.sh         --> test_pioc()
 xnvme_sanitize.sh     --> MISSING
@@ -186,8 +186,8 @@ def test_log(cijoe, device, be_opts, cli_args):
     lid, lsp, lpo_nbytes, rae, nbytes = "0x1", "0x0", 0, 0, 4096
 
     rcode, _ = cijoe.run(
-        f"xnvme log {cli_args} --lid {lid} --lsp ${lsp} --lpo-nbytes ${lpo_nbytes} "
-        f"--rae ${rae} --data-nbytes {nbytes}"
+        f"xnvme log {cli_args} --lid {lid} --lsp {lsp} --lpo-nbytes {lpo_nbytes} "
+        f"--rae {rae} --data-nbytes {nbytes}"
     )
     assert not rcode
 
