@@ -235,6 +235,9 @@ def test_feature_set(cijoe, device, be_opts, cli_args):
 def test_padc(cijoe, device, be_opts, cli_args):
     """Construct and send an admin command (identify-controller)"""
 
+    if be_opts["be"] == "linux" and be_opts["admin"] in ["block"]:
+        pytest.skip(reason="[admin=block] does not support admin-passthru")
+
     opcode = "0x02"
     cns = "0x1"
     data_nbytes = 4096
@@ -264,17 +267,19 @@ def test_padc(cijoe, device, be_opts, cli_args):
 def test_pioc(cijoe, device, be_opts, cli_args):
     """Construct and send an I/O command (read)"""
 
-    pytest.fail(reason="Not implemented")
+    lba_nbytes = 512
 
     opcode = "0x02"
-    cns = "0x1"
-    data_nbytes = 4096
+    data_nbytes = lba_nbytes
     cmd_path = "/tmp/cmd-out.nvmec"
 
     rcode, _ = cijoe.run(f"rm {cmd_path}")
 
     rcode, _ = cijoe.run(
-        f"nvmec create --opcode {opcode} --cdw10 {cns} --cmd-output {cmd_path}"
+        f"nvmec create"
+        f" --opcode {opcode}"
+        f" --nsid {device['nsid']}"
+        f" --cmd-output {cmd_path}"
     )
     assert not rcode
 
@@ -282,6 +287,6 @@ def test_pioc(cijoe, device, be_opts, cli_args):
     assert not rcode
 
     rcode, _ = cijoe.run(
-        f"xnvme padc {cli_args} --cmd-input {cmd_path} --data-nbytes {data_nbytes}"
+        f"xnvme pioc {cli_args} --cmd-input {cmd_path} --data-nbytes {data_nbytes}"
     )
     assert not rcode
