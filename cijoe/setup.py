@@ -5,7 +5,7 @@ setup(
     version="0.5.0.dev1",
     author="Simon A. F. Lund",
     author_email="os@safl.dk",
-    url="https://github.com/safl/joe/",
+    url="https://github.com/refenv/cijoe",
     license="Apache License 2.0",
     install_requires=[
         "jinja2",
