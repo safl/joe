@@ -124,6 +124,15 @@ class SSH(Transport):
     def run(self, cmd, cwd, env, logfile):
         """Invoke the given command"""
 
+        # Seems like paramiko 'exec_command' or just SSH Accept-something... does not
+        # like setting environment variables... thus.. this injection of them...
+        # unfortunately then this is shell-dependent and probably breaks.
+        # This is why the CIJOE_DISABLE_SSH_ENV_INJECT is here.
+        prefix_env = "".join([f'{key}="{val}" ' for key, val in env.items()])
+        if os.environ.get("CIJOE_DISABLE_SSH_ENV_INJECT", None):
+            prefix_env = ""
+
+        cmd = f"{prefix_env}{cmd}"
         if cwd:
             cmd = f"cd {cwd}; {cmd}"
 
