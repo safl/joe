@@ -6,6 +6,7 @@ setup(
     author="Simon A. F. Lund",
     author_email="os@safl.dk",
     url="https://github.com/safl/joe/",
+    license="Apache License 2.0",
     install_requires=[
         "jinja2",
         "paramiko",
