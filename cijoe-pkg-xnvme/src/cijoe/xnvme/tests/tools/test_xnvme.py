@@ -5,11 +5,20 @@ xnvme_enum.sh         --> test_enum() [TODO]
 xnvme_enum_fabrics.sh --> test_enum_fabrics() [TODO]
 xnvme_feature_get.sh  --> test_feature_get()
 xnvme_feature_set.sh  --> test_feature_set()
-xnvme_format.sh       --> [MISSING]
+xnvme_format.sh       --> MISSING
 xnvme_idfy.sh         --> test_idfy()
 xnvme_idfy_ctrlr.sh   --> test_idfy_ctrlr()
 xnvme_idfy_ns.sh      --> test_idfy_ns()
 xnvme_info.sh         --> test_info()
+xnvme_library_info.sh --> test_library_info()
+xnvme_log-erri.sh     --> test_log_erri()
+- This no longer dumps output to file, there is no reason to...
+xnvme_log-health.sh   --> test_log_health()
+- This no longer dumps output to file, there is no reason to...
+xnvme_log.sh          --> MISSING
+xnvme_padc.sh         --> test_padc()
+xnvme_pioc.sh         --> test_pioc()
+xnvme_sanitize.sh     --> MISSING
 
 Observation:
     How was idfy-cs tested previously?
@@ -129,12 +138,9 @@ def test_log_erri(cijoe, device, be_opts):
 
     args = xnvme_cli_args(device, be_opts)
 
-    logpath = "/tmp/xnvme_log-erri.bin"
-
     rcode, _ = cijoe.run(
-        f"xnvme log-erri {args} --nsid {device['nsid']} --data-output {logpath}"
+        f"xnvme log-erri {args} --nsid {device['nsid']}"
     )
-    # cijoe.get(logpath, str(cijoe.output_path))
 
     assert not rcode
 
@@ -151,6 +157,10 @@ def test_log_health(cijoe, device, be_opts):
 
     args = xnvme_cli_args(device, be_opts)
 
+    # Check the controller
+    rcode, _ = cijoe.run(f"xnvme log-health {args} --nsid 0xFFFFFFFF")
+
+    # Check the namespace
     rcode, _ = cijoe.run(f"xnvme log-health {args} --nsid {device['nsid']}")
 
     assert not rcode
