@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """
-    Build xNVMe
+Build xNVMe
+===========
+
+
+Retargetable: True
+------------------
 """
 import errno
 from pathlib import Path
