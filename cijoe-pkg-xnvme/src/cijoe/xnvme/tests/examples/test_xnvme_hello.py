@@ -1,3 +1,8 @@
+"""
+This is a port of:
+
+* examples-xnvme_hello.sh
+"""
 import pytest
 
 from cijoe.xnvme.tests.conftest import xnvme_cli_args

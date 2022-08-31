@@ -1,3 +1,10 @@
+"""
+This is a port of the tests:
+
+examples-zoned_io_sync_append.sh --> test_append()
+examples-zoned_io_sync_read.sh --> test_read()
+examples-zoned_io_sync_write.sh --> test_write()
+"""
 import pytest
 
 from cijoe.xnvme.tests.conftest import xnvme_cli_args

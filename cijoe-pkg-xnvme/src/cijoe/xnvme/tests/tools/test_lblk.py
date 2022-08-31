@@ -1,3 +1,14 @@
+"""
+This is a port of the tests:
+
+lblk_enum.sh --> test_enum()
+lblk_idfy.sh --> test_idfy()
+lblk_info.sh --> test_info()
+lblk_read.sh --> test_read()
+lblk_write.sh --> test_write()
+lblk_write_uncor.sh --> test_write_uncor()
+lblk_write_zeroes.sh --> test_write_zeroes()
+"""
 import pytest
 
 from cijoe.xnvme.tests.conftest import xnvme_cli_args

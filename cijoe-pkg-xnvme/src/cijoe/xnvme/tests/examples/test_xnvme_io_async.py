@@ -1,3 +1,9 @@
+"""
+This is a port of:
+
+* examples-xnvme_io_async_read.sh  --> test_read()
+* examples-xnvme_io_async_write.sh --> test_write()
+"""
 import pytest
 
 from cijoe.xnvme.tests.conftest import xnvme_cli_args
