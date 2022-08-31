@@ -1,3 +1,16 @@
+"""
+This is a port of the tests:
+zoned_append.sh                 --> test_append()
+zoned_changes.sh                --> test_changes()
+zoned_enum.sh                   --> test_enum()
+zoned_idfy_ctrlr.sh             --> test_idfy_ctrlr()
+zoned_idfy_ns.sh                --> test_idfy_ns()
+zoned_info.sh                   --> test_info()
+zoned_mgmt_open.sh              --> MISSING
+zoned_read.sh                   --> test_read()
+
+TODO: for some reason 'zoned enum' hangs forever. It did not use to do that!?
+"""
 import copy
 
 import pytest
