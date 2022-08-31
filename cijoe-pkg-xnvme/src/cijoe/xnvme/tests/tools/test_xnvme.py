@@ -130,6 +130,20 @@ def test_idfy_cs(cijoe, device, be_opts):
 
 @pytest.mark.parametrize(
     "device,be_opts",
+    xnvme_setup(labels=["nvm"], opts=["be", "admin"]),
+    indirect=["device"],
+)
+def test_format(cijoe, device, be_opts):
+
+    args = xnvme_cli_args(device, be_opts)
+
+    rcode, _ = cijoe.run(f"xnvme format {args}")
+
+    assert not rcode
+
+
+@pytest.mark.parametrize(
+    "device,be_opts",
     xnvme_setup(labels=["dev"], opts=["be", "admin"]),
     indirect=["device"],
 )
