@@ -1,10 +1,10 @@
 """
 This is a port of the tests:
 
-* xnvme_tests_async_intf01.sh -> test_init_term()
-* xnvme_tests_async_intf02.sh -> test_init_term()
-* xnvme_tests_async_intf03.sh -> test_init_term()
-* xnvme_tests_async_intf04.sh -> test_init_term()
+xnvme_tests_async_intf01.sh     --> test_init_term()
+xnvme_tests_async_intf02.sh     --> test_init_term()
+xnvme_tests_async_intf03.sh     --> test_init_term()
+xnvme_tests_async_intf04.sh     --> test_init_term()
 
 The difference of the above tests are the variance of the parameter --count.
 The first three had hard-coded 1... 4 ... 8.
