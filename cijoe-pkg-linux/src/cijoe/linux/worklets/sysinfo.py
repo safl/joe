@@ -1,5 +1,11 @@
 """
-    Simple worklet collecting Linux system information
+collect Linux system information
+================================
+
+Collects a bunch of information about the system kernel and hardware.
+
+Retargetable: True
+------------------
 """
 
 

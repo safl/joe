@@ -1,9 +1,17 @@
 """
-    Worklet inserting/removing null_blk with args defined in cijoe.config
+insert / remove null_blk
+========================
 
-    Step arguments:
+Insert or remove null_blk instances, based on the value of step.args.do
 
-    * with.do = insert|remove
+* steps.args.do == "insert"
+  - Insert the nullblk module
+
+* step.args.do == "remove"
+  - Remove the nullblk module
+
+Retargetable: True
+------------------
 """
 import errno
 

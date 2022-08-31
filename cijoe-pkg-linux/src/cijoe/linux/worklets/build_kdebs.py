@@ -1,18 +1,18 @@
 """
-    Linux Custom Kernel as Debian Package
-    =====================================
+Linux Custom Kernel as Debian Package
+=====================================
 
-    There are a myriad of ways to build and install a custom Linux kernel. This worklet
-    builds it as a Debian package. The generated .deb packages are stored in
-    cijoe.output_path.
+There are a myriad of ways to build and install a custom Linux kernel. This worklet
+builds it as a Debian package. The generated .deb packages are stored in
+cijoe.output_path.
 
-    Retagetable: true
-    -----------------
+Retagetable: true
+-----------------
 
-    Worklet arguments
-    -----------------
+Worklet arguments
+-----------------
 
-    with.localversion
+with.localversion
 """
 from pathlib import Path
 
