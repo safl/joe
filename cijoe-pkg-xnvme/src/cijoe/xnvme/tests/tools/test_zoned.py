@@ -14,6 +14,7 @@ zoned_report_all.sh             --> test_report_all()
 zoned_report_one.sh             --> test_report_single()
 zoned_report_some.sh            --> test_report_some()
 zoned_write.sh                  --> test_reset_report_write_report()
+zoned_mgmt_open.sh              --> test_reset_open_report()
 
 TODO: for some reason 'zoned enum' hangs forever. It did not use to do that!?
 """
@@ -193,6 +194,29 @@ def test_reset_report_write_report(cijoe, device, be_opts, cli_args):
     assert not rcode
 
     rcode, _ = cijoe.run(f"zoned write {cli_args} --slba {slba} --nlb {nlb}")
+    assert not rcode
+
+    rcode, _ = cijoe.run(f"zoned report {cli_args} --slba {slba} --limit {limit}")
+    assert not rcode
+
+
+@pytest.mark.parametrize(
+    "device,be_opts,cli_args",
+    xnvme_setup(labels=["zns"], opts=["be", "admin", "sync"]),
+    indirect=["device"],
+)
+def test_reset_open_report(cijoe, device, be_opts, cli_args):
+
+    if be_opts["be"] == "linux" and be_opts["sync"] in ["psync", "block"]:
+        pytest.skip(reason="ENOSYS: sync=[psync,block] cannot do mgmt send/receive")
+
+    slba = "0x0"
+    limit = "1"
+
+    rcode, _ = cijoe.run(f"zoned mgmt-reset {cli_args} --slba {slba}")
+    assert not rcode
+
+    rcode, _ = cijoe.run(f"zoned mgmt-open {cli_args} --slba {slba}")
     assert not rcode
 
     rcode, _ = cijoe.run(f"zoned report {cli_args} --slba {slba} --limit {limit}")

@@ -22,7 +22,6 @@ def test_write(cijoe, device, be_opts, cli_args):
         pytest.skip(reason="psync(pread/write) does not support mgmt. send/receive")
 
     rcode, _ = cijoe.run(f"zoned_io_sync write {cli_args}")
-
     assert not rcode
 
 
@@ -39,7 +38,6 @@ def test_append(cijoe, device, be_opts, cli_args):
         pytest.skip(reason="Linux Block layer does not support append")
 
     rcode, _ = cijoe.run(f"zoned_io_sync append {cli_args}")
-
     assert not rcode
 
 
@@ -54,5 +52,4 @@ def test_read(cijoe, device, be_opts, cli_args):
         pytest.skip(reason="psync(pread/write) does not support mgmt. send/receive")
 
     rcode, _ = cijoe.run(f"zoned_io_sync read {cli_args}")
-
     assert not rcode

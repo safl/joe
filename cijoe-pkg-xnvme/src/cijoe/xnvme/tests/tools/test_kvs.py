@@ -1,15 +1,12 @@
 """
 This is a port of the tests:
 
-xnvme_kvs_enum.sh     --> test_enum [TODO]
-- Should attach/detach
-- There should also be a enumerate-fabrics test
-
+xnvme_kvs_enum.sh       --> test_enum
 xnvme_kvs_exist.sh     --> test_delete_store_exist()
 xnvme_kvs_idfy_ns.sh   --> test_idfy_ns()
 xnvme_kvs_list.sh      --> test_delete_store_list()
-xnvme_kvs_retrieve.sh  --> MISSING
-xnvme_kvs_store_opt.sh --> MISSING
+xnvme_kvs_retrieve.sh  --> test_retrieve()
+xnvme_kvs_store_opt.sh --> test_store_optional()
 
 Note
 ----
@@ -18,6 +15,7 @@ Currently no upstream support for the KVS command-set, thus these tests are skip
 """
 import pytest
 
+from cijoe.xnvme.tests.conftest import XnvmeDriver
 from cijoe.xnvme.tests.conftest import xnvme_device_driver as device
 from cijoe.xnvme.tests.conftest import xnvme_setup
 
@@ -26,9 +24,11 @@ pytest.skip(allow_module_level=True, reason="Not implemented")
 
 def test_enum(cijoe):
 
+    XnvmeDriver.kernel_attach(cijoe)
     rcode, _ = cijoe.run("kvs enum")
     assert not rcode
 
+    XnvmeDriver.kernel_detach(cijoe)
     rcode, _ = cijoe.run("kvs enum")
     assert not rcode
 
@@ -101,4 +101,62 @@ def test_delete_store_list(cijoe, device, be_opts, cli_args):
         assert not rcode
 
     rcode, _ = cijoe.run(f"kvs list {cli_args} --key {key}")
+    assert not rcode
+
+
+@pytest.mark.parametrize(
+    "device,be_opts,cli_args",
+    xnvme_setup(labels=["kvs"], opts=["be", "admin"]),
+    indirect=["device"],
+)
+def test_retrieve(cijoe, device, be_opts, cli_args):
+
+    key, val = ("hello", "world")
+
+    # This is just to ensure the key is not there
+    cijoe.run(f"kvs delete {cli_args} --key {key}")
+
+    rcode, _ = cijoe.run(f"kvs retrieve {cli_args} --key {key}")
+    assert not rcode
+
+    rcode, _ = cijoe.run(f"kvs store {cli_args} --key {key} --value {val}")
+    assert not rcode
+
+    rcode, _ = cijoe.run(f"kvs retrieve {cli_args} --key {key}")
+    assert not rcode
+
+
+@pytest.mark.parametrize(
+    "device,be_opts,cli_args",
+    xnvme_setup(labels=["kvs"], opts=["be", "admin"]),
+    indirect=["device"],
+)
+def test_store_optional(cijoe, device, be_opts, cli_args):
+
+    key = "hello"
+    val = "world"
+    val_next = "xnvme"
+
+    rcode, _ = cijoe.run(f"kvs delete {cli_args} --key {key}")
+
+    rcode, _ = cijoe.run(
+        f"kvs store {cli_args} --key {key} --value {val} --only-update"
+    )
+    assert not rcode
+
+    rcode, _ = cijoe.run(f"kvs store {cli_args} --key {key} --value {val}")
+    assert not rcode
+
+    rcode, _ = cijoe.run(
+        f"kvs store {cli_args} --key {key} --value {val_next} --only-update"
+    )
+    assert not rcode
+
+    rcode, _ = cijoe.run(f"kvs store {cli_args} --key {key} --value {val} --only-add")
+    assert rcode
+
+    rcode, _ = cijoe.run(f"kvs delete {cli_args} --key {key}")
+    assert not rcode
+
+    rcode, _ = cijoe.run(f"kvs store {cli_args} --key {key} --value {val} --only-add")
     assert not rcode

@@ -5,7 +5,6 @@ This is a port of:
 """
 import pytest
 
-from cijoe.xnvme.tests.conftest import xnvme_cli_args
 from cijoe.xnvme.tests.conftest import xnvme_device_driver as device
 from cijoe.xnvme.tests.conftest import xnvme_setup
 
@@ -18,5 +17,4 @@ from cijoe.xnvme.tests.conftest import xnvme_setup
 def test_hw(cijoe, device, be_opts, cli_args):
 
     rcode, _ = cijoe.run(f"xnvme_hello hw {cli_args}")
-
     assert not rcode
