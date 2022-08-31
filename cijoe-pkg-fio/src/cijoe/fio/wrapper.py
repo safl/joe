@@ -29,13 +29,11 @@ def fio_script_engine(
     engine_name,
     device,
     be_opts,
-    filename,
     output_path,
     extra_args,
 ):
     """
-    This
-    Invoke 'fio' script with setup of io-engine
+    Invoke fio with special setup of external IO-engine parameters
     """
 
     args = []
@@ -55,10 +53,10 @@ def fio_script_engine(
         args.append(f"--ioengine={engine_name}")
     elif engine["type"] == "external_dynamic":
         args.append(f"--engine=external:{ engine['path'] }")
-        args.append(f"--filename={filename}")
+        args.append(f"--filename={device['uri']}")
     elif engine["type"] == "external_preload":
         args = [f"LD_PRELOAD={ engine['path'] }"] + args
-        args.append(f"--filename={filename}")
+        args.append(f"--filename={device['uri']}")
     else:
         log.err(f"Configuration has invalid engine.type({ engine['type'] })")
         return errno.EINVAL, None
@@ -87,7 +85,4 @@ def fio_script_engine(
     # Add extra arguments
     args += extra_args
 
-    if device:
-        args.append(f"--filename={ device['uri'] }")
-
-    rcode, _ = fio(cijoe, " ".join(args))
+    return fio(cijoe, " ".join(args))
