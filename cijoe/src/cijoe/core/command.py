@@ -5,8 +5,9 @@ import errno
 import logging as log
 import os
 import time
-import yaml
 from pathlib import Path
+
+import yaml
 
 from cijoe.core import transport
 from cijoe.core.misc import ENCODING
@@ -20,13 +21,16 @@ def default_output_path():
 
 
 class CommandState(object):
-    def __init__(self, cmd, cwd, rcode, begin, end, output_fpath, state_fpath):
+    def __init__(
+        self, cmd, cwd, rcode, begin, end, output_dpath, output_fpath, state_fpath
+    ):
         self.cmd = cmd
         self.cwd = cwd
         self.rcode = rcode
         self.begin = begin
         self.end = end
         self.elapsed = end - begin
+        self.output_dpath = Path(output_dpath)
         self.output_fpath = Path(output_fpath)
         self.state_fpath = Path(state_fpath)
 
@@ -120,6 +124,7 @@ class Cijoe(object):
                 rcode=rcode,
                 begin=begin,
                 end=end,
+                output_dpath=cmd_output_dpath,
                 output_fpath=cmd_output_fpath,
                 state_fpath=cmd_state_fpath,
             )
@@ -136,8 +141,6 @@ class Cijoe(object):
         location is a subfolder of the output_path. Unless somebody wants to break the
         convention and call set_output_ident("../..")
         """
-
-        log.error(f"wtf({env})")
 
         return self._run(cmd, cwd, env, self.transport)
 

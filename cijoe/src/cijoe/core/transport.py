@@ -14,7 +14,7 @@ from cijoe.core.resources import Config
 
 class Transport(ABC):
     @abstractmethod
-    def run(self, cmd, cwd, env : dict, logfile):
+    def run(self, cmd, cwd, env: dict, logfile):
         pass
 
     @abstractmethod
