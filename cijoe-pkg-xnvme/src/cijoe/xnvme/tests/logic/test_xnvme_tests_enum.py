@@ -20,7 +20,7 @@ from cijoe.xnvme.tests.conftest import xnvme_setup
 )
 def test_open(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run("xnvme_tests_enum open --count 4 --be {be_opts['be']}")
+    rcode, _ = cijoe.run(f"xnvme_tests_enum open --count 4 --be {be_opts['be']}")
     assert not rcode
 
 
@@ -42,7 +42,7 @@ def test_open_all_be(cijoe):
 )
 def test_multi(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run("xnvme_tests_enum multi --count 4 --be {be_opts['be']}")
+    rcode, _ = cijoe.run(f"xnvme_tests_enum multi --count 4 --be {be_opts['be']}")
     assert not rcode
 
 
