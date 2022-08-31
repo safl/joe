@@ -350,7 +350,7 @@ class Workflow(Resource):
         for nr, step in enumerate(workflow_dict["steps"], 1):
             step["nr"] = nr
             step["status"] = {"skipped": 0, "passed": 0, "failed": 0, "elapsed": 0.0}
-            step["id"] = f"{nr}_{step['name']}"
+            step["id"] = f"{nr:03}_{step['name']}"
 
             state["steps"].append(step)
 
