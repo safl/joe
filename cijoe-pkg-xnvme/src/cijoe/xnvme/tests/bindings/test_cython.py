@@ -5,6 +5,8 @@ xpy_cython_bindings_pytest.sh       --> test_cython_bindings
 xpy_cython_header_pytest.sh         --> test_cython_header
 
 """
+from pathlib import Path
+
 import pytest
 
 from cijoe.xnvme.tests.conftest import xnvme_cli_args
@@ -25,11 +27,11 @@ def test_cython_bindings(cijoe, device, be_opts):
         [
             f"XNVME_URI={device['uri']}",
             f"XNVME_BE={be_opts['be']} ",
-            f"XNVME_DEV_NSID={dev['nsid']}",
+            f"XNVME_DEV_NSID={device['nsid']}",
             "python3 -m pytest --pyargs xnvme.cython_bindings -v -s",
         ]
     )
-    rcode, _ = cjioe.run(cmd)
+    rcode, _ = cijoe.run(cmd)
     assert not rcode
 
 
@@ -57,10 +59,10 @@ def test_cython_header(cijoe, device, be_opts):
         [
             f"XNVME_URI={device['uri']}",
             f"XNVME_BE={be_opts['be']} ",
-            f"XNVME_DEV_NSID={dev['nsid']}",
+            f"XNVME_DEV_NSID={device['nsid']}",
             f"python3 -m pytest --cython-collect {header_path} -v -s",
         ]
     )
 
-    rcode, _ = cjioe.run(cmd)
+    rcode, _ = cijoe.run(cmd)
     assert not rcode

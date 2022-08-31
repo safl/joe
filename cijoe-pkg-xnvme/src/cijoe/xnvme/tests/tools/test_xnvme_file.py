@@ -27,13 +27,13 @@ def test_copy_sync(cijoe, device, be_opts):
     src, dst, iosize = ("/tmp/input.bin", "/tmp/output.bin", 4096)
 
     prep = [
-        f"dd if=/dev/zero of={dst_path} bs=1M count=1000",
+        f"dd if=/dev/zero of={dst} bs=1M count=1000",
         "sync",
         "free -m",
         "df -h",
         "lsblk",
-        f"xnvme_file copy-sync {src_path} {dst_path} --size={iosize}",
-        "free -m"
+        f"xnvme_file copy-sync {src} {dst} --size={iosize}",
+        "free -m",
     ]
     for cmd in prep:
         rcode, _ = cijoe.run(cmd)

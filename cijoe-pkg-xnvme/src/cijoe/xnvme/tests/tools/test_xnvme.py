@@ -24,7 +24,7 @@ Observation:
 """
 import pytest
 
-from cijoe.xnvme.tests.conftest import xnvme_cli_args
+from cijoe.xnvme.tests.conftest import XnvmeDriver, xnvme_cli_args
 from cijoe.xnvme.tests.conftest import xnvme_device_driver as device
 from cijoe.xnvme.tests.conftest import xnvme_setup
 
@@ -54,7 +54,7 @@ def test_enum(cijoe):
 )
 def test_enum(cijoe, device, be_opts):
 
-    rcode, _ = cijoe.run(f"xnvme enum --uri {device['uri']")
+    rcode, _ = cijoe.run(f"xnvme enum --uri {device['uri']}")
 
     assert not rcode
 
