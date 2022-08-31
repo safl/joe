@@ -2,8 +2,10 @@
 
 """
 import errno
+import logging as log
 import os
 import time
+import yaml
 from pathlib import Path
 
 from cijoe.core import transport
@@ -25,8 +27,8 @@ class CommandState(object):
         self.begin = begin
         self.end = end
         self.elapsed = end - begin
-        self.output_fpath = output_fpath
-        self.state_fpath = state_fpath
+        self.output_fpath = Path(output_fpath)
+        self.state_fpath = Path(state_fpath)
 
     def output(self):
         """Returns the content of 'output_fpath'"""
@@ -37,17 +39,17 @@ class CommandState(object):
     def to_file(self):
         """Dump the command state to file"""
 
-        state = {
-            "cmd": self.cmd,
-            "cwd": self.cwd,
-            "rcode": self.rcode,
-            "begin": self.begin,
-            "end": self.end,
-            "elapsed": self.elapsed,
-            "output_fpath": self.output_fpath,
-        }
-        with open(self.state_fpath, "a", encoding=ENCODING) as state_file:
-            state_file.write(str(state))
+        with self.state_fpath.open("a", encoding=ENCODING) as state_file:
+            state = {
+                "cmd": self.cmd,
+                "cwd": str(self.cwd),
+                "rcode": self.rcode,
+                "begin": self.begin,
+                "end": self.end,
+                "elapsed": self.elapsed,
+                "output_fpath": str(self.output_fpath),
+            }
+            yaml.dump(state, state_file)
 
 
 class Cijoe(object):
@@ -82,7 +84,7 @@ class Cijoe(object):
         self.output_ident = output_ident
         self.transport.output_ident = output_ident
 
-    def _run(self, cmd, cwd=None, evars=None, transport=None):
+    def _run(self, cmd, cwd, env, transport):
 
         self.run_count += 1
         cmd_output_dpath = os.path.join(self.output_path, self.output_ident)
@@ -98,7 +100,7 @@ class Cijoe(object):
             begin = time.time()
 
             try:
-                rcode = transport.run(cmd, cwd, evars, logfile)
+                rcode = transport.run(cmd, cwd, env, logfile)
             except Exception as exc:
                 if (
                     hasattr(exc, "errno")
@@ -125,7 +127,7 @@ class Cijoe(object):
 
         return rcode, state
 
-    def run(self, cmd, cwd=None, evars=None):
+    def run(self, cmd, cwd=None, env={}):
         """
         Execute the given shell command/expression via 'config.transport'
 
@@ -135,9 +137,11 @@ class Cijoe(object):
         convention and call set_output_ident("../..")
         """
 
-        return self._run(cmd, cwd, evars, self.transport)
+        log.error(f"wtf({env})")
 
-    def run_local(self, cmd, cwd=None, evars=None):
+        return self._run(cmd, cwd, env, self.transport)
+
+    def run_local(self, cmd, cwd=None, env={}):
         """
         Execute the given shell command/expression via local transport
 
@@ -147,7 +151,7 @@ class Cijoe(object):
         convention and call set_output_ident("../..")
         """
 
-        return self._run(cmd, cwd, evars, self.transport_local)
+        return self._run(cmd, cwd, env, self.transport_local)
 
     def put(self, src, dst):
         """Transfer 'src' on 'dev_box' to 'dst' on **test_target**"""

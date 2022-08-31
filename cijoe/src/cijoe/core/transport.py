@@ -1,4 +1,4 @@
-import logging
+import logging as log
 import os
 import shutil
 import subprocess
@@ -14,7 +14,7 @@ from cijoe.core.resources import Config
 
 class Transport(ABC):
     @abstractmethod
-    def run(self, cmd, cwd, evars, logfile):
+    def run(self, cmd, cwd, env : dict, logfile):
         pass
 
     @abstractmethod
@@ -34,8 +34,11 @@ class Local(Transport):
         self.output_path = output_path
         self.output_ident = "artifacts"
 
-    def run(self, cmd, cwd, evars, logfile):
+    def run(self, cmd, cwd, env, logfile):
         """Invoke the given command"""
+
+        env = dict(os.environ)
+        env.update(env)
 
         with subprocess.Popen(
             cmd,
@@ -43,6 +46,7 @@ class Local(Transport):
             stderr=subprocess.STDOUT,
             shell=True,
             cwd=cwd,
+            env=env,
         ) as process:
             process.wait()
 
@@ -104,7 +108,7 @@ class SSH(Transport):
         # Current short-coming is of course that then these cannot happen in parallel.
 
         paramiko.util.log_to_file(
-            self.output_path / "paramiko.log", level=logging.root.level
+            self.output_path / "paramiko.log", level=log.root.level
         )
 
     def __connect(self):
@@ -117,7 +121,7 @@ class SSH(Transport):
         self.scp.close()
         self.ssh.close()
 
-    def run(self, cmd, cwd, evars, logfile):
+    def run(self, cmd, cwd, env, logfile):
         """Invoke the given command"""
 
         if cwd:
@@ -125,7 +129,7 @@ class SSH(Transport):
 
         self.__connect()
 
-        _, stdout, stderr = self.ssh.exec_command(cmd, environment=evars)
+        _, stdout, stderr = self.ssh.exec_command(cmd, environment=env)
 
         logfile.write(stdout.read().decode(ENCODING))
         logfile.write(stderr.read().decode(ENCODING))

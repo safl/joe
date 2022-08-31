@@ -16,21 +16,22 @@ import errno
 import logging as log
 
 
-def fio(cijoe, args=""):
+def fio(cijoe, args="", env={}):
     """Invoke 'fio'"""
 
-    return cijoe.run(f"{cijoe.config.options['fio']['bin']} {args}")
+    return cijoe.run(f"{cijoe.config.options['fio']['bin']} {args}", env=env)
 
 
 def fio_script_engine(
     cijoe,
     script,
-    script_section,
+    section,
     engine_name,
     device,
     be_opts,
     output_path,
     extra_args,
+    env={},
 ):
     """
     Invoke fio with special setup of external IO-engine parameters
@@ -38,18 +39,24 @@ def fio_script_engine(
 
     args = []
 
+    # Script and section
+    args += [
+        str(script),
+        f"--section={section}"
+    ]
+
     # Retrieve engine information
-    engines = cijoe.config.options.get("engines", None)
+    engines = cijoe.config.options.get("fio", {}).get("engines", None)
     if engines is None:
-        log.err("Configuration has no 'engines'")
+        log.error("Configuration has no 'engines'")
         return errno.EINVAL, None
-    engine = cijoe.config.options.get(engine_name, None)
+    engine = engines.get(engine_name, None)
     if engine is None:
-        log.err(f"Configuration has no 'engine' with label({engine_name})")
+        log.error(f"Configuration has no 'engine' with label({engine_name})")
         return errno.EINVAL, None
 
     # setup general '--ioengine' options
-    if engine["type"] == "builitin":
+    if engine["type"] == "builtin":
         args.append(f"--ioengine={engine_name}")
     elif engine["type"] == "external_dynamic":
         args.append(f"--engine=external:{ engine['path'] }")
@@ -58,7 +65,7 @@ def fio_script_engine(
         args = [f"LD_PRELOAD={ engine['path'] }"] + args
         args.append(f"--filename={device['uri']}")
     else:
-        log.err(f"Configuration has invalid engine.type({ engine['type'] })")
+        log.error(f"Configuration has invalid engine.type({ engine['type'] })")
         return errno.EINVAL, None
 
     # setup 'xnvme' specific options
@@ -82,7 +89,16 @@ def fio_script_engine(
         args.append("--filename=Nvme0n1")
         # TODO: add subnqn here
 
+    args += [
+        "--output-format=normal,json",
+        f"--output=/tmp/fio-output.txt"
+    ]
+
     # Add extra arguments
     args += extra_args
 
-    return fio(cijoe, " ".join(args))
+    rcode, state = fio(cijoe, " ".join(args), env=env)
+
+    cijoe.get("/tmp/fio-output.txt", ".")
+
+    return rcode, state
