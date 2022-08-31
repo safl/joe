@@ -207,19 +207,19 @@ def test_log_health(cijoe, device, be_opts):
     xnvme_setup(labels=["dev"], opts=["be", "admin"]),
     indirect=["device"],
 )
-def test_log_health(cijoe, device, be_opts):
+def test_log(cijoe, device, be_opts):
 
     if be_opts["be"] == "linux" and be_opts["admin"] in ["block"]:
-        pytest.skip(reason="[admin=block] does not implement health-log")
+        pytest.skip(reason="[admin=block] does not implement get_log")
 
     args = xnvme_cli_args(device, be_opts)
 
-    # Check the controller
-    rcode, _ = cijoe.run(f"xnvme log-health {args} --nsid 0xFFFFFFFF")
+    lid, lsp, lpo_nbytes, rae, nbytes = "0x1", "0x0", 0, 0, 4096
 
-    # Check the namespace
-    rcode, _ = cijoe.run(f"xnvme log-health {args} --nsid {device['nsid']}")
-
+    rcode, _ = cijoe.run(
+        f"xnvme log {args} --lid {lid} --lsp ${lsp} --lpo-nbytes ${lpo_nbytes} "
+        f"--rae ${rae} --data-nbytes {nbytes}"
+    )
     assert not rcode
 
 
