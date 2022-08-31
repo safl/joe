@@ -1,3 +1,10 @@
+"""
+This is a port of the tests:
+
+xpy_ctypes_bin_dev_open.sh          --> test_xpy_dev_open()
+xpy_ctypes_bin_enumerate.sh         --> test_xpy_enumerate()
+xpy_ctypes_bin_libconf.sh           --> test_xpy_libconf()
+"""
 import pytest
 
 from cijoe.xnvme.tests.conftest import xnvme_cli_args
