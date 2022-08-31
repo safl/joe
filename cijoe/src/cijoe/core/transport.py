@@ -94,6 +94,15 @@ class SSH(Transport):
         self.ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         self.scp = None
 
+        # Not connecting at this point, since the remote side might be ready at the time
+        # the transport is initialized. For example, when a qemu-guest is booted, then
+        # cijoe.run_local() is used, and not until the guest is up will the cij.run() be
+        # used. Also, when a system reboots etc. then dropped connections must be
+        # handled, lastly connection close must happen as Python terminates, dangling
+        # connections will make it hang.
+        # Thus, __connect()/__disconnect() is called for each call to run()/get()/put().
+        # Current short-coming is of course that then these cannot happen in parallel.
+
         paramiko.util.log_to_file(
             self.output_path / "paramiko.log", level=logging.root.level
         )
