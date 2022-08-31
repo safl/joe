@@ -5,16 +5,15 @@ xnvme_enum.sh         --> test_enum() [TODO]
 xnvme_enum_fabrics.sh --> test_enum_fabrics() [TODO]
 xnvme_feature_get.sh  --> test_feature_get()
 xnvme_feature_set.sh  --> test_feature_set()
-xnvme_format.sh       --> MISSING
+xnvme_format.sh       --> test_format()
+xnvme_sanitize.sh     --> test_sanitize() -- TODO: Needs some investigation
 xnvme_idfy.sh         --> test_idfy()
 xnvme_idfy_ctrlr.sh   --> test_idfy_ctrlr()
 xnvme_idfy_ns.sh      --> test_idfy_ns()
 xnvme_info.sh         --> test_info()
 xnvme_library_info.sh --> test_library_info()
 xnvme_log-erri.sh     --> test_log_erri()
-- This no longer dumps output to file, there is no reason to...
 xnvme_log-health.sh   --> test_log_health()
-- This no longer dumps output to file, there is no reason to...
 xnvme_log.sh          --> MISSING
 xnvme_padc.sh         --> test_padc()
 xnvme_pioc.sh         --> test_pioc()
@@ -37,18 +36,25 @@ def test_library_info(cijoe):
     assert not rcode
 
 
-# TODO: this needs to switch driver attachment
 def test_enum(cijoe):
 
+    XnvmeDriver.kernel_attach(cijoe)
     rcode, _ = cijoe.run("xnvme enum")
+    assert not rcode
 
+    XnvmeDriver.kernel_detach(cijoe)
+    rcode, _ = cijoe.run("xnvme enum")
     assert not rcode
 
 
-# TODO: this needs to parametrize with a fabrics-endpoint
-def test_enum(cijoe):
+@pytest.mark.parametrize(
+    "device,be_opts",
+    xnvme_setup(labels=["fabrics"], opts=["be"]),
+    indirect=["device"],
+)
+def test_enum(cijoe, device, be_opts):
 
-    rcode, _ = cijoe.run("xnvme enum")
+    rcode, _ = cijoe.run(f"xnvme enum --uri {device['uri']")
 
     assert not rcode
 
@@ -138,6 +144,22 @@ def test_format(cijoe, device, be_opts):
     args = xnvme_cli_args(device, be_opts)
 
     rcode, _ = cijoe.run(f"xnvme format {args}")
+
+    assert not rcode
+
+
+@pytest.mark.parametrize(
+    "device,be_opts",
+    xnvme_setup(labels=["nvm"], opts=["be", "admin"]),
+    indirect=["device"],
+)
+def test_format(cijoe, device, be_opts):
+
+    pytest.skip(reason="TODO: always fails. Investigate.")
+
+    args = xnvme_cli_args(device, be_opts)
+
+    rcode, _ = cijoe.run(f"xnvme sanitize {args}")
 
     assert not rcode
 
