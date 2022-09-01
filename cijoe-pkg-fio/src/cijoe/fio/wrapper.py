@@ -37,10 +37,10 @@
     -----------------
 """
 import errno
+import json
 import logging as log
 import os
 from pathlib import Path
-
 
 JOBS = {
     "compare": {
@@ -136,11 +136,13 @@ def setup_ioengine(param, env, engine_name, cijoe, device, xnvme_opts, spdk_opts
         else:
             param["filename"] = device["uri"]
     elif engine_name == "spdk":
-        param["filename"] = " ".join([
-            "trtype=PCIe",
-            f"traddr={device['uri']}",
-            f"ns={device['nsid']}",
-        ])
+        param["filename"] = " ".join(
+            [
+                "trtype=PCIe",
+                f"traddr={device['uri']}",
+                f"ns={device['nsid']}",
+            ]
+        )
     elif engine_name == "spdk_bdev":
         # TODO: need to generate a spdk.bdev.conf for the device and be-options
         # generate spdk-conf
@@ -184,7 +186,7 @@ def fio_fancy(cijoe, output_fpath, jobname, engine_name, device, xnvme_opts):
     @returns err, state
     """
 
-    param, env = {}, {}                             # Setup parameters and env.
+    param, env = {}, {}  # Setup parameters and env.
     setup_job(param, env, jobname)
     setup_ioengine(param, env, engine_name, cijoe, device, xnvme_opts, {})
     setup_output(param, env, output_fpath)
@@ -192,16 +194,43 @@ def fio_fancy(cijoe, output_fpath, jobname, engine_name, device, xnvme_opts):
     environment = env
     parameters = " ".join([f'--{key}="{val}"' for key, val in param.items()])
 
-    err, _ = cijoe.run(f"rm {output_fpath}")        # Avoid getting old data...
+    err, _ = cijoe.run(f"rm {output_fpath}")  # Avoid getting old data...
     if err:
         log.info(f"failed removing '{output_fpath}'")
 
     err, state = fio(cijoe, parameters, env=environment)
 
-    cijoe.run(f"cat {output_fpath}")                # Get the output in runlog
+    cijoe.run(f"cat {output_fpath}")  # Get the output in runlog
 
-    artifacts = state.output_dpath / "artifacts"    # Collect output as artifact
+    artifacts = state.output_dpath / "artifacts"  # Collect output as artifact
     os.makedirs(artifacts, exist_ok=True)
     cijoe.get(str(output_fpath), str(artifacts / output_fpath.name))
 
     return err, state
+
+
+def dict_from_fio_output_file(fpath: Path) -> dict:
+    """
+    The JSON output produced by fio comes mixed with non-JSON output, this function
+    attempts to extract the JSON part, parse it and return the JSON-document as a dict.
+
+    On error, an empty dict is returned.
+    """
+
+    lines = []
+
+    with fpath.open() as fio_output:
+        do_append = False
+        for line in fio_output:
+            if line.startswith("{"):
+                do_append = True
+
+            if do_append:
+                lines.append(line)
+
+            if line.startswith("}"):
+                break
+    try:
+        return json.loads("".join(lines))
+    except json.decoder.JSONDecodeError:
+        return {}
