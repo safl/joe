@@ -126,7 +126,7 @@ div.image {
           <div class="tab-pane show active" id="status-tab-pane" role="tabpanel" aria-labelledby="status-tab" tabindex="0">
 
             <div class="container" style="padding: 1rem;">
-              The workflow started on {{ status.started | timestamp_to_txt }}, status on the steps
+              The workflow started on {{ status.get("started", 0.0) | timestamp_to_txt }}, status on the steps
               is provided below.
             </div>
 
@@ -233,7 +233,7 @@ div.image {
                 <span style="font-family: monospace;"
                       title="Elapsed Wall-Clock time in seconds"
                       data-bs-original-title="Tooltip on right">
-                  {{ step["status"]["elapsed"] | elapsed_txt }}
+                  {{ step["status"].get("elapsed", 0.0) | elapsed_txt }}
                 </span>
               </button>
 
