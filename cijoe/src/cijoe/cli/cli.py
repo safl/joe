@@ -216,7 +216,9 @@ def cli_workflow(args):
     shutil.copyfile(args.workflow, args.output / "workflow.orig")
     resources = get_resources()
 
-    # pre-load worklets and augment state with step-descriptions
+    # pre-load worklets and augment state with step-descriptions.
+    # TODO: for some reason when mod.__doc__ is None, then the docstring from a previous
+    # mod trickles in. This should be fixed...
     for step in workflow.state["steps"]:
         worklet_ident = step["uses"]
         resources["worklets"][worklet_ident].load()
@@ -224,6 +226,8 @@ def cli_workflow(args):
         step["description"] = "Undocumented"
         if resources["worklets"][worklet_ident].mod.__doc__:
             step["description"] = str(resources["worklets"][worklet_ident].mod.__doc__)
+
+    workflow.state["status"]["started"] = time.time()
 
     workflow.state_dump(args.output / Workflow.STATE_FILENAME)
 

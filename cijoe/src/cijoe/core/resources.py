@@ -227,7 +227,13 @@ class Workflow(Resource):
         "doc": "",
         "config": {},
         "steps": [],
-        "status": {"skipped": 0, "failed": 0, "passed": 0, "elapsed": 0.0},
+        "status": {
+            "skipped": 0,
+            "failed": 0,
+            "passed": 0,
+            "elapsed": 0.0,
+            "started": 0.0,
+        },
     }
 
     def __init__(self, path, pkg=None):
@@ -349,7 +355,13 @@ class Workflow(Resource):
         state["config"] = workflow_dict.get("config", {})
         for nr, step in enumerate(workflow_dict["steps"], 1):
             step["nr"] = nr
-            step["status"] = {"skipped": 0, "passed": 0, "failed": 0, "elapsed": 0.0}
+            step["status"] = {
+                "skipped": 0,
+                "passed": 0,
+                "failed": 0,
+                "elapsed": 0.0,
+                "started": 0.0,
+            }
             step["id"] = f"{nr:03}_{step['name']}"
 
             state["steps"].append(step)

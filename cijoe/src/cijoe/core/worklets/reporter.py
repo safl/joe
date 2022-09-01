@@ -24,6 +24,7 @@ import yaml
 
 from cijoe.core.processing import process_workflow_output
 from cijoe.core.resources import get_resources
+from datetime import datetime
 
 
 def to_yaml(value):
@@ -43,6 +44,11 @@ def elapsed_txt(value):
     txt.append(f"{seconds:0.2f} sec")
 
     return " ".join(txt)
+
+
+def timestamp_to_txt(value):
+
+    return datetime.fromtimestamp(float(value)).strftime("%d-%m-%Y, %H:%M:%S")
 
 
 def worklet_entry(args, cijoe, step):
@@ -65,6 +71,7 @@ def worklet_entry(args, cijoe, step):
     )
     jinja_env.filters["to_yaml"] = to_yaml
     jinja_env.filters["elapsed_txt"] = elapsed_txt
+    jinja_env.filters["timestamp_to_txt"] = timestamp_to_txt
     template = jinja_env.get_template(template_path.name)
 
     with (report_path).open("w") as report:

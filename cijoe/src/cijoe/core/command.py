@@ -51,6 +51,7 @@ class CommandState(object):
                 "begin": self.begin,
                 "end": self.end,
                 "elapsed": self.elapsed,
+                "output_dpath": str(self.output_dpath),
                 "output_fpath": str(self.output_fpath),
             }
             yaml.dump(state, state_file)

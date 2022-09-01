@@ -126,8 +126,8 @@ div.image {
           <div class="tab-pane show active" id="status-tab-pane" role="tabpanel" aria-labelledby="status-tab" tabindex="0">
 
             <div class="container" style="padding: 1rem;">
-              Below is a status summary for steps, the color-coding is re-used below on the steps
-              themselves, as well as in test-reports from e.g. pytest.
+              The workflow started on {{ status.started | timestamp_to_txt }}, status on the steps
+              is provided below.
             </div>
 
             <table class="table">
