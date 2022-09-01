@@ -2,7 +2,7 @@ from setuptools import find_namespace_packages, setup
 
 setup(
     name="cijoe-pkg-xnvme",
-    version="0.0.1.dev1",
+    version="0.5.0.dev1",
     author="Simon A. F. Lund",
     author_email="os@safl.dk",
     url="https://github.com/safl/joe-pkg-xnvme/",
