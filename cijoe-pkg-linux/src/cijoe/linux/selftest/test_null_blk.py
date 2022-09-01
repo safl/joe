@@ -22,20 +22,20 @@ def test_insert(cijoe):
     nr_devices = int(config.get("nr_devices"))
     assert nr_devices, "!nr_devices, only module-load instances are supported"
 
-    rcode, _ = null_blk.insert(cijoe)
-    assert not rcode, "Failed inserting kernel module"
+    err, _ = null_blk.insert(cijoe)
+    assert not err, "Failed inserting kernel module"
 
-    rcode, _ = cijoe.run("lsblk")
-    assert not rcode, "Failed listing block devices"
+    err, _ = cijoe.run("lsblk")
+    assert not err, "Failed listing block devices"
 
     for n in range(nr_devices):
-        rcode, _ = cijoe.run(f"file /dev/nullb{n}")
-        assert not rcode
+        err, _ = cijoe.run(f"file /dev/nullb{n}")
+        assert not err
 
 
 def test_remove(cijoe):
 
     skip_when_config_has_no_remote(cijoe)
 
-    rcode, _ = null_blk.remove(cijoe)
-    assert not rcode, "Failed removing kernel module"
+    err, _ = null_blk.remove(cijoe)
+    assert not err, "Failed removing kernel module"

@@ -25,8 +25,8 @@ def worklet_entry(args, cijoe, step):
         "make",
     ]
     for cmd in commands:
-        rcode, _ = cijoe.run(cmd, cwd=repos_path)
-        if rcode:
-            return rcode
+        err, _ = cijoe.run(cmd, cwd=repos_path)
+        if err:
+            return err
 
-    return rcode
+    return err

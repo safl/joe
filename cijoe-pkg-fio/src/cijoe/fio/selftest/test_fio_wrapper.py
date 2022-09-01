@@ -16,10 +16,10 @@ def test_run(cijoe):
 
     skip_when_config_has_no_remote(cijoe)
 
-    rcode, _ = null_blk.insert(cijoe)
-    assert not rcode
+    err, _ = null_blk.insert(cijoe)
+    assert not err
 
-    rcode, _ = fio.run(
+    err, _ = fio.run(
         cijoe,
         [
             "--filename",
@@ -34,4 +34,4 @@ def test_run(cijoe):
             "foo42",
         ],
     )
-    assert not rcode
+    assert not err

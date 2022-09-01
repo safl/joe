@@ -57,9 +57,9 @@ class Guest(object):
         """
 
         img_path = self.guest_path / filename
-        rcode, _ = qemu_img(self.cijoe, f"create -f {fmt} {img_path} {size}")
+        err, _ = qemu_img(self.cijoe, f"create -f {fmt} {img_path} {size}")
 
-        return rcode
+        return err
 
     def is_initialized(self):
         """Check that the guest is initialized"""
@@ -171,14 +171,14 @@ class Guest(object):
 
         args += [self.guest_config.get("extra_args", "")]
 
-        rcode, _ = qemu_system(self.cijoe, " ".join(args))
+        err, _ = qemu_system(self.cijoe, " ".join(args))
 
-        return rcode
+        return err
 
     def kill(self):
         """Shutdown qemu guests by killing the process using the 'guest.pid'"""
 
-        rcode = 0
+        err = 0
 
         pid = self.get_pid()
         if pid:
@@ -189,7 +189,7 @@ class Guest(object):
             for proc in alive:
                 proc.kill()
 
-        return rcode
+        return err
 
     def cloudinit(self):
         """Provision a guest OS using cloudinit"""
@@ -236,15 +236,15 @@ class Guest(object):
                 str(metadata_path),
             ]
         )
-        rcode, _ = self.cijoe.run_local(cloud_cmd)
+        err, _ = self.cijoe.run_local(cloud_cmd)
 
         # Additional args to pass to the guest when starting it
         system_args = []
         system_args += ["-drive", f"file={self.seed_img},if=virtio,format=raw"]
 
-        rcode = self.start(daemonize=False, extra_args=system_args)
-        if rcode:
+        err = self.start(daemonize=False, extra_args=system_args)
+        if err:
             log.error("failed starting...")
-            return rcode
+            return err
 
         return 0

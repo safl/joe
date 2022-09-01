@@ -30,8 +30,8 @@ from cijoe.xnvme.tests.conftest import xnvme_setup
 @pytest.mark.skip(reason="This is broken, hangs forever")
 def test_enum(cijoe):
 
-    rcode, _ = cijoe.run("zoned enum")
-    assert not rcode
+    err, _ = cijoe.run("zoned enum")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -41,8 +41,8 @@ def test_enum(cijoe):
 )
 def test_info(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"zoned info {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"zoned info {cli_args}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -52,8 +52,8 @@ def test_info(cijoe, device, be_opts, cli_args):
 )
 def test_changes(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"zoned changes {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"zoned changes {cli_args}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -63,8 +63,8 @@ def test_changes(cijoe, device, be_opts, cli_args):
 )
 def test_idfy_ctrlr(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"zoned idfy-ctrlr {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"zoned idfy-ctrlr {cli_args}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -74,8 +74,8 @@ def test_idfy_ctrlr(cijoe, device, be_opts, cli_args):
 )
 def test_idfy_ns(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"zoned idfy-ns {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"zoned idfy-ns {cli_args}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -95,12 +95,12 @@ def test_append(cijoe, device, be_opts, cli_args):
     nlb = "1"
     slba = "0x0"
 
-    rcode, _ = cijoe.run(f"zoned mgmt-reset {admin_args} --slba {slba}")
-    assert not rcode
+    err, _ = cijoe.run(f"zoned mgmt-reset {admin_args} --slba {slba}")
+    assert not err
 
     for _ in range(3):
-        rcode, _ = cijoe.run(f"zoned append {cli_args} --slba {slba} --nlb {nlb}")
-        assert not rcode
+        err, _ = cijoe.run(f"zoned append {cli_args} --slba {slba} --nlb {nlb}")
+        assert not err
 
 
 @pytest.mark.parametrize(
@@ -113,8 +113,8 @@ def test_report_all(cijoe, device, be_opts, cli_args):
     if be_opts["be"] == "linux" and be_opts["sync"] in ["psync"]:
         pytest.skip(reason="ENOSYS: psync(pwrite/pread) cannot do mgmt send/receive")
 
-    rcode, _ = cijoe.run(f"zoned report {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"zoned report {cli_args}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -127,8 +127,8 @@ def test_report_limit(cijoe, device, be_opts, cli_args):
     if be_opts["be"] == "linux" and be_opts["sync"] in ["psync"]:
         pytest.skip(reason="ENOSYS: psync(pwrite/pread) cannot do mgmt send/receive")
 
-    rcode, _ = cijoe.run(f"zoned report {cli_args} --slba 0x0 --limit 1")
-    assert not rcode
+    err, _ = cijoe.run(f"zoned report {cli_args} --slba 0x0 --limit 1")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -141,8 +141,8 @@ def test_report_single(cijoe, device, be_opts, cli_args):
     if be_opts["be"] == "linux" and be_opts["sync"] in ["psync"]:
         pytest.skip(reason="ENOSYS: psync(pwrite/pread) cannot do mgmt send/receive")
 
-    rcode, _ = cijoe.run(f"zoned report {cli_args} --slba 0x26400 --limit 1")
-    assert not rcode
+    err, _ = cijoe.run(f"zoned report {cli_args} --slba 0x26400 --limit 1")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -155,8 +155,8 @@ def test_report_some(cijoe, device, be_opts, cli_args):
     if be_opts["be"] == "linux" and be_opts["sync"] in ["psync"]:
         pytest.skip(reason="ENOSYS: psync(pwrite/pread) cannot do mgmt send/receive")
 
-    rcode, _ = cijoe.run(f"zoned report {cli_args} --slba 0x1dc00 --limit 10")
-    assert not rcode
+    err, _ = cijoe.run(f"zoned report {cli_args} --slba 0x1dc00 --limit 10")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -169,8 +169,8 @@ def test_read(cijoe, device, be_opts, cli_args):
     if be_opts["be"] == "linux" and be_opts["sync"] in ["psync", "block"]:
         pytest.skip(reason="ENOSYS: sync=[psync,block] cannot do mgmt send/receive")
 
-    rcode, _ = cijoe.run(f"zoned read {cli_args} --slba 0x0 --nlb 0")
-    assert not rcode
+    err, _ = cijoe.run(f"zoned read {cli_args} --slba 0x0 --nlb 0")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -187,17 +187,17 @@ def test_reset_report_write_report(cijoe, device, be_opts, cli_args):
     nlb = "0"
     limit = "0"
 
-    rcode, _ = cijoe.run(f"zoned mgmt-reset {cli_args} --slba {slba}")
-    assert not rcode
+    err, _ = cijoe.run(f"zoned mgmt-reset {cli_args} --slba {slba}")
+    assert not err
 
-    rcode, _ = cijoe.run(f"zoned report {cli_args} --slba {slba} --limit {limit}")
-    assert not rcode
+    err, _ = cijoe.run(f"zoned report {cli_args} --slba {slba} --limit {limit}")
+    assert not err
 
-    rcode, _ = cijoe.run(f"zoned write {cli_args} --slba {slba} --nlb {nlb}")
-    assert not rcode
+    err, _ = cijoe.run(f"zoned write {cli_args} --slba {slba} --nlb {nlb}")
+    assert not err
 
-    rcode, _ = cijoe.run(f"zoned report {cli_args} --slba {slba} --limit {limit}")
-    assert not rcode
+    err, _ = cijoe.run(f"zoned report {cli_args} --slba {slba} --limit {limit}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -213,11 +213,11 @@ def test_reset_open_report(cijoe, device, be_opts, cli_args):
     slba = "0x0"
     limit = "1"
 
-    rcode, _ = cijoe.run(f"zoned mgmt-reset {cli_args} --slba {slba}")
-    assert not rcode
+    err, _ = cijoe.run(f"zoned mgmt-reset {cli_args} --slba {slba}")
+    assert not err
 
-    rcode, _ = cijoe.run(f"zoned mgmt-open {cli_args} --slba {slba}")
-    assert not rcode
+    err, _ = cijoe.run(f"zoned mgmt-open {cli_args} --slba {slba}")
+    assert not err
 
-    rcode, _ = cijoe.run(f"zoned report {cli_args} --slba {slba} --limit {limit}")
-    assert not rcode
+    err, _ = cijoe.run(f"zoned report {cli_args} --slba {slba} --limit {limit}")
+    assert not err

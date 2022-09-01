@@ -18,13 +18,13 @@ report_open: true|false
 """
 import logging as log
 import webbrowser
+from datetime import datetime
 
 import jinja2
 import yaml
 
 from cijoe.core.processing import process_workflow_output
 from cijoe.core.resources import get_resources
-from datetime import datetime
 
 
 def to_yaml(value):

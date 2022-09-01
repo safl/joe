@@ -295,7 +295,7 @@ div.image {
           <div class="collapse" id="CONTENT_RUNLOG_{{ step['id'] }}" data-bs-parent="#CONTENT_{{ step['id'] }}">
             <div class="card-body" style="background-color: gray;">
             {% for stem, runlog in step['extras']['runlog'].items() %}
-            {% if runlog["state"]["rcode"] %}
+            {% if runlog["state"]["err"] %}
             {% set cmd_style = "danger" %}
             {% else %}
             {% set cmd_style = "success" %}
@@ -458,7 +458,7 @@ div.image {
                   data-bs-parent="#CONTENT_TESTREPORT_{{ step['id'] }}"
                   style="background-color: lightgray;">
                   {% for stem, runlog in testcase['runlog'].items() %}
-                    {% if runlog["state"]["rcode"] %}
+                    {% if runlog["state"]["err"] %}
                     {% set cmd_style = "danger" %}
                     {% else %}
                     {% set cmd_style = "success" %}

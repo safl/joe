@@ -19,8 +19,8 @@ def worklet_entry(args, cijoe, step):
     if not repos:
         return errno.EINVAL
 
-    rcode, _ = cijoe.run("./toolbox/pkgs/debian-bullseye.sh", cwd=repos["path"])
-    if rcode:
-        return rcode
+    err, _ = cijoe.run("./toolbox/pkgs/debian-bullseye.sh", cwd=repos["path"])
+    if err:
+        return err
 
     return 0

@@ -27,10 +27,10 @@ def worklet_entry(args, cijoe, step):
         "lspci",
     ]
 
-    rcode = 0
+    err = 0
     for cmd in commands:
         err, state = cijoe.run(cmd)
         if err:
-            rcode = err
+            err = err
 
-    return rcode
+    return err

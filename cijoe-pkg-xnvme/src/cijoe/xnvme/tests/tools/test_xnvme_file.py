@@ -29,5 +29,5 @@ def test_copy_sync(cijoe, device, be_opts, cli_args):
         "free -m",
     ]
     for cmd in prep:
-        rcode, _ = cijoe.run(cmd)
-        assert not rcode
+        err, _ = cijoe.run(cmd)
+        assert not err

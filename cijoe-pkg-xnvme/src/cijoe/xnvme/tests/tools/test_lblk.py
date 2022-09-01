@@ -17,8 +17,8 @@ from cijoe.xnvme.tests.conftest import xnvme_setup
 
 def test_enum(cijoe):
 
-    rcode, _ = cijoe.run("lblk enum")
-    assert not rcode
+    err, _ = cijoe.run("lblk enum")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -28,8 +28,8 @@ def test_enum(cijoe):
 )
 def test_info(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"lblk info {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"lblk info {cli_args}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -39,8 +39,8 @@ def test_info(cijoe, device, be_opts, cli_args):
 )
 def test_idfy(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"lblk idfy {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"lblk idfy {cli_args}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -50,8 +50,8 @@ def test_idfy(cijoe, device, be_opts, cli_args):
 )
 def test_read(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"lblk read {cli_args} --slba 0x0 --nlb 0")
-    assert not rcode
+    err, _ = cijoe.run(f"lblk read {cli_args} --slba 0x0 --nlb 0")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -61,8 +61,8 @@ def test_read(cijoe, device, be_opts, cli_args):
 )
 def test_write(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"lblk write {cli_args} --slba 0x0 --nlb 0")
-    assert not rcode
+    err, _ = cijoe.run(f"lblk write {cli_args} --slba 0x0 --nlb 0")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -72,8 +72,8 @@ def test_write(cijoe, device, be_opts, cli_args):
 )
 def test_write_uncor(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"lblk write-uncor {cli_args} --slba 0x0 --nlb 0")
-    assert not rcode
+    err, _ = cijoe.run(f"lblk write-uncor {cli_args} --slba 0x0 --nlb 0")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -83,5 +83,5 @@ def test_write_uncor(cijoe, device, be_opts, cli_args):
 )
 def test_write_zeroes(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"lblk write-zeros {cli_args} --slba 0x0 --nlb 0")
-    assert not rcode
+    err, _ = cijoe.run(f"lblk write-zeros {cli_args} --slba 0x0 --nlb 0")
+    assert not err

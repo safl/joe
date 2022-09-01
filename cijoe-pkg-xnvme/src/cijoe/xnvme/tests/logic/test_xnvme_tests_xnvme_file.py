@@ -12,8 +12,8 @@ from cijoe.xnvme.tests.conftest import xnvme_setup_device
 )
 def test_write_fsync(cijoe, device):
 
-    rcode, _ = cijoe.run(f"xnvme_tests_xnvme_file write-fsync {device['uri']}")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_tests_xnvme_file write-fsync {device['uri']}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -21,5 +21,5 @@ def test_write_fsync(cijoe, device):
 )
 def test_file_trunc(cijoe, device):
 
-    rcode, _ = cijoe.run(f"xnvme_tests_xnvme_file file-trunc {device['uri']}")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_tests_xnvme_file file-trunc {device['uri']}")
+    assert not err

@@ -51,18 +51,16 @@ def worklet_entry(args, cijoe, step):
         "--target-list=x86_64-softmmu",
     ]
 
-    rcode, _ = cijoe.run_local(f"mkdir -p {build_dir}")
-    if rcode:
-        return rcode
+    err, _ = cijoe.run_local(f"mkdir -p {build_dir}")
+    if err:
+        return err
 
-    rcode, _ = cijoe.run_local(
-        "../configure " + " ".join(configure_args), cwd=build_dir
-    )
-    if rcode:
-        return rcode
+    err, _ = cijoe.run_local("../configure " + " ".join(configure_args), cwd=build_dir)
+    if err:
+        return err
 
-    rcode, _ = cijoe.run_local("make -j $(nproc)", cwd=build_dir)
-    if rcode:
-        return rcode
+    err, _ = cijoe.run_local("make -j $(nproc)", cwd=build_dir)
+    if err:
+        return err
 
     return 0

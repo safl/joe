@@ -21,9 +21,9 @@ def worklet_entry(args, cijoe, step):
     """Configure, build and collect the build-artifacts"""
 
     repos = Path(cijoe.config.options["repository"]["path"]).resolve()
-    rcode, _ = cijoe.run(f"[ -d {repos} ]")
-    if rcode:
-        return rcode
+    err, _ = cijoe.run(f"[ -d {repos} ]")
+    if err:
+        return err
 
     localversion = step.get("with", {"localversion": "custom"}).get("localversion")
 
@@ -40,8 +40,8 @@ def worklet_entry(args, cijoe, step):
         f"mv ../*.buildinfo {cijoe.output_path}/artifacts/linux",
     ]
     for cmd in commands:
-        rcode, _ = cijoe.run(cmd, cwd=str(repos))
-        if rcode:
-            return rcode
+        err, _ = cijoe.run(cmd, cwd=str(repos))
+        if err:
+            return err
 
     return 0

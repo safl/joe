@@ -143,11 +143,11 @@ class SSH(Transport):
         logfile.write(stdout.read().decode(ENCODING))
         logfile.write(stderr.read().decode(ENCODING))
 
-        rcode = stdout.channel.recv_exit_status()
+        err = stdout.channel.recv_exit_status()
 
         self.__disconnect()
 
-        return rcode
+        return err
 
     def put(self, src, dst=None):
         """Hmm... no return-value just exceptions"""

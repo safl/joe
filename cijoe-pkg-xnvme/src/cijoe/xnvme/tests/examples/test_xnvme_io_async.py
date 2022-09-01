@@ -17,8 +17,8 @@ from cijoe.xnvme.tests.conftest import xnvme_setup
 )
 def test_write(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"xnvme_io_async write {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_io_async write {cli_args}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -28,5 +28,5 @@ def test_write(cijoe, device, be_opts, cli_args):
 )
 def test_read(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"xnvme_io_async read {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_io_async read {cli_args}")
+    assert not err

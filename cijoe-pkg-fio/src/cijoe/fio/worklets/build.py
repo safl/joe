@@ -20,10 +20,10 @@ def worklet_entry(args, cijoe, step):
         "make -j $(nproc)",
     ]
     for cmd in commands:
-        rcode, _ = cijoe.run(
+        err, _ = cijoe.run(
             cmd, cwd=Path(cijoe.config.options["fio"]["repository"]["path"])
         )
-        if rcode:
-            return rcode
+        if err:
+            return err
 
-    return rcode
+    return err

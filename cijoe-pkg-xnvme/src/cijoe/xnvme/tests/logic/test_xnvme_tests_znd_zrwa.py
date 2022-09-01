@@ -22,8 +22,8 @@ from cijoe.xnvme.tests.conftest import xnvme_setup
 )
 def test_idfy(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"xnvme_tests_znd_zrwa idfy {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_tests_znd_zrwa idfy {cli_args}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -33,8 +33,8 @@ def test_idfy(cijoe, device, be_opts, cli_args):
 )
 def test_support(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"xnvme_tests_znd_zrwa support {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_tests_znd_zrwa support {cli_args}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -44,8 +44,8 @@ def test_support(cijoe, device, be_opts, cli_args):
 )
 def test_open_with_zrwa(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"xnvme_tests_znd_zrwa open-with-zrwa {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_tests_znd_zrwa open-with-zrwa {cli_args}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -55,8 +55,8 @@ def test_open_with_zrwa(cijoe, device, be_opts, cli_args):
 )
 def test_open_without_zrwa(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"xnvme_tests_znd_zrwa open-without-zrwa {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_tests_znd_zrwa open-without-zrwa {cli_args}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -66,8 +66,8 @@ def test_open_without_zrwa(cijoe, device, be_opts, cli_args):
 )
 def test_flush(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"xnvme_tests_znd_zrwa flush {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_tests_znd_zrwa flush {cli_args}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -77,8 +77,8 @@ def test_flush(cijoe, device, be_opts, cli_args):
 )
 def test_flush_explicit(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"xnvme_tests_znd_zrwa flush-explicit {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_tests_znd_zrwa flush-explicit {cli_args}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -88,5 +88,5 @@ def test_flush_explicit(cijoe, device, be_opts, cli_args):
 )
 def test_flush_implicit(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"xnvme_tests_znd_zrwa flush-implicit {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_tests_znd_zrwa flush-implicit {cli_args}")
+    assert not err

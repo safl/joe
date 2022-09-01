@@ -16,5 +16,5 @@ from cijoe.xnvme.tests.conftest import xnvme_setup
 )
 def test_hw(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"xnvme_hello hw {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_hello hw {cli_args}")
+    assert not err

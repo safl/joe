@@ -19,6 +19,6 @@ def worklet_entry(args, cijoe, step):
 
     build_dir = Path(conf["repository"]["path"]) / "build"
 
-    rcode, _ = cijoe.run_local("make install", cwd=build_dir)
+    err, _ = cijoe.run_local("make install", cwd=build_dir)
 
-    return rcode
+    return err

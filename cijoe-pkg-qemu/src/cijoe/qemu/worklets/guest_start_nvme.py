@@ -66,10 +66,10 @@ def worklet_entry(args, cijoe, step):
 
     # Check that the backing-storage exists, create them if they do not
     for drive in drives:
-        rcode, _ = cijoe.run_local(f"[ -f { drive['file'] } ]")
-        if rcode:
+        err, _ = cijoe.run_local(f"[ -f { drive['file'] } ]")
+        if err:
             guest.image_create(drive["file"], drive["format"], drive_size)
-        rcode, _ = cijoe.run_local(f"[ -f { drive['file'] } ]")
+        err, _ = cijoe.run_local(f"[ -f { drive['file'] } ]")
 
     # pcie setup
     nvme = []
@@ -88,10 +88,10 @@ def worklet_entry(args, cijoe, step):
         "-device nvme-ns," + ",".join([f"{k}={v}" for k, v in ns2.items()]),
     ]
 
-    rcode = guest.start(extra_args=nvme)
-    if rcode:
-        log.error(f"guest.start() : rcode({rcode})")
-        return rcode
+    err = guest.start(extra_args=nvme)
+    if err:
+        log.error(f"guest.start() : err({err})")
+        return err
 
     started = guest.is_up()
     if not started:

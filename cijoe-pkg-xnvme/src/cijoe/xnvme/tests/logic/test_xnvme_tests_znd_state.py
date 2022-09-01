@@ -18,5 +18,5 @@ def test_transition(cijoe, device, be_opts, cli_args):
     if be_opts["be"] == "linux" and be_opts["sync"] in ["psync"]:
         pytest.skip(reason="Cannot do mgmt send/receive via psync")
 
-    rcode, _ = cijoe.run(f"xnvme_tests_znd_state transition {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_tests_znd_state transition {cli_args}")
+    assert not err

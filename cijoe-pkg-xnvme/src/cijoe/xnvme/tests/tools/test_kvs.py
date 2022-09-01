@@ -25,12 +25,12 @@ pytest.skip(allow_module_level=True, reason="Not implemented")
 def test_enum(cijoe):
 
     XnvmeDriver.kernel_attach(cijoe)
-    rcode, _ = cijoe.run("kvs enum")
-    assert not rcode
+    err, _ = cijoe.run("kvs enum")
+    assert not err
 
     XnvmeDriver.kernel_detach(cijoe)
-    rcode, _ = cijoe.run("kvs enum")
-    assert not rcode
+    err, _ = cijoe.run("kvs enum")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -40,8 +40,8 @@ def test_enum(cijoe):
 )
 def test_info(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"kvs info {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"kvs info {cli_args}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -51,8 +51,8 @@ def test_info(cijoe, device, be_opts, cli_args):
 )
 def test_idfy_ns(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"kvs idfy-ns {cli_args} --nsid {device['nsid']}")
-    assert not rcode
+    err, _ = cijoe.run(f"kvs idfy-ns {cli_args} --nsid {device['nsid']}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -74,8 +74,8 @@ def test_delete_store_exist(cijoe, device, be_opts, cli_args):
         f"kvs exist {cli_args} --key {key}",
     ]
     for command in commands:
-        rcode, _ = cijoe.run(command)
-        assert not rcode
+        err, _ = cijoe.run(command)
+        assert not err
 
 
 @pytest.mark.parametrize(
@@ -95,11 +95,11 @@ def test_delete_store_list(cijoe, device, be_opts, cli_args):
         cijoe.run(f"kvs delete {cli_args} --key {key}")
 
     for key, value in pairs:
-        rcode, _ = cijoe.run(f"kvs store {cli_args} --key {key} --value {value}")
-        assert not rcode
+        err, _ = cijoe.run(f"kvs store {cli_args} --key {key} --value {value}")
+        assert not err
 
-    rcode, _ = cijoe.run(f"kvs list {cli_args} --key {key}")
-    assert not rcode
+    err, _ = cijoe.run(f"kvs list {cli_args} --key {key}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -114,14 +114,14 @@ def test_retrieve(cijoe, device, be_opts, cli_args):
     # This is just to ensure the key is not there
     cijoe.run(f"kvs delete {cli_args} --key {key}")
 
-    rcode, _ = cijoe.run(f"kvs retrieve {cli_args} --key {key}")
-    assert not rcode
+    err, _ = cijoe.run(f"kvs retrieve {cli_args} --key {key}")
+    assert not err
 
-    rcode, _ = cijoe.run(f"kvs store {cli_args} --key {key} --value {val}")
-    assert not rcode
+    err, _ = cijoe.run(f"kvs store {cli_args} --key {key} --value {val}")
+    assert not err
 
-    rcode, _ = cijoe.run(f"kvs retrieve {cli_args} --key {key}")
-    assert not rcode
+    err, _ = cijoe.run(f"kvs retrieve {cli_args} --key {key}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -135,26 +135,24 @@ def test_store_optional(cijoe, device, be_opts, cli_args):
     val = "world"
     val_next = "xnvme"
 
-    rcode, _ = cijoe.run(f"kvs delete {cli_args} --key {key}")
+    err, _ = cijoe.run(f"kvs delete {cli_args} --key {key}")
 
-    rcode, _ = cijoe.run(
-        f"kvs store {cli_args} --key {key} --value {val} --only-update"
-    )
-    assert not rcode
+    err, _ = cijoe.run(f"kvs store {cli_args} --key {key} --value {val} --only-update")
+    assert not err
 
-    rcode, _ = cijoe.run(f"kvs store {cli_args} --key {key} --value {val}")
-    assert not rcode
+    err, _ = cijoe.run(f"kvs store {cli_args} --key {key} --value {val}")
+    assert not err
 
-    rcode, _ = cijoe.run(
+    err, _ = cijoe.run(
         f"kvs store {cli_args} --key {key} --value {val_next} --only-update"
     )
-    assert not rcode
+    assert not err
 
-    rcode, _ = cijoe.run(f"kvs store {cli_args} --key {key} --value {val} --only-add")
-    assert rcode
+    err, _ = cijoe.run(f"kvs store {cli_args} --key {key} --value {val} --only-add")
+    assert err
 
-    rcode, _ = cijoe.run(f"kvs delete {cli_args} --key {key}")
-    assert not rcode
+    err, _ = cijoe.run(f"kvs delete {cli_args} --key {key}")
+    assert not err
 
-    rcode, _ = cijoe.run(f"kvs store {cli_args} --key {key} --value {val} --only-add")
-    assert not rcode
+    err, _ = cijoe.run(f"kvs store {cli_args} --key {key} --value {val} --only-add")
+    assert not err

@@ -17,10 +17,10 @@ def worklet_entry(args, cijoe, step):
 
     guest = Guest(cijoe, cijoe.config)
 
-    rcode = guest.start()
-    if rcode:
-        log.error(f"guest.start() : rcode({rcode})")
-        return rcode
+    err = guest.start()
+    if err:
+        log.error(f"guest.start() : err({err})")
+        return err
 
     started = guest.is_up()
     if not started:

@@ -16,8 +16,8 @@ from cijoe.xnvme.tests.conftest import xnvme_setup
 )
 def test_buf_alloc_free(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"xnvme_tests_buf buf_alloc_free {cli_args} --count 31")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_tests_buf buf_alloc_free {cli_args} --count 31")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -27,5 +27,5 @@ def test_buf_alloc_free(cijoe, device, be_opts, cli_args):
 )
 def test_buf_virt_alloc_free(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"xnvme_tests_buf buf_virt_alloc_free {cli_args} --count 31")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_tests_buf buf_virt_alloc_free {cli_args} --count 31")
+    assert not err

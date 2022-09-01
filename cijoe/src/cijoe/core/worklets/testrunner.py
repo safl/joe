@@ -41,6 +41,6 @@ def worklet_entry(args, cijoe, step):
 
     pytest_cmd += step.get("with").get("args", "").split(" ")
 
-    rcode, _ = cijoe.run_local(" ".join(pytest_cmd))
+    err, _ = cijoe.run_local(" ".join(pytest_cmd))
 
-    return rcode
+    return err

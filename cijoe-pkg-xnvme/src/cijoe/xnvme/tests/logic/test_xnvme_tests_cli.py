@@ -9,8 +9,8 @@ from cijoe.xnvme.tests.conftest import xnvme_setup
 
 def test_optional_none(cijoe):
 
-    rcode, _ = cijoe.run("xnvme_tests_cli optional")
-    assert not rcode
+    err, _ = cijoe.run("xnvme_tests_cli optional")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -20,7 +20,7 @@ def test_optional_none(cijoe):
 )
 def test_optional_all(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(
+    err, _ = cijoe.run(
         f"xnvme_tests_cli optional "
         f"--be {be_opts['be']} "
         f"--mem {be_opts['mem']} "
@@ -28,4 +28,4 @@ def test_optional_all(cijoe, device, be_opts, cli_args):
         f"--async {be_opts['async']} "
         f"--admin {be_opts['admin']} "
     )
-    assert not rcode
+    assert not err

@@ -15,14 +15,14 @@ pytest.skip(allow_module_level=True, reason="Not implemented")
 
 def test_xpy_enumerate(cijoe):
 
-    rcode, _ = cijoe.run("xpy_enumerate")
-    assert not rcode
+    err, _ = cijoe.run("xpy_enumerate")
+    assert not err
 
 
 def test_xpy_libconf(cijoe):
 
-    rcode, _ = cijoe.run("xpy_libconf")
-    assert not rcode
+    err, _ = cijoe.run("xpy_libconf")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -32,7 +32,7 @@ def test_xpy_libconf(cijoe):
 )
 def test_xpy_dev_open(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(
+    err, _ = cijoe.run(
         f"xpy_dev_open --uri {cli_args['uri']} --dev-nsid {cli_args['nsid']}"
     )
-    assert not rcode
+    assert not err

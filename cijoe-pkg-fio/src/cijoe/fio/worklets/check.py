@@ -15,6 +15,6 @@ from cijoe.fio.wrapper import fio
 def worklet_entry(args, cijoe, step):
     """Check version of fio"""
 
-    rcode, _ = fio(cijoe, "--help")
+    err, _ = fio(cijoe, "--help")
 
-    return rcode
+    return err

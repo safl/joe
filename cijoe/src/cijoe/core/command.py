@@ -22,11 +22,11 @@ def default_output_path():
 
 class CommandState(object):
     def __init__(
-        self, cmd, cwd, rcode, begin, end, output_dpath, output_fpath, state_fpath
+        self, cmd, cwd, err, begin, end, output_dpath, output_fpath, state_fpath
     ):
         self.cmd = cmd
         self.cwd = cwd
-        self.rcode = rcode
+        self.err = err
         self.begin = begin
         self.end = end
         self.elapsed = end - begin
@@ -47,7 +47,7 @@ class CommandState(object):
             state = {
                 "cmd": self.cmd,
                 "cwd": str(self.cwd),
-                "rcode": self.rcode,
+                "err": self.err,
                 "begin": self.begin,
                 "end": self.end,
                 "elapsed": self.elapsed,
@@ -105,16 +105,16 @@ class Cijoe(object):
             begin = time.time()
 
             try:
-                rcode = transport.run(cmd, cwd, env, logfile)
+                err = transport.run(cmd, cwd, env, logfile)
             except Exception as exc:
                 if (
                     hasattr(exc, "errno")
                     and isinstance(exc.errno, int)
                     and exc.errno > 0
                 ):
-                    rcode = exc.errno
+                    err = exc.errno
                 else:
-                    rcode = errno.EIO
+                    err = errno.EIO
                 logfile.write(f"# transport.run(); raised({exc})\n")
 
             end = time.time()
@@ -122,7 +122,7 @@ class Cijoe(object):
             state = CommandState(
                 cmd=cmd,
                 cwd=cwd,
-                rcode=rcode,
+                err=err,
                 begin=begin,
                 end=end,
                 output_dpath=cmd_output_dpath,
@@ -131,7 +131,7 @@ class Cijoe(object):
             )
             state.to_file()
 
-        return rcode, state
+        return err, state
 
     def run(self, cmd, cwd=None, env={}):
         """

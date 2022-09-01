@@ -19,8 +19,8 @@ from cijoe.xnvme.tests.conftest import xnvme_setup
 )
 def test_io(cijoe, device, be_opts, cli_args):
 
-    rcode, _ = cijoe.run(f"xnvme_tests_lblk io {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_tests_lblk io {cli_args}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -33,8 +33,8 @@ def test_scopy(cijoe, device, be_opts, cli_args):
     if be_opts["be"] == "linux" and be_opts["sync"] in ["block", "psync"]:
         pytest.skip(reason=f"Not supported: simple-copy via { be_opts['sync'] }")
 
-    rcode, _ = cijoe.run(f"xnvme_tests_lblk scopy {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_tests_lblk scopy {cli_args}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -47,8 +47,8 @@ def test_write_uncorrectable(cijoe, device, be_opts, cli_args):
     if be_opts["be"] == "linux" and be_opts["sync"] in ["block", "psync"]:
         pytest.skip(reason=f"Not supported: write_uncor via { be_opts['sync'] }")
 
-    rcode, _ = cijoe.run(f"xnvme_tests_lblk write_uncorrectable {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_tests_lblk write_uncorrectable {cli_args}")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -61,5 +61,5 @@ def test_write_zeroes(cijoe, device, be_opts, cli_args):
     if be_opts["be"] == "linux" and be_opts["sync"] in ["block", "psync"]:
         pytest.skip(reason=f"Not supported: write_zeroes via { be_opts['sync'] }")
 
-    rcode, _ = cijoe.run(f"xnvme_tests_lblk write_zeroes {cli_args}")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_tests_lblk write_zeroes {cli_args}")
+    assert not err

@@ -23,10 +23,10 @@ def worklet_entry(args, cijoe, step):
 
     do = step.get("with", {"do": "insert"}).get("do", "insert")
     if do == "insert":
-        rcode, _ = null_blk.insert(cijoe)
+        err, _ = null_blk.insert(cijoe)
     elif do == "remove":
-        rcode, _ = null_blk.remove(cijoe)
+        err, _ = null_blk.remove(cijoe)
     else:
-        rcode = errno.EINVAL
+        err = errno.EINVAL
 
-    return rcode
+    return err

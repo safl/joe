@@ -31,14 +31,14 @@ def worklet_entry(args, cijoe, step):
 
     for path in deb_root.glob("*.deb"):
         cijoe.put(f"{path}", f"{remote_kdebs_dir}/{path.name}")
-        rcode, _ = cijoe.run(f"[ -f {remote_kdebs_dir}/{path.name} ]")
-        if rcode:
-            return rcode
+        err, _ = cijoe.run(f"[ -f {remote_kdebs_dir}/{path.name} ]")
+        if err:
+            return err
 
     cijoe.run(f"ls {remote_kdebs_dir} | grep .deb")
 
-    rcode, _ = cijoe.run(f"dpkg -i {remote_kdebs_dir}/*.deb")
-    if rcode:
-        return rcode
+    err, _ = cijoe.run(f"dpkg -i {remote_kdebs_dir}/*.deb")
+    if err:
+        return err
 
     return 0

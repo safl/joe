@@ -107,7 +107,7 @@ def cli_example(args):
     """Create example .config and .workflow"""
 
     log.info("cli: examples")
-    rcode = 0
+    err = 0
 
     resources = get_resources()
 
@@ -138,18 +138,18 @@ def cli_example(args):
         return errno.EINVAL
 
     if dst_config.exists():
-        rcode = errno.EEXIST
+        err = errno.EEXIST
         log.error(f"skipping config({dst_config}); already exists")
     else:
         shutil.copyfile(src_config, dst_config)
 
     if dst_workflow.exists():
-        rcode = errno.EEXIST
+        err = errno.EEXIST
         log.error(f"skipping workflow({dst_workflow}); already exists")
     else:
         shutil.copyfile(src_workflow, dst_workflow)
 
-    return rcode
+    return err
 
 
 def cli_version(args):
@@ -280,14 +280,14 @@ def cli_workflow(args):
             log.error(f"exiting, fail_fast({fail_fast})")
             break
 
-    rcode = errno.EIO if workflow.state["status"]["failed"] else 0
-    if rcode:
+    err = errno.EIO if workflow.state["status"]["failed"] else 0
+    if err:
         log.error("one or more steps failed")
 
     if monitor:
         monitor.stop()
 
-    return rcode
+    return err
 
 
 def parse_args():
@@ -419,10 +419,10 @@ def main():
     if args.version:
         return cli_version(args)
 
-    rcode = cli_workflow(args)
+    err = cli_workflow(args)
 
     if args.produce_report:
-        report_rcode = cli_produce_report(args)
-        rcode = rcode if rcode else report_rcode
+        report_err = cli_produce_report(args)
+        err = err if err else report_err
 
-    return rcode
+    return err

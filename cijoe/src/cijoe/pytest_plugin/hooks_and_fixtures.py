@@ -6,8 +6,8 @@
     test with a nodeid-defined output-directory. For example::
 
         def test_foo(cijoe):
-            rcode, _ = cijoe.run("hostname")
-            asssert not rcode
+            err, _ = cijoe.run("hostname")
+            asssert not err
 
     To provide the cijoe-instance a configuration and output directory must be provided.
     These are given via pytest, e.g.::

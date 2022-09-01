@@ -30,8 +30,8 @@ def test_cython_bindings(cijoe, device, be_opts):
             "python3 -m pytest --pyargs xnvme.cython_bindings -v -s",
         ]
     )
-    rcode, _ = cijoe.run(cmd)
-    assert not rcode
+    err, _ = cijoe.run(cmd)
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -63,5 +63,5 @@ def test_cython_header(cijoe, device, be_opts):
         ]
     )
 
-    rcode, _ = cijoe.run(cmd)
-    assert not rcode
+    err, _ = cijoe.run(cmd)
+    assert not err

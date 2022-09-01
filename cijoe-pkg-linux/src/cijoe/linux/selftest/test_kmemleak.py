@@ -18,19 +18,19 @@ def skip_disabled(cijoe):
 def test_clear(cijoe):
     skip_disabled(cijoe)
 
-    rcode, state = kmemleak.clear(cijoe)
-    assert not rcode, "Failed clearing kmemleak"
+    err, state = kmemleak.clear(cijoe)
+    assert not err, "Failed clearing kmemleak"
 
 
 def test_scan(cijoe):
     skip_disabled(cijoe)
 
-    rcode, state = kmemleak.scan(cijoe)
-    assert not rcode, "Failed scanning kmemleak"
+    err, state = kmemleak.scan(cijoe)
+    assert not err, "Failed scanning kmemleak"
 
 
 def test_cat(cijoe):
     skip_disabled(cijoe)
 
-    rcode, state = kmemleak.cat(cijoe)
-    assert not rcode, "Failed cat'ing kmemleak"
+    err, state = kmemleak.cat(cijoe)
+    assert not err, "Failed cat'ing kmemleak"

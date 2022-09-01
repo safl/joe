@@ -21,19 +21,19 @@ from cijoe.xnvme.tests.conftest import xnvme_setup
 def test_open(cijoe, device, be_opts, cli_args):
     pytest.skip(reason="Currently not implemented, comments this out after merge.")
 
-    rcode, _ = cijoe.run(f"xnvme_tests_enum open --count 4 --be {be_opts['be']}")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_tests_enum open --count 4 --be {be_opts['be']}")
+    assert not err
 
 
 def test_open_all_be(cijoe):
 
     XnvmeDriver.kernel_attach(cijoe)
-    rcode, _ = cijoe.run("xnvme_tests_enum open --count 4")
-    assert not rcode
+    err, _ = cijoe.run("xnvme_tests_enum open --count 4")
+    assert not err
 
     XnvmeDriver.kernel_detach(cijoe)
-    rcode, _ = cijoe.run("xnvme_tests_enum open --count 4")
-    assert not rcode
+    err, _ = cijoe.run("xnvme_tests_enum open --count 4")
+    assert not err
 
 
 @pytest.mark.parametrize(
@@ -44,16 +44,16 @@ def test_open_all_be(cijoe):
 def test_multi(cijoe, device, be_opts, cli_args):
     pytest.skip(reason="Currently not implemented, comments this out after merge.")
 
-    rcode, _ = cijoe.run(f"xnvme_tests_enum multi --count 4 --be {be_opts['be']}")
-    assert not rcode
+    err, _ = cijoe.run(f"xnvme_tests_enum multi --count 4 --be {be_opts['be']}")
+    assert not err
 
 
 def test_multi_all_be(cijoe):
 
     XnvmeDriver.kernel_attach(cijoe)
-    rcode, _ = cijoe.run("xnvme_tests_enum multi --count 4")
-    assert not rcode
+    err, _ = cijoe.run("xnvme_tests_enum multi --count 4")
+    assert not err
 
     XnvmeDriver.kernel_detach(cijoe)
-    rcode, _ = cijoe.run("xnvme_tests_enum multi --count 4")
-    assert not rcode
+    err, _ = cijoe.run("xnvme_tests_enum multi --count 4")
+    assert not err
