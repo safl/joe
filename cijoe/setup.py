@@ -6,7 +6,7 @@ setup(
     author="Simon A. F. Lund",
     author_email="os@safl.dk",
     url="https://github.com/refenv/cijoe",
-    license="Apache License 2.0",
+    license="BSD",
     install_requires=[
         "jinja2",
         "paramiko",
