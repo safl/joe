@@ -36,7 +36,7 @@ setup(
         "Framework :: Pytest",
         "Intended Audience :: Developers",
         "Intended Audience :: System Administrators",
-        "License :: OSI Approved :: Apache Software License",
+        "License :: OSI Approved :: BSD License",
         "Programming Language :: Python",
         "Topic :: Software Development :: Testing",
         "Topic :: Software Development",

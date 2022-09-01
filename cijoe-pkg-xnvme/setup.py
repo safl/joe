@@ -5,7 +5,8 @@ setup(
     version="0.5.0.dev1",
     author="Simon A. F. Lund",
     author_email="os@safl.dk",
-    url="https://github.com/safl/joe-pkg-xnvme/",
+    url="https://github.com/refenv/joe-pkg-xnvme/",
+    license="BSD",
     install_requires=[
         "cijoe",
         "cijoe-pkg-linux",
@@ -26,7 +27,7 @@ setup(
         "Framework :: Pytest",
         "Intended Audience :: Developers",
         "Intended Audience :: System Administrators",
-        "License :: OSI Approved :: Apache Software License",
+        "License :: OSI Approved :: BSD License",
         "Programming Language :: Python",
         "Topic :: Software Development :: Testing",
         "Topic :: Software Development",

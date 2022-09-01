@@ -5,7 +5,8 @@ setup(
     version="6.1.0.dev1",
     author="Simon A. F. Lund",
     author_email="os@safl.dk",
-    url="https://github.com/safl/joe-pkg-qemu/",
+    url="https://github.com/refenv/joe-pkg-qemu/",
+    license="BSD",
     install_requires=[
         "cijoe",
         "psutil",
@@ -24,7 +25,7 @@ setup(
         "Framework :: Pytest",
         "Intended Audience :: Developers",
         "Intended Audience :: System Administrators",
-        "License :: OSI Approved :: Apache Software License",
+        "License :: OSI Approved :: BSD License",
         "Programming Language :: Python",
         "Topic :: Software Development :: Testing",
         "Topic :: Software Development",
